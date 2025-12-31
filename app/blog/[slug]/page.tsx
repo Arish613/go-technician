@@ -1,10 +1,12 @@
-import { getBlogBySlug } from "@/lib/action/blog";
+import { getBlogBySlug, getBlogs } from "@/lib/action/blog";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { Calendar, User, Clock, Share2 } from "lucide-react";
+import Link from "next/link";
+import { Calendar, User, Clock, Share2, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Accordion,
   AccordionContent,
@@ -65,128 +67,184 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
   const blog = result.data;
 
+  // Get recent blogs
+  const recentBlogsResult = await getBlogs(true);
+  const recentBlogs = recentBlogsResult.success
+    ? (recentBlogsResult.data ?? []).filter((b) => b.id !== blog.id).slice(0, 3)
+    : [];
+
   // Calculate reading time (average 200 words per minute)
   const wordCount = blog.content.split(/\s+/).length;
   const readingTime = Math.ceil(wordCount / 200);
 
   return (
     <article className="min-h-screen bg-linear-to-b from-background to-muted/20">
-      {/* Hero Section */}
-      <div className="relative w-full h-[60vh] min-h-100 max-h-150">
-        <Image
-          src={blog.imageUrl}
-          alt={blog.h1}
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-linear-to-t from-background via-background/60 to-transparent" />
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-[1fr_350px] gap-8">
+          {/* Main Content */}
+          <div className="min-w-0">
+            {/* Header */}
+            <div className="mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                {blog.isPublished ? (
+                  <Badge>Published</Badge>
+                ) : (
+                  <Badge variant="secondary">Draft</Badge>
+                )}
+                {blog.authorName && (
+                  <span className="text-sm text-muted-foreground flex items-center gap-1">
+                    <User className="w-4 h-4" />
+                    {blog.authorName}
+                  </span>
+                )}
+              </div>
 
-        <div className="absolute bottom-0 left-0 right-0 container mx-auto px-4 pb-8">
-          <div className="max-w-4xl mx-auto">
-            {blog.isPublished ? (
-              <Badge className="mb-4">Published</Badge>
-            ) : (
-              <Badge variant="secondary" className="mb-4">
-                Draft
-              </Badge>
-            )}
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">{blog.h1}</h1>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-lg">
-              {blog.h1}
-            </h1>
-
-            {blog.imageCaption && (
-              <p className="text-sm text-white/80 italic">
-                {blog.imageCaption}
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Metadata Bar */}
-      <div className="border-y bg-card">
-        <div className="container mx-auto px-4 py-4">
-          <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
-            <div className="flex flex-wrap items-center gap-4">
-              {blog.authorName && (
+              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
-                  <User className="w-4 h-4" />
-                  <span>{blog.authorName}</span>
+                  <Calendar className="w-4 h-4" />
+                  <span>
+                    {format(new Date(blog.createdAt), "MMM dd, yyyy")}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  <span>{readingTime} min read</span>
+                </div>
+                <Button variant="ghost" size="sm" className="ml-auto">
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Share
+                </Button>
+              </div>
+            </div>
+
+            {/* Featured Image */}
+            <div className="relative w-full h-100 rounded-xl overflow-hidden mb-8">
+              <Image
+                src={blog.imageUrl}
+                alt={blog.h1}
+                fill
+                priority
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 70vw"
+              />
+              {blog.imageCaption && (
+                <div className="absolute bottom-0 left-0 right-0 bg-black/70 backdrop-blur-sm p-3">
+                  <p className="text-sm text-white italic">
+                    {blog.imageCaption}
+                  </p>
                 </div>
               )}
+            </div>
 
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                <span>{format(new Date(blog.createdAt), "MMM dd, yyyy")}</span>
+            {/* Summary */}
+            {blog.Summary && (
+              <div className="mb-8 p-6 bg-primary/5 border-l-4 border-primary rounded-r-lg">
+                <p className="text-lg text-muted-foreground italic">
+                  {blog.Summary}
+                </p>
               </div>
+            )}
 
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4" />
-                <span>{readingTime} min read</span>
-              </div>
-            </div>
-
-            <Button variant="ghost" size="sm">
-              <Share2 className="w-4 h-4 mr-2" />
-              Share
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Content Section */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto">
-          {/* Summary */}
-          {blog.Summary && (
-            <div className="mb-8 p-6 bg-primary/5 border-l-4 border-primary rounded-r-lg">
-              <p className="text-lg text-muted-foreground italic">
-                {blog.Summary}
-              </p>
-            </div>
-          )}
-
-          {/* Main Content */}
-          <div
-            className="blog-content"
-            dangerouslySetInnerHTML={{ __html: blog.content }}
-          />
-
-          <Separator className="my-12" />
-
-          {/* FAQs Section */}
-          {blog.faqs && blog.faqs.length > 0 && (
-            <div className="mt-12">
-              <h2 className="text-3xl font-bold mb-6">
-                Frequently Asked Questions
-              </h2>
-              <Accordion type="single" collapsible className="space-y-4">
-                {blog.faqs.map((faq, index) => (
-                  <AccordionItem key={faq.id} value={`faq-${index}`}>
-                    <AccordionTrigger className="text-left font-semibold hover:no-underline">
-                      {faq.question}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground pt-2 pb-4">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </div>
-          )}
-
-          {/* Schema Markup */}
-          {blog.schema && (
-            <script
-              type="application/ld+json"
-              dangerouslySetInnerHTML={{ __html: blog.schema }}
+            {/* Blog Content */}
+            <div
+              className="blog-content"
+              dangerouslySetInnerHTML={{ __html: blog.content }}
             />
-          )}
+
+            <Separator className="my-12" />
+
+            {/* FAQs Section */}
+            {blog.faqs && blog.faqs.length > 0 && (
+              <div className="mt-12">
+                <h2 className="text-3xl font-bold mb-6">
+                  Frequently Asked Questions
+                </h2>
+                <Accordion type="single" collapsible className="space-y-4">
+                  {blog.faqs.map((faq, index) => (
+                    <AccordionItem
+                      key={faq.id}
+                      value={`faq-${index}`}
+                      className="border rounded-lg px-6 bg-card"
+                    >
+                      <AccordionTrigger className="text-left font-semibold hover:no-underline">
+                        {faq.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground pt-2 pb-4">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar - Recent Posts */}
+          <aside className="space-y-6">
+            <div className="sticky top-24">
+              <Card>
+                <CardHeader>
+                  <h3 className="text-xl font-bold">Recent Posts</h3>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {recentBlogs.length > 0 ? (
+                    recentBlogs.map((recentBlog) => (
+                      <Link
+                        key={recentBlog.id}
+                        href={`/blog/${recentBlog.slug}`}
+                        className="group block"
+                      >
+                        <div className="flex gap-3 p-3 rounded-lg hover:bg-muted transition-colors">
+                          <div className="relative w-20 h-20 shrink-0 rounded-md overflow-hidden bg-muted">
+                            <Image
+                              src={recentBlog.imageUrl}
+                              alt={recentBlog.h1}
+                              fill
+                              className="object-cover"
+                              sizes="80px"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors">
+                              {recentBlog.h1}
+                            </h4>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {format(
+                                new Date(recentBlog.createdAt),
+                                "MMM dd, yyyy"
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                      </Link>
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      No recent posts
+                    </p>
+                  )}
+                  <Link href="/blog">
+                    <Button variant="outline" className="w-full" size="sm">
+                      View All Posts
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </div>
+          </aside>
         </div>
       </div>
+
+      {/* Schema Markup */}
+      {blog.schema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: blog.schema }}
+        />
+      )}
     </article>
   );
 }

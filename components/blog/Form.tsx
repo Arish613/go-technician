@@ -170,7 +170,7 @@ export function BlogForm({ blog, mode = "create" }: BlogFormProps) {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 ">
         <Card>
           <CardHeader>
             <CardTitle>Basic Information</CardTitle>

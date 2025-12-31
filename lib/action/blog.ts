@@ -39,24 +39,6 @@ export async function getBlogs(isPublished?: boolean) {
   }
 }
 
-export async function getBlogById(id: string) {
-  try {
-    const blog = await prisma.blog.findUnique({
-      where: { id },
-      include: { faqs: true },
-    });
-
-    if (!blog) {
-      return { success: false, error: "Blog not found" };
-    }
-
-    return { success: true, data: blog };
-  } catch (error) {
-    console.error("Error fetching blog:", error);
-    return { success: false, error: "Failed to fetch blog" };
-  }
-}
-
 export async function getBlogBySlug(slug: string) {
   try {
     const blog = await prisma.blog.findFirst({

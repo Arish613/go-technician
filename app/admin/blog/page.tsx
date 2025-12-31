@@ -8,7 +8,7 @@ export default async function AdminBlogsPage() {
   const result = await getBlogs();
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="md:mx-20 py-8">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold">Manage Blogs</h1>

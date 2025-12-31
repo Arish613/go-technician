@@ -4,17 +4,20 @@ import { prisma } from "@/lib/prisma";
 import { CreateServiceInput, UpdateServiceInput } from "@/types/service";
 import { revalidatePath } from "next/cache";
 
-
 export async function createService(data: CreateServiceInput) {
   try {
-    const { faqs, ...serviceData } = data;
+    const { faqs, subServices, ...serviceData } = data;
 
     const service = await prisma.services.create({
       data: {
         ...serviceData,
         faqs: faqs ? { create: faqs } : undefined,
+        subServices: subServices ? { create: subServices } : undefined,
       },
-      include: { faqs: true },
+      include: {
+        faqs: true,
+        subServices: true,
+      },
     });
 
     revalidatePath("/services");
@@ -25,11 +28,20 @@ export async function createService(data: CreateServiceInput) {
   }
 }
 
-export async function getServices(location?: string) {
+export async function getServices(location?: string, isPublished?: boolean) {
   try {
     const services = await prisma.services.findMany({
-      where: location ? { location } : {},
-      include: { faqs: true },
+      where: {
+        ...(location && { location }),
+        ...(isPublished !== undefined && { isPublished }),
+      },
+      include: {
+        faqs: true,
+        subServices: {
+          where: { isActive: true },
+          orderBy: { isPopular: "desc" },
+        },
+      },
       orderBy: { createdAt: "desc" },
     });
 
@@ -44,7 +56,12 @@ export async function getServiceById(id: string) {
   try {
     const service = await prisma.services.findUnique({
       where: { id },
-      include: { faqs: true },
+      include: {
+        faqs: true,
+        subServices: {
+          orderBy: { isPopular: "desc" },
+        },
+      },
     });
 
     if (!service) {
@@ -60,9 +77,15 @@ export async function getServiceById(id: string) {
 
 export async function getServiceBySlug(slug: string) {
   try {
-    const service = await prisma.services.findUnique({
+    const service = await prisma.services.findFirst({
       where: { slug },
-      include: { faqs: true },
+      include: {
+        faqs: true,
+        subServices: {
+          where: { isActive: true },
+          orderBy: { isPopular: "desc" },
+        },
+      },
     });
 
     if (!service) {
@@ -78,7 +101,7 @@ export async function getServiceBySlug(slug: string) {
 
 export async function updateService(data: UpdateServiceInput) {
   try {
-    const { id, faqs, ...serviceData } = data;
+    const { id, faqs, subServices, ...serviceData } = data;
 
     const service = await prisma.services.update({
       where: { id },
@@ -90,8 +113,17 @@ export async function updateService(data: UpdateServiceInput) {
               create: faqs,
             }
           : undefined,
+        subServices: subServices
+          ? {
+              deleteMany: {},
+              create: subServices,
+            }
+          : undefined,
       },
-      include: { faqs: true },
+      include: {
+        faqs: true,
+        subServices: true,
+      },
     });
 
     revalidatePath("/services");
@@ -114,5 +146,24 @@ export async function deleteService(id: string) {
   } catch (error) {
     console.error("Error deleting service:", error);
     return { success: false, error: "Failed to delete service" };
+  }
+}
+
+// New function to get subservices by service and type
+export async function getSubServicesByType(serviceId: string, type?: string) {
+  try {
+    const subServices = await prisma.subService.findMany({
+      where: {
+        serviceId,
+        isActive: true,
+        ...(type && { type }),
+      },
+      orderBy: { isPopular: "desc" },
+    });
+
+    return { success: true, data: subServices };
+  } catch (error) {
+    console.error("Error fetching subservices:", error);
+    return { success: false, error: "Failed to fetch subservices" };
   }
 }

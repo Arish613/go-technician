@@ -41,7 +41,7 @@ export default async function BlogsPage() {
       </div>
 
       {/* Blog Grid */}
-      <div className="container mx-auto px-4 py-5">
+      <div className="container mx-auto px-4 py-5 md:mx-20">
         <div className="mb-6">
           <p className="text-sm text-muted-foreground">
             Showing {blogs.length} {blogs.length === 1 ? "article" : "articles"}

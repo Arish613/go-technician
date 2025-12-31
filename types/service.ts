@@ -1,22 +1,37 @@
-import { Services, Faq } from "@prisma/client";
+import { Services, Faq, SubService } from "@prisma/client";
 
 export type ServiceType = Services;
 
-export type ServiceWithFaqs = Services & {
+export type ServiceWithRelations = Services & {
   faqs: Faq[];
+  subServices: SubService[];
 };
 
 export type CreateServiceInput = {
   name: string;
   description: string;
   slug: string;
-  price: number;
   content: string;
   location?: string;
   imageUrl?: string;
+  type?: string[];
+  isPublished?: boolean;
   faqs?: {
     question: string;
     answer: string;
+  }[];
+  subServices?: {
+    name: string;
+    description: string;
+    price: number;
+    discountedPrice?: number;
+    type?: string;
+    imageUrl?: string;
+    whatIncluded?: string[];
+    whatExcluded?: string[];
+    duration?: string;
+    isPopular?: boolean;
+    isActive?: boolean;
   }[];
 };
 

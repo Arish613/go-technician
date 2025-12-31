@@ -3,7 +3,12 @@ import Link from "next/link";
 import { Calendar, Clock, ArrowRight, User, MessageSquare } from "lucide-react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import type { BlogWithFaqs } from "@/types/blog";
 
 interface BlogCardProps {
@@ -26,7 +31,7 @@ export function BlogCard({ blog }: BlogCardProps) {
               className="object-cover transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
             <div className="absolute bottom-3 left-3 flex items-center gap-2 text-xs text-white/80">
               {blog.authorName && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 backdrop-blur-sm">

@@ -212,7 +212,7 @@ export function BlogsTable({ blogs }: BlogsTableProps) {
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
                             onClick={() =>
-                              router.push(`/admin/blog/edit/${blog.id}`)
+                              router.push(`/admin/blog/update/${blog.slug}`)
                             }
                           >
                             <Pencil className="mr-2 h-4 w-4" />

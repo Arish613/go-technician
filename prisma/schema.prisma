@@ -52,15 +52,36 @@ model Faq {
 }
 
 model Services {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   description String
-  slug        String   @unique
+  slug        String       @unique
   imageUrl    String?
-  price       Int
   content     String
   location    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  type        String[]     @default([])
+  isPublished Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   faqs        Faq[]
+  subServices SubService[]
+}
+
+model SubService {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  description     String
+  price           Int
+  discountedPrice Int?
+  type            String? // "Split AC", "Window AC", or null for services without types
+  imageUrl        String?
+  whatIncluded    String[] @default([]) // Array of included items
+  whatExcluded    String[] @default([]) // Array of excluded items
+  duration        String? // e.g., "45 mins", "1-2 hours"
+  isPopular       Boolean  @default(false)
+  isActive        Boolean  @default(true)
+  serviceId       String   @db.ObjectId
+  service         Services @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

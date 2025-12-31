@@ -1,16 +1,10 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-// import { PhoneCall, MapPin } from "lucide-react";
-// import Image from "next/image";
+import { MobileNav } from "./MobileNav";
 
 const navLinks = [
   { name: "Home", href: "/" },
   { name: "Blogs", href: "/blog" },
-  { name: "Services", href: "#services" },
-  { name: "Buy", href: "#buy" },
-  { name: "Sell", href: "#sell" },
-  { name: "My bookings", href: "#bookings" },
-  { name: "Profile", href: "#profile" },
+  { name: "Services", href: "/service" },
 ];
 
 export function Navbar() {
@@ -53,30 +47,8 @@ export function Navbar() {
           ))}
         </div>
 
-        {/* Desktop Actions */}
-        {/* <div className="hidden items-center gap-3 lg:flex">
-          <Button size={"icon-lg"} className="gap-2 rounded-full " asChild>
-            <Link href="tel:+919999999999">
-              <PhoneCall className="h-4 w-4" />
-              Book on call
-            </Link>
-          </Button>
-        </div> */}
-
-        {/* Mobile Menu Button */}
-        <Button variant="ghost" size="icon" className="lg:hidden">
-          <svg
-            className="h-6 w-6"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </Button>
+        {/* Mobile Menu */}
+        <MobileNav navLinks={navLinks} />
       </nav>
     </header>
   );
