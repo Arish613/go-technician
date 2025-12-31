@@ -1,8 +1,66 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../lib/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String    @unique
+  password      String
+  emailVerified DateTime?
+  image         String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Blog {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  h1              String
+  title           String?
+  metaTitle       String
+  metaDescription String
+  slug            String   @unique
+  imageUrl        String
+  imageCaption    String?
+  content         String
+  authorName      String?
+  Summary         String?
+  schema          String?
+  canonicalUrl    String?
+  isPublished     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  faqs            Faq[]
+}
+
+model Faq {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  question  String
+  answer    String
+  blogId    String?   @db.ObjectId
+  blog      Blog?     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  serviceId String?   @db.ObjectId
+  service   Services? @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Services {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  slug        String   @unique
+  imageUrl    String?
+  price       Int
+  content     String
+  location    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  faqs        Faq[]
 }

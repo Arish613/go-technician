@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { PhoneCall, MapPin } from "lucide-react";
-import Image from "next/image";
+// import { PhoneCall, MapPin } from "lucide-react";
+// import Image from "next/image";
 
 const navLinks = [
   { name: "Home", href: "/" },
+  { name: "Blogs", href: "/blog" },
   { name: "Services", href: "#services" },
   { name: "Buy", href: "#buy" },
   { name: "Sell", href: "#sell" },
@@ -53,14 +54,14 @@ export function Navbar() {
         </div>
 
         {/* Desktop Actions */}
-        <div className="hidden items-center gap-3 lg:flex">
+        {/* <div className="hidden items-center gap-3 lg:flex">
           <Button size={"icon-lg"} className="gap-2 rounded-full " asChild>
             <Link href="tel:+919999999999">
               <PhoneCall className="h-4 w-4" />
               Book on call
             </Link>
           </Button>
-        </div>
+        </div> */}
 
         {/* Mobile Menu Button */}
         <Button variant="ghost" size="icon" className="lg:hidden">

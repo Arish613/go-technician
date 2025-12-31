@@ -2,6 +2,219 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror h1 {
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin: 1rem 0 0.5rem 0;
+}
+
+.ProseMirror h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 1rem 0 0.5rem 0;
+}
+
+.ProseMirror h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 1rem 0 0.5rem 0;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+  list-style: disc;
+}
+.ProseMirror a {
+  color: #2563eb;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ProseMirror a:hover {
+  color: #1e40af;
+}
+
+.ProseMirror blockquote {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+}
+
+.ProseMirror code {
+  background-color: #f3f4f6;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+}
+
+.ProseMirror pre {
+  background-color: #1f2937;
+  color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+.ProseMirror table,
+.blog-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 1rem;
+}
+
+.ProseMirror th,
+.ProseMirror td,
+.blog-content th,
+.blog-content td {
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.ProseMirror th,
+.blog-content th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+}
+
+.ProseMirror tr:nth-child(even),
+.blog-content tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.ProseMirror tr:hover,
+.blog-content tr:hover {
+  background-color: #f1f5f9;
+}
+
+.ProseMirror table,
+.blog-content table {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.blog-content h1 {
+  @apply text-3xl lg:text-4xl font-bold text-slate-900 dark:text-slate-100 mb-6 mt-8 leading-tight;
+}
+
+.blog-content h2 {
+  @apply text-2xl lg:text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4 mt-8 leading-tight;
+}
+
+.blog-content h3 {
+  @apply text-xl lg:text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-3 mt-6 leading-snug;
+}
+
+.blog-content h4 {
+  @apply text-lg lg:text-xl font-semibold text-slate-900 dark:text-slate-100 mb-3 mt-4 leading-snug;
+}
+
+.blog-content h5 {
+  @apply text-base lg:text-lg font-medium text-slate-900 dark:text-slate-100 mb-2 mt-4 leading-normal;
+}
+
+.blog-content h6 {
+  @apply text-sm lg:text-base font-medium text-slate-900 dark:text-slate-100 mb-2 mt-3 leading-normal;
+}
+
+.blog-content p {
+  @apply text-slate-700 dark:text-slate-300 mb-4 leading-relaxed text-[16px];
+}
+
+.blog-content a {
+  @apply text-blue-600 hover:text-blue-700 underline;
+}
+
+.blog-content blockquote {
+  @apply border-l-4 border-blue-500 pl-4 italic;
+}
+
+.blog-content code {
+  @apply bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-sm;
+}
+
+.blog-content pre {
+  @apply bg-slate-900 text-white p-4 rounded overflow-x-auto;
+}
+
+.blog-content ul {
+  @apply list-disc pl-5 mb-4 text-slate-700 dark:text-slate-300;
+}
+
+.blog-content table {
+  @apply w-full border-collapse my-8 text-base bg-white rounded-lg overflow-hidden shadow-sm;
+}
+
+.blog-content th,
+.blog-content td {
+  @apply border border-gray-200 px-4 py-3 text-left;
+}
+
+.blog-content th {
+  @apply bg-gray-100 font-semibold text-gray-800;
+}
+
+.blog-content tr:nth-child(even) {
+  @apply bg-gray-50;
+}
+
+.blog-content tr:hover {
+  @apply bg-slate-100;
+}
+
+/* Dark mode support */
+.dark .blog-content table {
+  @apply bg-gray-800 border-gray-700;
+}
+
+.dark .blog-content th,
+.dark .blog-content td {
+  @apply border-gray-700 text-gray-100;
+}
+
+.dark .blog-content th {
+  @apply bg-gray-700 text-gray-200;
+}
+
+.dark .blog-content tr:nth-child(even) {
+  @apply bg-gray-800/50;
+}
+
+.dark .blog-content tr:hover {
+  @apply bg-gray-700/50;
+}
+
+@media (max-width: 768px) {
+  .blog-content table {
+    @apply text-sm;
+  }
+
+  .blog-content th,
+  .blog-content td {
+    @apply px-2 py-2;
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
