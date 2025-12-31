@@ -2,14 +2,15 @@ import Link from "next/link";
 import { MobileNav } from "./MobileNav";
 
 const navLinks = [
-  { name: "Home", href: "/" },
   { name: "Blogs", href: "/blog" },
   { name: "Services", href: "/service" },
+  { name: "About", href: "/about" },
+  { name: "Contact", href: "/raise-a-complaint" },
 ];
 
 export function Navbar() {
   return (
-    <header className="border-b border-slate-200 bg-white">
+    <header className="border-b border-slate-200 bg-white md:mx-20">
       <nav className="container mx-auto flex items-center justify-between px-4 py-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
@@ -28,7 +29,7 @@ export function Navbar() {
                 />
               </svg>
             </div>
-            <span className="text-xl font-bold text-slate-900">
+            <span className="text-xl mb-2 font-bold text-slate-900">
               GO TECHNICIANS
             </span>
           </div>

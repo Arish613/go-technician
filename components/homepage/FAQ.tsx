@@ -5,6 +5,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const faqs = [
   {
@@ -62,12 +63,14 @@ export function FAQ() {
               Frequently asked questions
             </h2>
           </div>
-          <Button
-            variant="outline"
-            className="border-slate-200 text-purple-600 hover:bg-purple-50 hover:text-purple-700"
-          >
-            Raise a complaint
-          </Button>
+          <Link href={"/raise-a-complaint"}>
+            <Button
+              variant="outline"
+              className="border-slate-200 text-purple-600 hover:bg-purple-50 hover:text-purple-700"
+            >
+              Raise a complaint
+            </Button>
+          </Link>
         </div>
 
         <div className="mx-auto">
