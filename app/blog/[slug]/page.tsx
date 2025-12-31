@@ -17,15 +17,16 @@ import { Separator } from "@/components/ui/separator";
 import type { Metadata } from "next";
 
 interface BlogPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({
   params,
 }: BlogPageProps): Promise<Metadata> {
-  const result = await getBlogBySlug(params.slug);
+  const { slug } = await params;
+  const result = await getBlogBySlug(slug);
 
   if (!result.success || !result.data) {
     return {
@@ -59,7 +60,8 @@ export async function generateMetadata({
 }
 
 export default async function BlogPage({ params }: BlogPageProps) {
-  const result = await getBlogBySlug(params.slug);
+  const { slug } = await params;
+  const result = await getBlogBySlug(slug);
 
   if (!result.success || !result.data) {
     notFound();
