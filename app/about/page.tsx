@@ -452,10 +452,10 @@ export default function AboutPage() {
                 </div>
                 <h3 className="font-semibold">Phone</h3>
                 <a
-                  href="tel:+911234567890"
+                  href="tel:+917977661546"
                   className="mt-1 text-sm text-purple-100 hover:text-white"
                 >
-                  +91 12345 67890
+                  +91 79776 61546
                 </a>
               </div>
               <div className="flex flex-col items-center">

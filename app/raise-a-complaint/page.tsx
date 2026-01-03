@@ -100,10 +100,10 @@ export default function RaiseAComplaintPage() {
                       Call Us
                     </p>
                     <a
-                      href="tel:+911234567890"
+                      href="tel:+917977661546"
                       className="text-lg font-semibold text-purple-600 hover:text-purple-700"
                     >
-                      +91 12345 67890
+                      +91 79776 61546
                     </a>
                   </div>
                   <div>

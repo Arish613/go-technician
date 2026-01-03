@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Instagram, Facebook, Twitter, Youtube } from "lucide-react";
+import Image from "next/image";
 
 const navigationLinks = [
   { name: "Home", href: "/" },
@@ -34,25 +35,12 @@ export function Footer() {
           {/* Logo & Social */}
           <div>
             <Link href="/" className="flex items-center gap-2">
-              <div className="relative h-10 w-10">
-                <svg viewBox="0 0 40 40" className="h-full w-full">
-                  <path
-                    d="M10 8 L20 2 L30 8 L30 20 L20 26 L10 20 Z"
-                    fill="#7c3aed"
-                    className="fill-purple-600"
-                  />
-                  <path
-                    d="M15 12 L20 9 L25 12 L25 18 L20 21 L15 18 Z"
-                    fill="#a78bfa"
-                    className="fill-purple-400"
-                  />
-                </svg>
-              </div>
-              <span className="text-xl font-bold text-slate-900">
-                GO
-                <br />
-                TECHNICIANS
-              </span>
+              <Image
+                src={"/go-technicians.jpeg"}
+                alt="Logo"
+                width={90}
+                height={50}
+              />
             </Link>
 
             {/* Social Icons */}
@@ -134,10 +122,10 @@ export function Footer() {
               </p>
               <p>
                 <a
-                  href="tel:+917098110110"
+                  href="tel:+917977661546"
                   className="transition-colors hover:text-purple-600"
                 >
-                  +91 7098110110
+                  +91 79776 61546
                 </a>
               </p>
             </div>
@@ -150,23 +138,12 @@ export function Footer() {
         <div className="flex flex-col items-center justify-between gap-4 px-4 py-6 sm:flex-row md:mx-20">
           <p className="text-sm text-slate-600">All Rights Reserved ©</p>
           <Link href="/" className="flex items-center gap-2">
-            <div className="relative h-6 w-6">
-              <svg viewBox="0 0 40 40" className="h-full w-full">
-                <path
-                  d="M10 8 L20 2 L30 8 L30 20 L20 26 L10 20 Z"
-                  fill="#7c3aed"
-                  className="fill-purple-600"
-                />
-                <path
-                  d="M15 12 L20 9 L25 12 L25 18 L20 21 L15 18 Z"
-                  fill="#a78bfa"
-                  className="fill-purple-400"
-                />
-              </svg>
-            </div>
-            <span className="text-sm font-bold text-slate-900">
-              GO TECHNICIANS
-            </span>
+            <Image
+              src={"/go-technicians.jpeg"}
+              alt="Logo"
+              width={90}
+              height={50}
+            />
           </Link>
         </div>
       </div>

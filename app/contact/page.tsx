@@ -8,7 +8,7 @@ const contactHighlights = [
   {
     icon: PhoneCall,
     label: "Call us",
-    value: "+91 99999 99999",
+    value: "+91 79776 61546",
     helper: "Mon–Sun • 8 AM – 10 PM",
   },
   {
@@ -20,7 +20,7 @@ const contactHighlights = [
   {
     icon: MessageCircle,
     label: "WhatsApp",
-    value: "+91 98888 88888",
+    value: "+91 79776 61546",
     helper: "Instant responses 7 days a week",
   },
 ];
@@ -145,7 +145,7 @@ export default function ContactPage() {
                   className="w-full bg-white text-purple-700 hover:bg-slate-100"
                   asChild
                 >
-                  <a href="https://wa.me/919888888888" target="_blank" rel="noreferrer">
+                  <a href="https://wa.me/917977661546" target="_blank" rel="noreferrer">
                     Start WhatsApp chat
                   </a>
                 </Button>
