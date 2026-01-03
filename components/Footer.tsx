@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Instagram, Facebook, Twitter, Youtube } from "lucide-react";
+import { Instagram, Facebook, Linkedin } from "lucide-react";
 import Image from "next/image";
 
 const navigationLinks = [
@@ -21,10 +21,21 @@ const legalLinks = [
 ];
 
 const socialLinks = [
-  { name: "Instagram", href: "https://instagram.com", icon: Instagram },
-  { name: "Facebook", href: "https://facebook.com", icon: Facebook },
-  { name: "Twitter", href: "https://twitter.com", icon: Twitter },
-  { name: "YouTube", href: "https://youtube.com", icon: Youtube },
+  {
+    name: "Instagram",
+    href: "https://www.instagram.com/gotechnician.in/",
+    icon: Instagram,
+  },
+  {
+    name: "Facebook",
+    href: "https://www.facebook.com/Official.GoTechnician",
+    icon: Facebook,
+  },
+  {
+    name: "Linkedin",
+    href: "https://www.linkedin.com/in/gotechnician/",
+    icon: Linkedin,
+  },
 ];
 
 export function Footer() {
