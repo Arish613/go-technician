@@ -36,7 +36,7 @@ export default function ContactPage() {
       <div className="container mx-auto px-4">
         {/* Hero */}
         <section className="mx-auto max-w-3xl text-center">
-          <span className="inline-flex items-center rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-purple-700">
+          <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-blue-700">
             Contact Us
           </span>
           <h1 className="mt-6 text-4xl font-bold text-slate-900">
@@ -55,8 +55,8 @@ export default function ContactPage() {
             return (
               <Card key={item.label} className="border-slate-200 shadow-sm">
                 <CardContent className="flex flex-col gap-3 p-6">
-                  <div className="inline-flex w-fit rounded-xl bg-purple-50 p-3">
-                    <Icon className="h-5 w-5 text-purple-600" />
+                  <div className="inline-flex w-fit rounded-xl bg-blue-50 p-3">
+                    <Icon className="h-5 w-5 text-blue-600" />
                   </div>
                   <p className="text-xs uppercase tracking-wider text-slate-500">{item.label}</p>
                   <p className="text-lg font-semibold text-slate-900">{item.value}</p>
@@ -69,7 +69,7 @@ export default function ContactPage() {
 
         {/* Form + office info */}
         <section className="mt-12 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-          <Card className="border-0 bg-white shadow-xl shadow-purple-100/60">
+          <Card className="border-0 bg-white shadow-xl shadow-blue-100/60">
             <CardHeader>
               <CardTitle className="text-2xl text-slate-900">
                 Tell us a little about your request
@@ -87,7 +87,7 @@ export default function ContactPage() {
                 <Input placeholder="Email address" type="email" />
                 <Input placeholder="City" />
               </div>
-              <select className="h-11 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-200">
+              <select className="h-11 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200">
                 <option>Select a service</option>
                 <option>AC Repair</option>
                 <option>Laptop Service</option>
@@ -97,7 +97,7 @@ export default function ContactPage() {
                 <option>Other</option>
               </select>
               <Textarea rows={5} placeholder="How can we help you?" />
-              <Button className="bg-linear-to-r from-purple-600 to-fuchsia-500 hover:from-purple-700 hover:to-fuchsia-600">
+              <Button className="bg-linear-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-fuchsia-600">
                 Submit request
               </Button>
               <p className="text-xs text-slate-500">
@@ -120,7 +120,7 @@ export default function ContactPage() {
                   return (
                     <div key={detail.title} className="flex gap-3">
                       <div className="rounded-full bg-slate-100 p-2">
-                        <Icon className="h-5 w-5 text-purple-600" />
+                        <Icon className="h-5 w-5 text-blue-600" />
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-slate-900">{detail.title}</p>
@@ -132,7 +132,7 @@ export default function ContactPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-0 bg-linear-to-br from-purple-600 via-fuchsia-500 to-indigo-500 text-white shadow-lg">
+            <Card className="border-0 bg-linear-to-br from-blue-600 via-sky-500 to-indigo-500 text-white shadow-lg">
               <CardContent className="space-y-4 p-6">
                 <p className="text-sm uppercase tracking-wider text-white/80">
                   Prefer instant support?
@@ -142,7 +142,7 @@ export default function ContactPage() {
                 </h3>
                 <Button
                   variant="secondary"
-                  className="w-full bg-white text-purple-700 hover:bg-slate-100"
+                  className="w-full bg-white text-blue-700 hover:bg-slate-100"
                   asChild
                 >
                   <a href="https://wa.me/917977661546" target="_blank" rel="noreferrer">

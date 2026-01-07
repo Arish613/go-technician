@@ -64,7 +64,7 @@ export function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-md border border-purple-600 p-2 text-purple-600 transition-colors hover:bg-purple-600 hover:text-white"
+                    className="rounded-md border border-blue-600 p-2 text-blue-600 transition-colors hover:bg-blue-600 hover:text-white"
                     aria-label={social.name}
                   >
                     <Icon className="h-5 w-5" />
@@ -84,7 +84,7 @@ export function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-sm text-slate-600 transition-colors hover:text-purple-600"
+                    className="text-sm text-slate-600 transition-colors hover:text-blue-600"
                   >
                     {link.name}
                   </Link>
@@ -103,7 +103,7 @@ export function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-sm text-slate-600 transition-colors hover:text-purple-600"
+                    className="text-sm text-slate-600 transition-colors hover:text-blue-600"
                   >
                     {link.name}
                   </Link>
@@ -119,14 +119,14 @@ export function Footer() {
             </h3>
             <div className="space-y-3 text-sm text-slate-600">
               <p>
-                Shop no. 101, Powai Plaza, Powai, Mumbai
-                <br />
-                400076
+                Mumbai/Navi Mumbai, Maharashtra
+                {/* <br />
+                400076 */}
               </p>
               <p>
                 <a
                   href="mailto:contact@gotechnicians.in"
-                  className="transition-colors hover:text-purple-600"
+                  className="transition-colors hover:text-blue-600"
                 >
                   contact@gotechnicians.in
                 </a>
@@ -134,7 +134,7 @@ export function Footer() {
               <p>
                 <a
                   href="tel:+917977661546"
-                  className="transition-colors hover:text-purple-600"
+                  className="transition-colors hover:text-blue-600"
                 >
                   +91 79776 61546
                 </a>

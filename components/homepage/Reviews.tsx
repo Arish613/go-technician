@@ -91,7 +91,7 @@ export function CustomerReviews() {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="mb-12 text-center">
-          <p className="text-xs font-semibold uppercase tracking-wider text-purple-600">
+          <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
             Testimonials
           </p>
           <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
@@ -126,7 +126,7 @@ export function CustomerReviews() {
             >
               <CardContent className="p-6">
                 {/* Quote Icon */}
-                <Quote className="mb-4 h-8 w-8 text-purple-200" />
+                <Quote className="mb-4 h-8 w-8 text-blue-200" />
 
                 {/* Review Text */}
                 <p className="mb-4 text-sm leading-relaxed text-slate-600">
@@ -135,7 +135,7 @@ export function CustomerReviews() {
 
                 {/* Service Badge */}
                 <div className="mb-4">
-                  <span className="inline-block rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-600">
+                  <span className="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-600">
                     {review.service}
                   </span>
                 </div>
@@ -167,7 +167,7 @@ export function CustomerReviews() {
             Join thousands of satisfied customers.{" "}
             <a
               href="#"
-              className="font-semibold text-purple-600 hover:text-purple-700"
+              className="font-semibold text-blue-600 hover:text-blue-700"
             >
               Book your first service today →
             </a>

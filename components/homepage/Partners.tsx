@@ -51,7 +51,7 @@ export function Partners() {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="mb-12 text-center">
-          <p className="text-xs font-semibold uppercase tracking-wider text-purple-600">
+          <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
             Trusted By The Best
           </p>
           <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
@@ -68,7 +68,7 @@ export function Partners() {
           {trustedBy.map((stat, index) => (
             <div key={stat.label} className="flex items-center gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">
+                <div className="text-2xl font-bold text-blue-600">
                   {stat.value}
                 </div>
                 <div className="text-sm text-slate-600">{stat.label}</div>
@@ -102,12 +102,12 @@ export function Partners() {
         </div>
 
         {/* Authorized Service Banner */}
-        <Card className="mt-12 border-0 bg-linear-to-r from-purple-600 to-purple-700 shadow-lg">
+        <Card className="mt-12 border-0 bg-linear-to-r from-blue-600 to-blue-700 shadow-lg">
           <CardContent className="p-8 text-center text-white">
             <h3 className="text-xl font-bold sm:text-2xl">
               Authorized Service Partner
             </h3>
-            <p className="mx-auto mt-2 max-w-2xl text-sm text-purple-100">
+            <p className="mx-auto mt-2 max-w-2xl text-sm text-blue-100">
               We are authorized service partners for major appliance and
               electronics brands. Get genuine spare parts, certified
               technicians, and manufacturer-backed warranty on all repairs.
@@ -171,7 +171,7 @@ export function Partners() {
             Interested in partnering with us?{" "}
             <a
               href="#contact"
-              className="font-semibold text-purple-600 hover:text-purple-700"
+              className="font-semibold text-blue-600 hover:text-blue-700"
             >
               Become a Partner →
             </a>

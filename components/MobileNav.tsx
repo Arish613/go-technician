@@ -9,7 +9,7 @@ import {
   SheetTrigger,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 
 interface NavLink {
   name: string;
@@ -50,7 +50,7 @@ export function MobileNav({ navLinks }: MobileNavProps) {
                 key={link.name}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="text-base font-medium text-slate-700 transition-colors hover:text-purple-600 py-2 px-4 rounded-md hover:bg-slate-100"
+                className="text-base font-medium text-slate-700 transition-colors hover:text-blue-600 py-2 px-4 rounded-md hover:bg-slate-100"
               >
                 {link.name}
               </Link>

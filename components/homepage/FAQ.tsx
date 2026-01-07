@@ -9,7 +9,7 @@ import Link from "next/link";
 
 const faqs = [
   {
-    question: "What services does SuperSavvy/Go Technicians offer?",
+    question: "What services does Go Technicians offer?",
     answer:
       "We offer a wide range of home and office services including AC repair, laptop service, appliance repair, home cleaning, laundry, plumbing, electrical work, pest control, and more. All services are provided by verified and trained professionals.",
   },
@@ -56,7 +56,7 @@ export function FAQ() {
       <div className="container mx-auto px-4">
         <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-purple-600">
+            <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
               FAQ
             </p>
             <h2 className="mt-2 text-3xl font-bold text-slate-900">
@@ -66,7 +66,7 @@ export function FAQ() {
           <Link href={"/raise-a-complaint"}>
             <Button
               variant="outline"
-              className="border-slate-200 text-purple-600 hover:bg-purple-50 hover:text-purple-700"
+              className="border-slate-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
             >
               Raise a complaint
             </Button>
@@ -93,7 +93,7 @@ export function FAQ() {
             Still have questions?{" "}
             <a
               href="#contact"
-              className="font-semibold text-purple-600 hover:text-purple-700"
+              className="font-semibold text-blue-600 hover:text-blue-700"
             >
               Contact our support team
             </a>

@@ -37,12 +37,12 @@ export default function RaiseAComplaintPage() {
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-50 to-white">
       {/* Hero Section */}
-      <section className="bg-purple-600 py-16 text-white">
+      <section className="bg-blue-600 py-16 text-white">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-3xl font-bold sm:text-4xl lg:text-5xl">
             Raise a Complaint
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-purple-100">
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-blue-100">
             We&apos;re sorry to hear you had an issue. Please share your
             concerns and we&apos;ll make it right.
           </p>
@@ -60,8 +60,8 @@ export default function RaiseAComplaintPage() {
                 className="border-slate-200 bg-white shadow-md"
               >
                 <CardContent className="flex items-start gap-4 p-4">
-                  <div className="rounded-lg bg-purple-100 p-2">
-                    <Icon className="h-5 w-5 text-purple-600" />
+                  <div className="rounded-lg bg-blue-100 p-2">
+                    <Icon className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-slate-900">
@@ -101,7 +101,7 @@ export default function RaiseAComplaintPage() {
                     </p>
                     <a
                       href="tel:+917977661546"
-                      className="text-lg font-semibold text-purple-600 hover:text-purple-700"
+                      className="text-lg font-semibold text-blue-600 hover:text-blue-700"
                     >
                       +91 79776 61546
                     </a>
@@ -112,7 +112,7 @@ export default function RaiseAComplaintPage() {
                     </p>
                     <a
                       href="mailto:support@gotechnicians.com"
-                      className="text-purple-600 hover:text-purple-700"
+                      className="text-blue-600 hover:text-blue-700"
                     >
                       support@gotechnicians.com
                     </a>
@@ -130,30 +130,30 @@ export default function RaiseAComplaintPage() {
             </Card>
 
             {/* Tips Card */}
-            <Card className="border-purple-200 bg-purple-50">
+            <Card className="border-blue-200 bg-blue-50">
               <CardContent className="p-6">
-                <h3 className="mb-4 text-lg font-semibold text-purple-900">
+                <h3 className="mb-4 text-lg font-semibold text-blue-900">
                   Tips for Faster Resolution
                 </h3>
-                <ul className="space-y-3 text-sm text-purple-800">
+                <ul className="space-y-3 text-sm text-blue-800">
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600" />
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
                     Include your booking ID if you have one
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600" />
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
                     Provide specific dates and times
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600" />
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
                     Mention the technician&apos;s name if known
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600" />
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
                     Attach photos or screenshots if relevant
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600" />
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
                     Be as detailed as possible
                   </li>
                 </ul>
@@ -168,7 +168,7 @@ export default function RaiseAComplaintPage() {
                 </p>
                 <Link
                   href="/#faq"
-                  className="mt-2 inline-block font-semibold text-purple-600 hover:text-purple-700"
+                  className="mt-2 inline-block font-semibold text-blue-600 hover:text-blue-700"
                 >
                   Visit our FAQ section →
                 </Link>

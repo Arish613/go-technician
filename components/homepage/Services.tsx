@@ -39,7 +39,7 @@ export function Services() {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="mb-12 text-center">
-          <p className="text-xs font-semibold uppercase tracking-wider text-purple-600">
+          <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
             Our Services
           </p>
           <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
@@ -106,7 +106,7 @@ export function Services() {
             <Link
               href="/service"
               prefetch={true}
-              className="font-semibold text-purple-600 hover:text-purple-700"
+              className="font-semibold text-blue-600 hover:text-blue-700"
             >
               View All Services
             </Link>

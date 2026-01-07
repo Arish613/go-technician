@@ -31,7 +31,7 @@ export function Navbar() {
             <Link
               key={link.name}
               href={link.href}
-              className=" text-slate-700 transition-colors hover:text-purple-600 text-[14px] font-semibold"
+              className=" text-slate-700 transition-colors hover:text-blue-600 text-[14px] font-semibold"
             >
               {link.name}
             </Link>

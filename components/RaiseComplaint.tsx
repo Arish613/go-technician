@@ -156,7 +156,7 @@ export function ComplaintForm() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="bg-purple-600 hover:bg-purple-700 sm:w-auto"
+              className="bg-blue-600 hover:bg-blue-700 sm:w-auto"
             >
               {isLoading ? (
                 <>

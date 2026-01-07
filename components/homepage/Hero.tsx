@@ -68,7 +68,7 @@ export function Hero() {
             />
             <Button
               size="icon"
-              className="h-12 w-12 rounded-full bg-purple-600 hover:bg-purple-700 transition-all duration-200"
+              className="h-12 w-12 rounded-full bg-blue-600 hover:bg-blue-700 transition-all duration-200"
             >
               <Search className="h-6 w-6" />
             </Button>

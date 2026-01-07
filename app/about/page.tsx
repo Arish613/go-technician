@@ -121,17 +121,17 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-50 to-white">
       {/* Hero Section */}
-      <section className="bg-purple-600 py-20 text-white">
+      <section className="bg-blue-600 py-20 text-white">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-purple-200">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-blue-200">
               About Us
             </p>
             <h1 className="text-3xl font-bold sm:text-4xl lg:text-5xl">
               Making Home Services{" "}
-              <span className="text-purple-200">Simple & Reliable</span>
+              <span className="text-blue-200">Simple & Reliable</span>
             </h1>
-            <p className="mt-6 text-lg text-purple-100">
+            <p className="mt-6 text-lg text-blue-100">
               Go Technicians is on a mission to transform how India experiences
               home and office services. We connect you with verified, skilled
               professionals for all your service needs.
@@ -149,7 +149,7 @@ export default function AboutPage() {
               className="border-slate-200 bg-white shadow-lg"
             >
               <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-purple-600">
+                <div className="text-3xl font-bold text-blue-600">
                   {stat.value}
                 </div>
                 <div className="mt-1 text-sm text-slate-600">{stat.label}</div>
@@ -163,7 +163,7 @@ export default function AboutPage() {
       <section className=" px-4 py-16 md:mx-20">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wider text-purple-600">
+            <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
               Our Story
             </p>
             <h2 className="mt-2 text-3xl font-bold text-slate-900">
@@ -190,7 +190,7 @@ export default function AboutPage() {
             </div>
             <div className="mt-8">
               <Link href="/service">
-                <Button className="bg-purple-600 hover:bg-purple-700">
+                <Button className="bg-blue-600 hover:bg-blue-700">
                   Explore Our Services
                 </Button>
               </Link>
@@ -232,10 +232,10 @@ export default function AboutPage() {
       <section className="bg-slate-50 py-16">
         <div className="md:mx-20 px-4">
           <div className="grid gap-8 md:grid-cols-2">
-            <Card className="border-purple-200 bg-linear-to-br from-purple-50 to-white shadow-md">
+            <Card className="border-blue-200 bg-linear-to-br from-blue-50 to-white shadow-md">
               <CardContent className="p-8">
-                <div className="mb-4 inline-block rounded-lg bg-purple-100 p-3">
-                  <Target className="h-8 w-8 text-purple-600" />
+                <div className="mb-4 inline-block rounded-lg bg-blue-100 p-3">
+                  <Target className="h-8 w-8 text-blue-600" />
                 </div>
                 <h3 className="mb-4 text-2xl font-bold text-slate-900">
                   Our Mission
@@ -248,10 +248,10 @@ export default function AboutPage() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="border-purple-200 bg-linear-to-br from-purple-50 to-white shadow-md">
+            <Card className="border-blue-200 bg-linear-to-br from-blue-50 to-white shadow-md">
               <CardContent className="p-8">
-                <div className="mb-4 inline-block rounded-lg bg-purple-100 p-3">
-                  <Eye className="h-8 w-8 text-purple-600" />
+                <div className="mb-4 inline-block rounded-lg bg-blue-100 p-3">
+                  <Eye className="h-8 w-8 text-blue-600" />
                 </div>
                 <h3 className="mb-4 text-2xl font-bold text-slate-900">
                   Our Vision
@@ -271,7 +271,7 @@ export default function AboutPage() {
       {/* Our Values */}
       <section className="md:mx-20 px-4 py-16">
         <div className="mb-12 text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-purple-600">
+          <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
             What We Stand For
           </p>
           <h2 className="mt-2 text-3xl font-bold text-slate-900">Our Values</h2>
@@ -285,8 +285,8 @@ export default function AboutPage() {
                 className="border-slate-200 bg-white shadow-sm transition-all hover:shadow-md"
               >
                 <CardContent className="p-6 text-center">
-                  <div className="mx-auto mb-4 inline-block rounded-full bg-purple-100 p-4">
-                    <Icon className="h-8 w-8 text-purple-600" />
+                  <div className="mx-auto mb-4 inline-block rounded-full bg-blue-100 p-4">
+                    <Icon className="h-8 w-8 text-blue-600" />
                   </div>
                   <h3 className="mb-2 text-lg font-semibold text-slate-900">
                     {value.title}
@@ -303,7 +303,7 @@ export default function AboutPage() {
       <section className="bg-slate-50 py-16">
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
-            <p className="text-sm font-semibold uppercase tracking-wider text-purple-600">
+            <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
               Our Journey
             </p>
             <h2 className="mt-2 text-3xl font-bold text-slate-900">
@@ -312,7 +312,7 @@ export default function AboutPage() {
           </div>
           <div className="relative mx-auto max-w-4xl">
             {/* Timeline Line */}
-            <div className="absolute left-1/2 top-0 hidden h-full w-0.5 -translate-x-1/2 bg-purple-200 md:block" />
+            <div className="absolute left-1/2 top-0 hidden h-full w-0.5 -translate-x-1/2 bg-blue-200 md:block" />
 
             <div className="space-y-8">
               {milestones.map((milestone, index) => (
@@ -326,7 +326,7 @@ export default function AboutPage() {
                     {index % 2 === 0 && (
                       <Card className="border-slate-200 bg-white shadow-sm">
                         <CardContent className="p-6">
-                          <div className="mb-2 text-sm font-semibold text-purple-600">
+                          <div className="mb-2 text-sm font-semibold text-blue-600">
                             {milestone.year}
                           </div>
                           <h3 className="mb-2 text-lg font-bold text-slate-900">
@@ -341,13 +341,13 @@ export default function AboutPage() {
                   </div>
 
                   {/* Timeline Dot */}
-                  <div className="absolute left-1/2 top-6 hidden h-4 w-4 -translate-x-1/2 rounded-full border-4 border-purple-600 bg-white md:block" />
+                  <div className="absolute left-1/2 top-6 hidden h-4 w-4 -translate-x-1/2 rounded-full border-4 border-blue-600 bg-white md:block" />
 
                   <div className="flex-1">
                     {index % 2 !== 0 && (
                       <Card className="border-slate-200 bg-white shadow-sm">
                         <CardContent className="p-6">
-                          <div className="mb-2 text-sm font-semibold text-purple-600">
+                          <div className="mb-2 text-sm font-semibold text-blue-600">
                             {milestone.year}
                           </div>
                           <h3 className="mb-2 text-lg font-bold text-slate-900">
@@ -362,7 +362,7 @@ export default function AboutPage() {
                     {index % 2 === 0 && (
                       <Card className="border-slate-200 bg-white shadow-sm md:invisible">
                         <CardContent className="p-6">
-                          <div className="mb-2 text-sm font-semibold text-purple-600">
+                          <div className="mb-2 text-sm font-semibold text-blue-600">
                             {milestone.year}
                           </div>
                           <h3 className="mb-2 text-lg font-bold text-slate-900">
@@ -385,7 +385,7 @@ export default function AboutPage() {
       {/* Team Section */}
       <section className="md:mx-20 px-4 py-16">
         <div className="mb-12 text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-purple-600">
+          <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
             Meet The Team
           </p>
           <h2 className="mt-2 text-3xl font-bold text-slate-900">
@@ -414,7 +414,7 @@ export default function AboutPage() {
                 <h3 className="text-lg font-semibold text-slate-900">
                   {member.name}
                 </h3>
-                <p className="text-sm font-medium text-purple-600">
+                <p className="text-sm font-medium text-blue-600">
                   {member.role}
                 </p>
                 <p className="mt-2 text-sm text-slate-600">
@@ -427,11 +427,11 @@ export default function AboutPage() {
       </section>
 
       {/* Contact CTA */}
-      <section className="bg-purple-600 py-16 text-white">
+      <section className="bg-blue-600 py-16 text-white">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl text-center">
             <h2 className="text-3xl font-bold">Get in Touch</h2>
-            <p className="mt-4 text-purple-100">
+            <p className="mt-4 text-blue-100">
               Have questions or want to learn more about our services? We&apos;d
               love to hear from you.
             </p>
@@ -442,7 +442,7 @@ export default function AboutPage() {
                   <MapPin className="h-6 w-6" />
                 </div>
                 <h3 className="font-semibold">Our Office</h3>
-                <p className="mt-1 text-sm text-purple-100">
+                <p className="mt-1 text-sm text-blue-100">
                   Mumbai, Maharashtra, India
                 </p>
               </div>
@@ -453,7 +453,7 @@ export default function AboutPage() {
                 <h3 className="font-semibold">Phone</h3>
                 <a
                   href="tel:+917977661546"
-                  className="mt-1 text-sm text-purple-100 hover:text-white"
+                  className="mt-1 text-sm text-blue-100 hover:text-white"
                 >
                   +91 79776 61546
                 </a>
@@ -465,7 +465,7 @@ export default function AboutPage() {
                 <h3 className="font-semibold">Email</h3>
                 <a
                   href="mailto:hello@gotechnicians.com"
-                  className="mt-1 text-sm text-purple-100 hover:text-white"
+                  className="mt-1 text-sm text-blue-100 hover:text-white"
                 >
                   hello@gotechnicians.com
                 </a>
@@ -476,7 +476,7 @@ export default function AboutPage() {
               <Link href="/service">
                 <Button
                   size="lg"
-                  className="bg-white text-purple-600 hover:bg-purple-50"
+                  className="bg-white text-blue-600 hover:bg-blue-50"
                 >
                   Book a Service
                 </Button>
@@ -484,7 +484,6 @@ export default function AboutPage() {
               <Link href="/raise-a-complaint">
                 <Button
                   size="lg"
-                  variant="outline"
                   className="border-white text-white hover:bg-white/10"
                 >
                   Raise a Complaint

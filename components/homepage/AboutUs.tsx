@@ -60,7 +60,7 @@ export function AboutUs() {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="mb-12 text-center">
-          <p className="text-xs font-semibold uppercase tracking-wider text-purple-600">
+          <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
             About Us
           </p>
           <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
@@ -81,7 +81,7 @@ export function AboutUs() {
               className="border-slate-200 bg-white shadow-sm"
             >
               <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-purple-600">
+                <div className="text-3xl font-bold text-blue-600">
                   {stat.value}
                 </div>
                 <div className="mt-1 text-sm text-slate-600">{stat.label}</div>
@@ -100,8 +100,8 @@ export function AboutUs() {
                 className="border-slate-200 bg-white shadow-sm transition-all hover:shadow-md"
               >
                 <CardContent className="p-6">
-                  <div className="mb-4 inline-flex rounded-lg bg-purple-100 p-3">
-                    <Icon className="h-6 w-6 text-purple-600" />
+                  <div className="mb-4 inline-flex rounded-lg bg-blue-100 p-3">
+                    <Icon className="h-6 w-6 text-blue-600" />
                   </div>
                   <h3 className="mb-2 text-lg font-semibold text-slate-900">
                     {feature.title}
@@ -135,7 +135,7 @@ export function AboutUs() {
 
             <div className="space-y-3">
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-purple-600" />
+                <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-blue-600" />
                 <div>
                   <h4 className="font-semibold text-slate-900">
                     Verified Professionals
@@ -146,7 +146,7 @@ export function AboutUs() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-purple-600" />
+                <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-blue-600" />
                 <div>
                   <h4 className="font-semibold text-slate-900">
                     Warranty-Backed Service
@@ -157,7 +157,7 @@ export function AboutUs() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-purple-600" />
+                <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-blue-600" />
                 <div>
                   <h4 className="font-semibold text-slate-900">
                     Real-Time Tracking
@@ -169,7 +169,7 @@ export function AboutUs() {
               </div>
             </div>
 
-            <Button className="bg-purple-600 hover:bg-purple-700">
+            <Button className="bg-blue-600 hover:bg-blue-700">
               Book a Service Now
             </Button>
           </div>
@@ -192,11 +192,11 @@ export function AboutUs() {
             <Card className="absolute -bottom-6 -left-6 border-slate-200 bg-white shadow-lg lg:-left-12">
               <CardContent className="p-4">
                 <div className="flex items-center gap-4">
-                  <div className="rounded-full bg-purple-100 p-3">
-                    <Users className="h-6 w-6 text-purple-600" />
+                  <div className="rounded-full bg-blue-100 p-3">
+                    <Users className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-purple-600">
+                    <div className="text-2xl font-bold text-blue-600">
                       500+
                     </div>
                     <div className="text-sm text-slate-600">

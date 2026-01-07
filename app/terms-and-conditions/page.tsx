@@ -69,7 +69,7 @@ export default function TermsAndConditionsPage() {
     <main className="min-h-screen bg-slate-50 py-16">
       <div className="container mx-auto max-w-4xl px-4">
         <section className="mb-10 space-y-4 text-center">
-          <span className="inline-flex items-center rounded-full bg-purple-100 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-purple-600">
+          <span className="inline-flex items-center rounded-full bg-blue-100 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-blue-600">
             Terms & Conditions
           </span>
           <h1 className="text-4xl font-bold text-slate-900">
@@ -108,7 +108,7 @@ export default function TermsAndConditionsPage() {
           ))}
         </section>
 
-        <section className="mt-12 rounded-2xl border border-purple-200 bg-linear-to-r from-purple-600/10 to-fuchsia-500/10 p-6 text-sm text-slate-600">
+        <section className="mt-12 rounded-2xl border border-blue-200 bg-linear-to-r from-blue-600/10 to-sky-500/10 p-6 text-sm text-slate-600">
           By using Go Technicians, you acknowledge and agree to these Terms &
           Conditions. For additional policies, please visit our Privacy Policy
           and Refund Policy pages.

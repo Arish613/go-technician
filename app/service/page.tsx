@@ -88,12 +88,12 @@ export default async function ServicesPage({
                   Service Options
                 </div>
               </div>
-              <div className="text-center">
+              {/* <div className="text-center">
                 <div className="text-3xl font-bold text-primary">
                   {locations.length}+
                 </div>
                 <div className="text-sm text-muted-foreground">Cities</div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -101,7 +101,7 @@ export default async function ServicesPage({
 
       {/* Filters & Services */}
       <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4">
+        <div className="md:mx-20 px-4">
           {/* Filter Bar */}
           <ServicesFilter
             currentLocation={params.location}
@@ -110,7 +110,7 @@ export default async function ServicesPage({
 
           {/* Services Grid */}
           {services.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 ">
               {services.map((service) => (
                 <ServiceCard key={service.id} service={service} />
               ))}
@@ -144,14 +144,12 @@ export default async function ServicesPage({
             Get in touch with us and we&apos;ll help you find the perfect
             service for your needs
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
+          <Link href={"/contact"} className="flex flex-wrap justify-center gap-4">
             <Button size="lg" variant="secondary">
               Contact Us
             </Button>
-            <Button size="lg" variant="outline">
-              Request Service
-            </Button>
-          </div>
+            {/* <Button size="lg" className="border border-white">Request Service</Button> */}
+          </Link>
         </div>
       </section>
     </div>
@@ -163,4 +161,4 @@ export const metadata = {
   title: "Professional Home Services | Expert Technicians",
   description:
     "Browse our complete range of professional home services including AC repair, plumbing, electrical work, and more. Expert technicians at your doorstep.",
-};  
+};
