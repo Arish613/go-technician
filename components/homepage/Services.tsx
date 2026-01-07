@@ -4,32 +4,32 @@ import Link from "next/link";
 const categories = [
   {
     name: "AC Repair",
-    icon: "/icons/ac-repair.jpg",
+    icon: "/icons/ac-repair.png",
     badge: "Starts ₹149",
     badgeColor: "bg-green-600",
     link: "/service/ac-service",
   },
   {
     name: "Laptop Service",
-    icon: "/icons/laptop-service.jpg",
+    icon: "/icons/laptop-service.png",
     badge: "Upto 30% Off",
     badgeColor: "bg-green-600",
   },
   {
     name: "Appliances Repair",
-    icon: "/icons/appliance-repair.jpg",
+    icon: "/icons/appliance-repair.png",
   },
   {
     name: "Home Cleaning",
-    icon: "/icons/home-cleaning.jpg",
+    icon: "/icons/home-cleaning.png",
   },
   {
     name: "Laundry",
-    icon: "/icons/laundry.jpg",
+    icon: "/icons/laundry.png",
   },
   {
     name: "Plumbing",
-    icon: "/icons/plumbing.jpg",
+    icon: "/icons/plumbing.png",
   },
 ];
 
@@ -66,11 +66,12 @@ export function Services() {
                   )}
 
                   {/* Icon/Image */}
-                  <div className="relative h-20 w-20">
+                  <div className="relative h-24 w-24">
                     <Image
                       src={category.icon}
                       alt={category.name}
                       fill
+                      sizes="(max-width: 640px) 50vw, 33vw"
                       className="object-contain"
                     />
                   </div>
