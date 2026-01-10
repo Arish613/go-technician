@@ -205,12 +205,12 @@ export default async function AdminPage() {
             Updated {new Date().toLocaleDateString()}
           </Badge>
           <div className="flex gap-2">
-            <Link href="/admin/blog/add">
-              <Button size="sm">Add Blog</Button>
+            <Link href="/admin/blog">
+              <Button size="sm">Blogs</Button>
             </Link>
-            <Link href="/admin/service/add">
+            <Link href="/admin/service">
               <Button size="sm" variant="outline">
-                Add Service
+                Services
               </Button>
             </Link>
           </div>
