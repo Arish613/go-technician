@@ -16,15 +16,15 @@ const categories = [
     badgeColor: "bg-green-600",
   },
   {
-    name: "Appliances Repair",
-    icon: "/icons/appliance-repair.png",
+    name: "Refrigerator Repair",
+    icon: "/icons/refrigerator-repair.png",
   },
   {
     name: "Home Cleaning",
     icon: "/icons/home-cleaning.png",
   },
   {
-    name: "Laundry",
+    name: "Washing Machine Repair",
     icon: "/icons/laundry.png",
   },
   {

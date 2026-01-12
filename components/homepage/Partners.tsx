@@ -4,35 +4,35 @@ import Image from "next/image";
 const partners = [
   {
     name: "Samsung",
-    logo: "/partners/samsung.png",
+    logo: "/partners/samsung.svg",
   },
   {
     name: "LG",
-    logo: "/partners/lg.png",
+    logo: "/partners/lg.svg",
   },
   {
     name: "Whirlpool",
-    logo: "/partners/whirlpool.png",
+    logo: "/partners/whirlpool.svg",
   },
   {
     name: "Voltas",
-    logo: "/partners/voltas.png",
+    logo: "/partners/voltas.svg",
   },
   {
     name: "Daikin",
-    logo: "/partners/daikin.png",
+    logo: "/partners/daikin.svg",
   },
   {
     name: "Blue Star",
-    logo: "/partners/bluestar.png",
+    logo: "/partners/bluestar.svg",
   },
   {
     name: "Godrej",
-    logo: "/partners/godrej.png",
+    logo: "/partners/godrej.svg",
   },
   {
     name: "Haier",
-    logo: "/partners/haier.png",
+    logo: "/partners/haier.svg",
   },
 ];
 
