@@ -1,5 +1,6 @@
 import { Star, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Marquee } from "../ui/marquee";
 
 const reviews = [
   {
@@ -117,14 +118,13 @@ export function CustomerReviews() {
           </div>
         </div>
 
-        {/* Reviews Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Marquee direction="left" speed={40} gap={24}>
           {reviews.map((review) => (
             <Card
               key={review.id}
-              className="border-slate-200 bg-white shadow-sm transition-all hover:shadow-md"
+              className="border-none bg-white shadow-none  max-w-xl rounded-none ring-0"
             >
-              <CardContent className="p-6">
+              <CardContent className="p-6 border-none shadow-none">
                 {/* Quote Icon */}
                 <Quote className="mb-4 h-8 w-8 text-blue-200" />
 
@@ -159,7 +159,7 @@ export function CustomerReviews() {
               </CardContent>
             </Card>
           ))}
-        </div>
+        </Marquee>
 
         {/* CTA */}
         <div className="mt-12 text-center">

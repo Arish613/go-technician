@@ -1,9 +1,7 @@
 "use client";
-
-import { Card, CardContent } from "@/components/ui/card";
 import { Marquee } from "@/components/ui/marquee";
 import Image from "next/image";
-import { CheckCircle, Sparkles, Shield, Users, MapPin } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 const partners = [
   {
@@ -40,18 +38,6 @@ const partners = [
   },
 ];
 
-const trustedBy = [
-  { value: "100+", label: "Brand Partners", icon: Sparkles },
-  { value: "500+", label: "Corporate Clients", icon: Users },
-  { value: "30+", label: "Cities", icon: MapPin },
-];
-
-const features = [
-  { label: "Genuine Parts", icon: Shield },
-  { label: "Certified Technicians", icon: CheckCircle },
-  { label: "Brand Warranty", icon: Sparkles },
-];
-
 function PartnerCard({ partner }: { partner: (typeof partners)[0] }) {
   return (
     <div className="group relative mx-4">
@@ -72,10 +58,7 @@ function PartnerCard({ partner }: { partner: (typeof partners)[0] }) {
 
 export function Partners() {
   return (
-    <section
-      id="partners"
-      className="relative overflow-hidden md:py-24 mt-10"
-    >
+    <section id="partners" className="relative overflow-hidden md:py-24 mt-10">
       <div className="container relative mx-auto px-4">
         {/* Header with animated badge */}
         <div className="mb-16 text-center">
@@ -85,7 +68,7 @@ export function Partners() {
               Trusted By The Best
             </span>
           </div>
-          <h2 className="text-4xl font-bold text-slate-900 sm:text-5xl bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text">
+          <h2 className="text-4xl font-bold text-slate-900 sm:text-5xl bg-linear-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text">
             Our Partners
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600 leading-relaxed">
@@ -96,14 +79,12 @@ export function Partners() {
 
         {/* Partners Marquee - First Row (Left to Right) */}
         <div className="relative mb-4">
-          
           <Marquee direction="left" speed={35} gap={24}>
             {partners.map((partner) => (
               <PartnerCard key={partner.name} partner={partner} />
             ))}
           </Marquee>
         </div>
-
       </div>
     </section>
   );

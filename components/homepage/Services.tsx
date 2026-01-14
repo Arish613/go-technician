@@ -12,7 +12,6 @@ const categories = [
   {
     name: "Laptop Service",
     icon: "/icons/laptop-service.png",
-    badge: "Upto 30% Off",
     badgeColor: "bg-green-600",
   },
   {

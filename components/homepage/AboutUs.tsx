@@ -9,6 +9,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { Marquee } from "../ui/marquee";
 
 const features = [
   {
@@ -91,13 +92,13 @@ export function AboutUs() {
         </div>
 
         {/* Features Grid */}
-        <div className="mb-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Marquee direction="left" speed={40} gap={24} className="mb-5">
           {features.map((feature) => {
             const Icon = feature.icon;
             return (
               <Card
                 key={feature.title}
-                className="border-slate-200 bg-white shadow-sm transition-all hover:shadow-md"
+                className="border-none bg-white shadow-none rounded-none ring-0 max-w-sm"
               >
                 <CardContent className="p-6">
                   <div className="mb-4 inline-flex rounded-lg bg-blue-100 p-3">
@@ -113,7 +114,7 @@ export function AboutUs() {
               </Card>
             );
           })}
-        </div>
+        </Marquee>
 
         {/* Story Section */}
         <div className="mb-16 grid gap-8 lg:grid-cols-2 lg:items-center">
@@ -196,9 +197,7 @@ export function AboutUs() {
                     <Users className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-blue-600">
-                      500+
-                    </div>
+                    <div className="text-2xl font-bold text-blue-600">500+</div>
                     <div className="text-sm text-slate-600">
                       Expert Technicians
                     </div>

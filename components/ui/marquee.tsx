@@ -30,9 +30,12 @@ export function Marquee({
   ...props
 }: MarqueeProps) {
   return (
-    <div className={cn("group relative flex overflow-hidden", className)} {...props}>
+    <div
+      className={cn("group relative flex overflow-hidden", className)}
+      {...props}
+    >
       <div
-        className="flex shrink-0 items-center justify-around animate-marquee"
+        className="flex shrink-0 items-center justify-around animate-marquee px-4"
         style={{
           gap: `${gap}px`,
           animationDuration: `${speed}s`,
@@ -43,7 +46,7 @@ export function Marquee({
       </div>
       <div
         aria-hidden="true"
-        className="flex shrink-0 items-center justify-around animate-marquee"
+        className="flex shrink-0 items-center justify-around animate-marquee px-4"
         style={{
           gap: `${gap}px`,
           animationDuration: `${speed}s`,
