@@ -9,7 +9,13 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Marquee } from "../ui/marquee";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../ui/carousel";
 
 const features = [
   {
@@ -92,29 +98,44 @@ export function AboutUs() {
         </div>
 
         {/* Features Grid */}
-        <Marquee direction="left" speed={40} gap={24} className="mb-5">
-          {features.map((feature) => {
-            const Icon = feature.icon;
-            return (
-              <Card
-                key={feature.title}
-                className="border-none bg-white shadow-none rounded-none ring-0 max-w-sm"
-              >
-                <CardContent className="p-6">
-                  <div className="mb-4 inline-flex rounded-lg bg-blue-100 p-3">
-                    <Icon className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <h3 className="mb-2 text-lg font-semibold text-slate-900">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-slate-600">
-                    {feature.description}
-                  </p>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </Marquee>
+        <div className="mb-5">
+          <Carousel
+            className="w-full md:max-w-5xl mx-auto"
+            opts={{
+              loop: true,
+            }}
+          >
+            <CarouselContent className="-ml-1">
+              {features.map((feature, idx) => {
+                const Icon = feature.icon;
+                return (
+                  <CarouselItem
+                    key={idx}
+                    className="pl-1 md:basis-1/2 lg:basis-1/4"
+                  >
+                    <div className="p-1">
+                      <Card className="border-none bg-white shadow-none rounded-xl ring-0 py-0">
+                        <CardContent className="flex flex-col items-center justify-center aspect-square p-6">
+                          <div className="mb-4 inline-flex rounded-lg bg-blue-100 p-3">
+                            <Icon className="h-6 w-6 text-blue-600" />
+                          </div>
+                          <h3 className="mb-2 text-lg font-semibold text-slate-900 text-center">
+                            {feature.title}
+                          </h3>
+                          <p className="text-sm text-slate-600 text-center">
+                            {feature.description}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                );
+              })}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:block" />
+            <CarouselNext className="hidden md:block" />
+          </Carousel>
+        </div>
 
         {/* Story Section */}
         <div className="mb-16 grid gap-8 lg:grid-cols-2 lg:items-center">

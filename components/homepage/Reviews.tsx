@@ -1,6 +1,12 @@
 import { Star, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Marquee } from "../ui/marquee";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const reviews = [
   {
@@ -118,48 +124,54 @@ export function CustomerReviews() {
           </div>
         </div>
 
-        <Marquee direction="left" speed={40} gap={24}>
-          {reviews.map((review) => (
-            <Card
-              key={review.id}
-              className="border-none bg-white shadow-none  max-w-xl rounded-none ring-0"
-            >
-              <CardContent className="p-6 border-none shadow-none">
-                {/* Quote Icon */}
-                <Quote className="mb-4 h-8 w-8 text-blue-200" />
-
-                {/* Review Text */}
-                <p className="mb-4 text-sm leading-relaxed text-slate-600">
-                  &ldquo;{review.review}&rdquo;
-                </p>
-
-                {/* Service Badge */}
-                <div className="mb-4">
-                  <span className="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-600">
-                    {review.service}
-                  </span>
-                </div>
-
-                {/* Rating */}
-                <div className="mb-4">
-                  <StarRating rating={review.rating} />
-                </div>
-
-                {/* User Info */}
-                <div className="flex items-center gap-3">
-                  <div>
-                    <p className="text-sm font-semibold text-slate-900">
-                      {review.name}
-                    </p>
-                    <p className="text-xs text-slate-500">
-                      {review.location} • {review.date}
-                    </p>
+        <div className="mb-5">
+          <Carousel
+            className="w-full max-w-5xl mx-auto"
+            opts={{
+              loop: true,
+            }}
+          >
+            <CarouselContent className="-ml-1">
+              {reviews.map((review, idx) => (
+                <CarouselItem
+                  key={idx}
+                  className="pl-1 md:basis-1/2 lg:basis-1/3"
+                >
+                  <div className="p-1">
+                    <Card className="border-none bg-white shadow-none max-w-xl rounded-xl ring-0">
+                      <CardContent className="p-6 border-none shadow-none flex flex-col h-full">
+                        <Quote className="mb-4 h-8 w-8 text-blue-200" />
+                        <p className="mb-4 text-sm leading-relaxed text-slate-600">
+                          &ldquo;{review.review}&rdquo;
+                        </p>
+                        <div className="mb-4">
+                          <span className="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-600">
+                            {review.service}
+                          </span>
+                        </div>
+                        <div className="mb-4">
+                          <StarRating rating={review.rating} />
+                        </div>
+                        <div className="flex items-center gap-3 mt-auto">
+                          <div>
+                            <p className="text-sm font-semibold text-slate-900">
+                              {review.name}
+                            </p>
+                            <p className="text-xs text-slate-500">
+                              {review.location} • {review.date}
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </Marquee>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:block" />
+            <CarouselNext className="hidden md:block" />
+          </Carousel>
+        </div>
 
         {/* CTA */}
         <div className="mt-12 text-center">

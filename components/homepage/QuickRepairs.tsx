@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const repairs = [
   {
-    title: "Water Purifier",
+    title: "Laptop Repair",
     image: "/quick-repairs/water-purifier.png",
   },
   {
