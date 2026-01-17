@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const complaintSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
+  email: z.email("Please enter a valid email address"),
   phoneNumber: z
     .string()
     .min(10, "Phone number must be at least 10 digits")
@@ -13,7 +13,7 @@ export const complaintSchema = z.object({
   bookingId: z.string().optional(),
   description: z
     .string()
-    .min(20, "Description must be at least 20 characters")
+    .min(5, "Description must be at least 20 characters")
     .max(1000, "Description must not exceed 1000 characters"),
 });
 
@@ -21,15 +21,6 @@ export type ComplaintFormData = z.infer<typeof complaintSchema>;
 
 export const cities = [
   { label: "Mumbai", value: "mumbai" },
-  { label: "Delhi", value: "delhi" },
-  { label: "Bangalore", value: "bangalore" },
-  { label: "Hyderabad", value: "hyderabad" },
-  { label: "Chennai", value: "chennai" },
-  { label: "Pune", value: "pune" },
-  { label: "Kolkata", value: "kolkata" },
-  { label: "Ahmedabad", value: "ahmedabad" },
-  { label: "Jaipur", value: "jaipur" },
-  { label: "Lucknow", value: "lucknow" },
 ];
 
 export const complaintTypes = [

@@ -100,7 +100,7 @@ export function AboutUs() {
         {/* Features Grid */}
         <div className="mb-5">
           <Carousel
-            className="w-full md:max-w-5xl mx-auto"
+            className="w-full  mx-auto"
             opts={{
               loop: true,
             }}
@@ -111,7 +111,7 @@ export function AboutUs() {
                 return (
                   <CarouselItem
                     key={idx}
-                    className="pl-1 md:basis-1/2 lg:basis-1/4"
+                    className="pl-1 md:basis-1/2 lg:basis-1/5"
                   >
                     <div className="p-1">
                       <Card className="border-none bg-white shadow-none rounded-xl ring-0 py-0">
@@ -132,8 +132,8 @@ export function AboutUs() {
                 );
               })}
             </CarouselContent>
-            <CarouselPrevious className="hidden md:block" />
-            <CarouselNext className="hidden md:block" />
+        <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 p-1 shadow md:left-4" />
+            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 p-1 shadow md:right-4" />
           </Carousel>
         </div>
 

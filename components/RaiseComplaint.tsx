@@ -13,6 +13,7 @@ import {
 } from "@/lib/schemas/complaint";
 import { useState } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
+import { sendContactEmail } from "@/lib/action/send-email";
 
 export function ComplaintForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -35,9 +36,19 @@ export function ComplaintForm() {
     setIsLoading(true);
     try {
       // Simulate API call
-      console.log("Complaint submitted:", data);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
       setIsSubmitted(true);
+      console.log("Complaint submitted:", data);
+      await sendContactEmail({
+        name: data.name,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        city: data.city,
+        complaintType: data.complaintType,
+        bookingId: data.bookingId,
+        description: data.description,
+
+      })
+
       reset();
     } catch (error) {
       console.error("Error submitting complaint:", error);

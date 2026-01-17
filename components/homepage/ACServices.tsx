@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 
 const services = [
   {
@@ -47,42 +48,52 @@ export function ACServices() {
         </div>
 
         {/* Services Grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {services.map((service, index) => (
-            <Link
-              href="/service/ac-repair-service"
-              key={index}
-              className="no-underline"
-            >
-              <Card
-                key={index}
-                className="group relative flex flex-col border-slate-200 bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:border-blue-200 hover:-translate-y-1 overflow-hidden rounded-2xl"
-              >
-                {/* Image Section */}
-                <div className="relative aspect-4/3 overflow-hidden bg-slate-100">
-                  <Image
-                    src={service.image}
-                    alt={service.title}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                </div>
+        <div className="">
+          <Carousel>
+            <CarouselContent>
+              {services.map((service, index) => (
 
-                {/* Content Section */}
-                <CardContent className="grow p-5 pb-0">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                      {service.title}
-                    </h3>
-                  </div>
+                <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
+                  <Link
+                    href="/service/ac-repair-service"
+                    key={index}
+                    className="no-underline"
+                  >
+                    <Card
+                      key={index}
+                      className="group relative flex flex-col border-slate-200 bg-white shadow-sm transition-all duration-300 overflow-hidden"
+                    >
+                      {/* Image Section */}
+                      <div className="relative aspect-4/3 overflow-hidden bg-slate-100">
+                        <Image
+                          src={service.image}
+                          alt={service.title}
+                          fill
+                          className="object-cover transition-transform duration-500 "
+                        />
+                      </div>
 
-                  <p className="text-sm text-slate-500 leading-relaxed mb-4">
-                    {service.description}
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
+                      {/* Content Section */}
+                      <CardContent className="grow p-5 pb-0">
+                        <div className="flex justify-between items-start mb-2">
+                          <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                            {service.title}
+                          </h3>
+                        </div>
+
+                        <p className="text-sm text-slate-500 leading-relaxed mb-4">
+                          {service.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </CarouselItem>
+
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 p-1 shadow md:left-4" />
+            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 p-1 shadow md:right-4" />
+          </Carousel>
         </div>
       </div>
     </section>
