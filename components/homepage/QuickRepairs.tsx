@@ -3,15 +3,15 @@ import Image from "next/image";
 const repairs = [
   {
     title: "Laptop Repair",
-    image: "/quick-repairs/water-purifier.png",
+    image: "/icons/laptop-service.png",
   },
   {
     title: "Refrigerator",
-    image: "/quick-repairs/refrigerator.png",
+    image: "/icons/refrigerator-repair.png",
   },
   {
     title: "Washing Machine",
-    image: "/quick-repairs/washing-machine.png",
+    image: "/icons/washing-machine.png",
   },
 ];
 
@@ -45,8 +45,8 @@ export function QuickRepairs() {
                   <Image
                     src={item.image}
                     alt={item.title}
-                    width={120}
-                    height={120}
+                    width={200}
+                    height={200}
                     className="object-contain"
                   />
                 </div>
