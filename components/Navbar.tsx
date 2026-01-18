@@ -12,15 +12,15 @@ const navLinks = [
 export function Navbar() {
   return (
     <header className="border-b border-slate-200 bg-white ">
-      <nav className="md:mx-20 flex items-center justify-between px-4 py-0">
+      <nav className="md:mx-20 flex items-center justify-between px-4 py-5">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="flex items-center gap-1">
             <Image
-              src={"/go-technicians.jpeg"}
+              src={"/logo.png"}
               alt="Logo"
-              width={90}
-              height={30}
+              width={130}
+              height={60}
             />
           </div>
         </Link>

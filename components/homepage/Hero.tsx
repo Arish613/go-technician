@@ -11,15 +11,11 @@ import React from "react";
 const desktopBanners = [
   { src: "/banners/desktop/banner1.png", alt: "Say Goodbye to Repair Expenses with Extended Warranty" },
   { src: "/banners/desktop/banner2.png", alt: "Expert Care For Your Devices" },
-  { src: "/banners/desktop/banner3.png", alt: "Expert Care For Your Devices" },
-  { src: "/banners/desktop/banner4.png", alt: "Expert Care For Your Devices" },
 ];
 
 const mobileBanners = [
   { src: "/banners/mobile/banner1.png", alt: "Say Goodbye to Repair Expenses with Extended Warranty" },
   { src: "/banners/mobile/banner2.png", alt: "Expert Care For Your Devices" },
-  { src: "/banners/mobile/banner3.png", alt: "Expert Care For Your Devices" },
-  { src: "/banners/mobile/banner4.png", alt: "Expert Care For Your Devices" }
 ];
 
 export function Hero() {
