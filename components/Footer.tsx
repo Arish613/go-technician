@@ -125,10 +125,10 @@ export function Footer() {
               </p>
               <p>
                 <a
-                  href="mailto:contact@gotechnicians.in"
+                  href="mailto:gotechnicians.com@gmail.com"
                   className="transition-colors hover:text-blue-600"
                 >
-                  contact@gotechnicians.in
+                  gotechnicians.com@gmail.com
                 </a>
               </p>
               <p>

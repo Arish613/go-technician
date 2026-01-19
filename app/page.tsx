@@ -2,6 +2,7 @@ import { AboutUs } from "@/components/homepage/AboutUs";
 import { ACServices } from "@/components/homepage/ACServices";
 import { FAQ } from "@/components/homepage/FAQ";
 import { Hero } from "@/components/homepage/Hero";
+import { JoinProNetwork } from "@/components/homepage/Join";
 import { Partners } from "@/components/homepage/Partners";
 import { QuickRepairs } from "@/components/homepage/QuickRepairs";
 import { CustomerReviews } from "@/components/homepage/Reviews";
@@ -18,6 +19,7 @@ export default function Page() {
         <AboutUs />
         <Partners />
         <CustomerReviews />
+        <JoinProNetwork />
         <FAQ />
       </div>
     </div>

@@ -53,7 +53,7 @@ export function ACServices() {
             <CarouselContent>
               {services.map((service, index) => (
 
-                <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
+                <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3 ">
                   <Link
                     href="/service/ac-repair-service"
                     key={index}
@@ -61,15 +61,16 @@ export function ACServices() {
                   >
                     <Card
                       key={index}
-                      className="group relative flex flex-col border-slate-200 bg-white shadow-sm transition-all duration-300 overflow-hidden"
+                      className="group relative flex flex-col border-slate-200 bg-white shadow-sm transition-all duration-300 overflow-hidden mx-5"
                     >
                       {/* Image Section */}
-                      <div className="relative aspect-4/3 overflow-hidden bg-slate-100">
+                      <div className="overflow-hidden bg-slate-100">
                         <Image
                           src={service.image}
                           alt={service.title}
-                          fill
-                          className="object-cover transition-transform duration-500 "
+                          width={160}
+                          height={120}
+                          className="w-full "
                         />
                       </div>
 
@@ -80,10 +81,6 @@ export function ACServices() {
                             {service.title}
                           </h3>
                         </div>
-
-                        <p className="text-sm text-slate-500 leading-relaxed mb-4">
-                          {service.description}
-                        </p>
                       </CardContent>
                     </Card>
                   </Link>
@@ -91,8 +88,8 @@ export function ACServices() {
 
               ))}
             </CarouselContent>
-            <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 p-1 shadow md:left-4" />
-            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 p-1 shadow md:right-4" />
+            <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 p-1 shadow md:left-4 w-10 h-10" />
+            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 p-1 shadow md:right-4 w-10 h-10" />
           </Carousel>
         </div>
       </div>

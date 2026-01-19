@@ -318,9 +318,8 @@ export default function AboutPage() {
               {milestones.map((milestone, index) => (
                 <div
                   key={milestone.year}
-                  className={`relative flex flex-col gap-4 md:flex-row md:gap-8 ${
-                    index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-                  }`}
+                  className={`relative flex flex-col gap-4 md:flex-row md:gap-8 ${index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                    }`}
                 >
                   <div className="flex-1 md:text-right">
                     {index % 2 === 0 && (
@@ -464,10 +463,10 @@ export default function AboutPage() {
                 </div>
                 <h3 className="font-semibold">Email</h3>
                 <a
-                  href="mailto:hello@gotechnicians.com"
+                  href="mailto:gotechnicians.com@gmail.com"
                   className="mt-1 text-sm text-blue-100 hover:text-white"
                 >
-                  hello@gotechnicians.com
+                  gotechnicians.com@gmail.com
                 </a>
               </div>
             </div>

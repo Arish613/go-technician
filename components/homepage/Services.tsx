@@ -5,7 +5,7 @@ const categories = [
   {
     name: "AC Repair",
     icon: "/icons/ac-repair.png",
-    badge: "Starts ₹149",
+    badge: "Starts ₹199",
     badgeColor: "bg-green-600",
     link: "/service/ac-service",
   },

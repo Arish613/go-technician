@@ -111,10 +111,10 @@ export default function RaiseAComplaintPage() {
                       Email Us
                     </p>
                     <a
-                      href="mailto:support@gotechnicians.com"
+                      href="mailto:gotechnicians.com@gmail.com"
                       className="text-blue-600 hover:text-blue-700"
                     >
-                      support@gotechnicians.com
+                      gotechnicians.com@gmail.com
                     </a>
                   </div>
                   <div>
@@ -122,7 +122,7 @@ export default function RaiseAComplaintPage() {
                       Working Hours
                     </p>
                     <p className="text-slate-600">
-                      Mon - Sat: 9:00 AM - 8:00 PM
+                      Mon - Sat
                     </p>
                   </div>
                 </div>

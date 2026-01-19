@@ -41,15 +41,15 @@ export function QuickRepairs() {
                 key={idx}
                 className="flex flex-col items-center justify-center bg-blue-50 py-10 px-4 rounded-lg"
               >
-                <div className="mb-6">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    width={200}
-                    height={200}
-                    className="object-contain"
-                  />
-                </div>
+
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  width={150}
+                  height={150}
+                  className="object-contain"
+                />
+
                 <h3 className="text-xl font-semibold text-slate-900">
                   {item.title}
                 </h3>
