@@ -9,12 +9,12 @@ const contactHighlights = [
     icon: PhoneCall,
     label: "Call us",
     value: "+91 79776 61546",
-    helper: "Mon–Sun • 8 AM – 10 PM",
+    helper: "Mon–Sun",
   },
   {
     icon: Mail,
     label: "Email",
-    value: "support@go-technicians.com",
+    value: "go-technicians.com@gmail.com",
     helper: "We reply within 4 working hours",
   },
   {
@@ -26,8 +26,8 @@ const contactHighlights = [
 ];
 
 const officeDetails = [
-  { icon: MapPin, title: "Head Office", desc: "901, Tech Park, Andheri East, Mumbai 400093" },
-  { icon: Clock, title: "Working Hours", desc: "Mon–Sun, 8:00 AM - 10:00 PM (IST)" },
+  { icon: MapPin, title: "Head Office", desc: "Mumbai, Navi Mumvai" },
+  { icon: Clock, title: "Working Hours", desc: "Mon–Sun" },
 ];
 
 export default function ContactPage() {
