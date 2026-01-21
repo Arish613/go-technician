@@ -41,7 +41,7 @@ export function ACServices() {
           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
             Expert AC Services
           </h2>
-          <p className="text-slate-600 text-lg">
+          <p className="text-slate-600 text-sm md:text-lg">
             Keep your home cool and comfortable with our trusted repair and
             maintenance packages.
           </p>

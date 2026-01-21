@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { StickyContactButtons } from "@/components/ContactButtons";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -82,6 +83,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
+        <GoogleAnalytics gaId="G-JQHYVKDNZM" />
         <Navbar />
         {children}
         <Footer />

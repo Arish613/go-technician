@@ -66,21 +66,28 @@ export function Hero() {
           <h1 className="text-center text-4xl md:text-5xl font-extrabold text-primary mb-4 drop-shadow-lg">
             Expert Care For Your Devices
           </h1>
-          <p className="text-center text-lg md:text-xl text-slate-700 mb-6">
+          <p className="text-center text-sm md:text-xl text-slate-700 mb-6">
             Fast, reliable home & appliance services from trusted professionals.
           </p>
-          <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-4 shadow-lg md:mx-auto md:w-2/3">
+          <div className="relative md:mx-auto flex w-full max-w-xl items-center rounded-full bg-white shadow-lg shadow-blue-900/5 ring-1 ring-slate-200/60 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-300 hover:shadow-xl">
+
+            {/* Input Field */}
             <Input
               type="text"
               placeholder="Search 'AC service'"
-              className="border-0 bg-transparent px-2 text-base shadow-none focus-visible:ring-0"
+              className="flex-1 border-0 bg-transparent py-4 pl-6 pr-4 text-base text-slate-700 placeholder:text-slate-400 focus-visible:ring-0 md:text-[16px]  "
             />
-            <Button
-              size="icon"
-              className="h-12 w-12 rounded-full bg-blue-600 hover:bg-blue-700 transition-all duration-200"
-            >
-              <Search className="h-6 w-6" />
-            </Button>
+
+            {/* Search Button */}
+            <div className="p-1.5 pr-3">
+              <Button
+                size="icon"
+                className="h-8 w-8 shrink-0 rounded-full bg-blue-600 text-white shadow-md transition-all hover:bg-blue-700 hover:scale-105"
+              >
+                <Search className="h-5 w-5" />
+                <span className="sr-only">Search</span>
+              </Button>
+            </div>
           </div>
         </div>
       </div>

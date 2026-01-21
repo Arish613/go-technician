@@ -71,7 +71,7 @@ export function Partners() {
           <h2 className="text-4xl font-bold text-slate-900 sm:text-5xl bg-linear-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text">
             Our Partners
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600 leading-relaxed">
+          <p className="mx-auto mt-4 max-w-2xl text-sm md:text-lg text-slate-600 leading-relaxed">
             We work with leading brands and companies to provide authorized
             service and genuine spare parts for all your needs.
           </p>

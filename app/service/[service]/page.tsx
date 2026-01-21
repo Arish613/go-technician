@@ -71,7 +71,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
             </div>
 
             {service.imageUrl && (
-              <div className="relative h-75 md:h-100 rounded-lg overflow-hidden shadow-xl">
+              <div className="relative h-75 md:h-100 rounded-lg overflow-hidden ">
                 <Image
                   src={service.imageUrl}
                   alt={service.name}
@@ -204,8 +204,6 @@ export default async function ServicePage({ params }: ServicePageProps) {
     </div>
   );
 }
-
-// Sub-component for service cards
 
 // Generate static params for all services
 export async function generateStaticParams() {

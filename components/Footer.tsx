@@ -7,13 +7,13 @@ const navigationLinks = [
   { name: "About Us", href: "/about" },
   //   { name: "My Bookings", href: "/bookings" },
   { name: "Blogs", href: "/blog" },
-  //   { name: "Contact Us", href: "/contact" },
+  { name: "Contact Us", href: "/contact" },
   { name: "Raise a Complaint", href: "/raise-a-complaint" },
 ];
 
 const legalLinks = [
   { name: "Terms & Conditions", href: "/terms-and-conditions" },
-  { name: "Privacy Policy", href: "/privacy" },
+  // { name: "Privacy Policy", href: "/privacy" },
   //   { name: "Return Policy", href: "/return-policy" },
   //   { name: "Refund Policy", href: "/refund-policy" },
   { name: "Disclaimer", href: "/disclaimer" },

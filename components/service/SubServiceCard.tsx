@@ -102,10 +102,6 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
             </ul>
           </div>
         )}
-
-        <Button className="w-full" size="lg">
-          Add to Cart
-        </Button>
       </CardContent>
     </Card>
   );

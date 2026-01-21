@@ -6,6 +6,16 @@
   outline: none;
 }
 
+h1 {
+  @apply max-sm:text-2xl;
+}
+h2 {
+  @apply max-sm:text-xl;
+}
+h3 {
+  @apply max-sm:text-lg;
+}
+
 .ProseMirror h1 {
   font-size: 1.875rem;
   font-weight: bold;

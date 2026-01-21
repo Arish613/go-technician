@@ -73,7 +73,7 @@ export function AboutUs() {
           <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
             Why Thousands Trust Go Technicians
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base text-slate-600">
+          <p className="mx-auto mt-4 max-w-2xl text-sm md:text-base text-slate-600">
             We&apos;re on a mission to make home and office maintenance
             hassle-free. Book verified experts for any service, get transparent
             pricing, and enjoy warranty-backed quality work.
@@ -201,10 +201,11 @@ export function AboutUs() {
               <CardContent className="p-0">
                 <div className="relative aspect-4/3">
                   <Image
-                    src="/about/team.jpg"
+                    src="/about-us.jpg"
                     alt="Go Technicians Team"
-                    fill
-                    className="object-cover"
+                    width={900}
+                    height={450}
+                    // className="object-cover"
                   />
                 </div>
               </CardContent>
