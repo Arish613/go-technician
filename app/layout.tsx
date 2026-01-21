@@ -50,7 +50,7 @@ export const metadata: Metadata = {
       "Book verified technicians for AC repair, laptop service, appliance repair, home cleaning, plumbing & more. Same-day service across 30+ cities.",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/logo.png",
         width: 1200,
         height: 630,
         alt: "Go Technicians - Trusted Home Services",
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     title: "Go Technicians | Trusted Home & Office Services",
     description:
       "Book verified technicians for AC repair, laptop service, appliance repair, home cleaning, plumbing & more.",
-    images: ["/og-image.jpg"],
+    images: ["/logo.png"],
   },
   robots: {
     index: true,
@@ -78,7 +78,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={dmSans.variable}>
       <head>
-        <link rel="icon" href="/go-technicians.jpeg" sizes="any" />
+        <link rel="icon" href="/favicon.png" sizes="any" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}

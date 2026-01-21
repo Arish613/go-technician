@@ -200,10 +200,11 @@ export default function AboutPage() {
             <Card className="overflow-hidden border-0 shadow-xl">
               <div className="relative aspect-4/3">
                 <Image
-                  src="/about/team-work.jpg"
+                  src="/about-us.jpg"
                   alt="Go Technicians Team"
-                  fill
-                  className="object-cover"
+                  width={900}
+                  height={450}
+                // className="object-cover"
                 />
               </div>
             </Card>
@@ -382,7 +383,7 @@ export default function AboutPage() {
       </section>
 
       {/* Team Section */}
-      <section className="md:mx-20 px-4 py-16">
+      {/* <section className="md:mx-20 px-4 py-16">
         <div className="mb-12 text-center">
           <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
             Meet The Team
@@ -423,7 +424,7 @@ export default function AboutPage() {
             </Card>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* Contact CTA */}
       <section className="bg-blue-600 py-16 text-white">
