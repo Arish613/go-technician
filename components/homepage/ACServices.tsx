@@ -20,7 +20,7 @@ const services = [
     image: "/services/ac-services/ac-annual-charges.png",
   },
   {
-    title: "AC Repair (Visit)",
+    title: "AC Repair",
     description: "Detailed diagnosis & quick resolution for all issues.",
     image: "/services/ac-services/ac-repair.png",
   },
@@ -48,48 +48,51 @@ export function ACServices() {
         </div>
 
         {/* Services Grid */}
-        <div className="">
-          <Carousel>
-            <CarouselContent>
+        <div className="relative px-2 md:px-12">
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-4">
               {services.map((service, index) => (
-
-                <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3 ">
+                <CarouselItem
+                  key={index}
+                  className="pl-4 basis-1/2 md:basis-1/3 lg:basis-1/3"
+                >
                   <Link
                     href="/service/ac-repair-service"
-                    key={index}
-                    className="no-underline"
+                    className="group block h-full no-underline"
                   >
-                    <Card
-                      key={index}
-                      className="group relative flex flex-col border-slate-200 bg-white shadow-sm transition-all duration-300 overflow-hidden mx-5"
-                    >
-                      {/* Image Section */}
-                      <div className="overflow-hidden bg-slate-100">
+                    <div className="flex flex-col gap-3">
+                      {/* Image Container - Rounded & Aspect Ratio Fixed */}
+                      <div className="relative aspect-16/10 w-full overflow-hidden rounded-lg bg-slate-100">
                         <Image
                           src={service.image}
                           alt={service.title}
-                          width={160}
-                          height={120}
-                          className="w-full "
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                         />
                       </div>
 
-                      {/* Content Section */}
-                      <CardContent className="grow p-5 pb-0">
-                        <div className="flex justify-between items-start mb-2">
-                          <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                            {service.title}
-                          </h3>
-                        </div>
-                      </CardContent>
-                    </Card>
+                      {/* Text Content - Simple & Clean */}
+                      <div>
+                        <h3 className="text-sm md:text-base font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+                          {service.title}
+                        </h3>
+                      </div>
+                    </div>
                   </Link>
                 </CarouselItem>
-
               ))}
             </CarouselContent>
-            <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 p-1 shadow md:left-4 w-10 h-10" />
-            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 p-1 shadow md:right-4 w-10 h-10" />
+
+            {/* Navigation Arrows */}
+            <CarouselPrevious className="absolute -left-2 md:-left-4 top-1/2 -translate-y-1/2 h-10 w-10 border-slate-200 bg-white shadow-md hover:bg-slate-50 hover:text-blue-600" />
+            <CarouselNext className="absolute -right-2 md:-right-4 top-1/2 -translate-y-1/2 h-10 w-10 border-slate-200 bg-white shadow-md hover:bg-slate-50 hover:text-blue-600" />
           </Carousel>
         </div>
       </div>

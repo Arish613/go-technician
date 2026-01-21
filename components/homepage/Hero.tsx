@@ -62,14 +62,14 @@ export function Hero() {
             </CarouselContent>
           </Carousel>
         </div>
-        <div className="py-10 md:py-28">
+        <div className="py-10 md:py-28 px-5 md:px-0">
           <h1 className="text-center text-4xl md:text-5xl font-extrabold text-primary mb-4 drop-shadow-lg">
             Expert Care For Your Devices
           </h1>
           <p className="text-center text-sm md:text-xl text-slate-700 mb-6">
             Fast, reliable home & appliance services from trusted professionals.
           </p>
-          <div className="relative md:mx-auto flex w-full max-w-xl items-center rounded-full bg-white shadow-lg shadow-blue-900/5 ring-1 ring-slate-200/60 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-300 hover:shadow-xl">
+          <div className="relative md:mx-auto  flex w-full max-w-xl items-center rounded-full bg-white shadow-lg shadow-blue-900/5 ring-1 ring-slate-200/60 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-300 hover:shadow-xl">
 
             {/* Input Field */}
             <Input

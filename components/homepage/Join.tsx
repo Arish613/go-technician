@@ -2,7 +2,7 @@ import { Briefcase, ArrowRight, CheckCircle2 } from "lucide-react";
 
 export function JoinProNetwork() {
     return (
-        <section className="relative py-24 overflow-hidden bg-slate-50">
+        <section className="relative md:py-24 py-10 overflow-hidden bg-slate-50">
             {/* Background Decorative Pattern (Subtle Dot Grid) */}
             <div className="absolute inset-0 z-0 opacity-[0.4]"
                 style={{ backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 1px)', backgroundSize: '32px 32px' }}>
@@ -28,7 +28,7 @@ export function JoinProNetwork() {
                             </div>
 
                             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4 tracking-tight leading-tight">
-                                Scale Your Business with <span className="text-blue-600">Go Technicians</span>
+                                Want To <span className="text-blue-600">Partner</span> With Us?
                             </h2>
 
                             <p className="text-lg text-slate-600 mb-8 leading-relaxed">

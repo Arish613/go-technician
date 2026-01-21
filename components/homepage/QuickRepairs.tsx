@@ -27,7 +27,7 @@ export function QuickRepairs() {
         </div>
         <h2 className="mb-2 text-center text-4xl font-bold text-slate-900">
           Book Quick Device Repairs Online
-          <span className="ml-2 inline-block h-2 w-2 rounded-full bg-blue-500 align-middle"></span>
+
         </h2>
         <p className="mb-12 text-center text-sm md:text-lg text-slate-500">
           Hassle-free service at your doorstep

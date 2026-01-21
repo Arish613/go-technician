@@ -56,16 +56,16 @@ export function Services() {
             const cardContent = (
               <div className="group flex cursor-pointer flex-col items-center gap-4">
                 {/* Circular Image Container */}
-                <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-blue-50 transition-transform duration-300 group-hover:scale-105">
+                <div className="relative flex md:h-32 md:w-32 items-center justify-center rounded-full bg-blue-50 transition-transform duration-300 group-hover:scale-105">
                   {/* Badge */}
                   {category.badge && (
-                    <span className="absolute left-0 top-0 -translate-x-1 translate-y-2 rounded bg-red-500 px-2 py-0.5 text-xs font-bold text-white shadow-sm">
+                    <span className="md:text-center absolute -right-1 -top-1 md:left-0 md:top-0 md:-translate-x-1 md:translate-y-1 rounded bg-red-500 px-1.5 py-0.5 md:px-2 text-[10px] md:text-xs font-bold text-white shadow-md whitespace-nowrap">
                       {category.badge}
                     </span>
                   )}
 
                   {/* Icon/Image */}
-                  <div className="relative h-24 w-24">
+                  <div className="relative md:h-24 md:w-24 h-16 w-16">
                     <Image
                       src={category.icon}
                       alt={category.name}
