@@ -167,3 +167,53 @@ export async function getSubServicesByType(serviceId: string, type?: string) {
     return { success: false, error: "Failed to fetch subservices" };
   }
 }
+
+export async function getServiceAndSubService(userInput: string) {
+  try {
+    if (!userInput || userInput.trim() === "") {
+      return [];
+    }
+    const services = await prisma.services.findMany({
+      where: {
+        isPublished: true,
+        OR: [
+          { name: { contains: userInput, mode: "insensitive" } },
+          { slug: { contains: userInput, mode: "insensitive" } },
+        ],
+      },
+    });
+
+    const subServices = await prisma.subService.findMany({
+      where: {
+        isActive: true,
+        OR: [{ name: { contains: userInput, mode: "insensitive" } }],
+      },
+      select: {
+        name: true,
+        service: {
+          select: {
+            slug: true,
+          },
+        },
+      },
+    });
+
+    const results = [
+      ...services.map((service) => ({
+        type: "service",
+        name: service.name,
+        slug: service.slug,
+      })),
+      ...subServices.map((subService) => ({
+        type: "subService",
+        name: subService.name,
+        slug: subService.service.slug,
+      })),
+    ];
+
+    return results;
+  } catch (error) {
+    console.error("Error fetching service and subservice:", error);
+    return [];
+  }
+}

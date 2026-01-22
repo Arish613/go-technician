@@ -1,7 +1,7 @@
 import { AboutUs } from "@/components/homepage/AboutUs";
 import { ACServices } from "@/components/homepage/ACServices";
 import { FAQ } from "@/components/homepage/FAQ";
-import { Hero } from "@/components/homepage/Hero";
+import HeroSSR from "@/components/homepage/hero/HeroSSR";
 import { JoinProNetwork } from "@/components/homepage/Join";
 import { Partners } from "@/components/homepage/Partners";
 import { QuickRepairs } from "@/components/homepage/QuickRepairs";
@@ -11,7 +11,7 @@ import { Services } from "@/components/homepage/Services";
 export default function Page() {
   return (
     <div>
-      <Hero />
+      <HeroSSR />
       <div className="md:mx-20">
         <Services />
         <ACServices />

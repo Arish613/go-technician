@@ -1,8 +1,7 @@
 import { Mail, PhoneCall, MapPin, Clock, MessageCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { ContactForm } from "@/components/contact/ContactForm";
 
 const contactHighlights = [
   {
@@ -14,7 +13,7 @@ const contactHighlights = [
   {
     icon: Mail,
     label: "Email",
-    value: "go-technicians.com@gmail.com",
+    value: "gotechnicians.com@gmail.com",
     helper: "We reply within 4 working hours",
   },
   {
@@ -26,7 +25,7 @@ const contactHighlights = [
 ];
 
 const officeDetails = [
-  { icon: MapPin, title: "Head Office", desc: "Mumbai, Navi Mumvai" },
+  { icon: MapPin, title: "Head Office", desc: "Mumbai, Navi Mumbai" },
   { icon: Clock, title: "Working Hours", desc: "Mon–Sun" },
 ];
 
@@ -40,7 +39,7 @@ export default function ContactPage() {
             Contact Us
           </span>
           <h1 className="mt-6 text-4xl font-bold text-slate-900">
-            We’re here to help, anytime.
+            We&apos;re here to help, anytime.
           </h1>
           <p className="mt-4 text-base text-slate-600">
             Reach Go Technicians for bookings, partnership queries, support, or just to say hi.
@@ -69,42 +68,7 @@ export default function ContactPage() {
 
         {/* Form + office info */}
         <section className="mt-12 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-          <Card className="border-0 bg-white shadow-xl shadow-blue-100/60">
-            <CardHeader>
-              <CardTitle className="text-2xl text-slate-900">
-                Tell us a little about your request
-              </CardTitle>
-              <p className="text-sm text-slate-500">
-                Fill the form and we’ll respond within a few hours. Urgent? Call or WhatsApp us.
-              </p>
-            </CardHeader>
-            <CardContent className="grid gap-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <Input placeholder="Full name" />
-                <Input placeholder="Phone number" type="tel" />
-              </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                <Input placeholder="Email address" type="email" />
-                <Input placeholder="City" />
-              </div>
-              <select className="h-11 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200">
-                <option>Select a service</option>
-                <option>AC Repair</option>
-                <option>Laptop Service</option>
-                <option>Appliance Repair</option>
-                <option>Home Cleaning</option>
-                <option>Plumbing</option>
-                <option>Other</option>
-              </select>
-              <Textarea rows={5} placeholder="How can we help you?" />
-              <Button className="bg-linear-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-fuchsia-600">
-                Submit request
-              </Button>
-              <p className="text-xs text-slate-500">
-                By submitting, you agree to receive updates via phone, WhatsApp, or email.
-              </p>
-            </CardContent>
-          </Card>
+          <ContactForm />
 
           <div className="space-y-6">
             <Card className="border-slate-200 bg-white shadow-sm">

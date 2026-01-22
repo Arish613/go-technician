@@ -6,7 +6,7 @@ const navLinks = [
   { name: "Blogs", href: "/blog" },
   { name: "Services", href: "/service" },
   { name: "About", href: "/about" },
-  { name: "Contact", href: "/raise-a-complaint" },
+  { name: "Contact", href: "/contact" },
 ];
 
 export function Navbar() {
