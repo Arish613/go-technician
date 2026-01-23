@@ -47,10 +47,10 @@ export function Footer() {
           <div>
             <Link href="/" className="flex items-center gap-2">
               <Image
-                src={"/go-technicians.jpeg"}
+                src={"/logo.png"}
                 alt="Logo"
-                width={90}
-                height={50}
+                width={130}
+                height={60}
               />
             </Link>
 
@@ -147,13 +147,13 @@ export function Footer() {
       {/* Bottom Bar */}
       <div className="border-t border-slate-200">
         <div className="flex flex-col items-center justify-between gap-4 px-4 py-6 sm:flex-row md:mx-20">
-          <p className="text-sm text-slate-600">All Rights Reserved ©</p>
+          <p className="text-sm text-slate-600">All Rights Reserved © gotechnicians.com</p>
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src={"/go-technicians.jpeg"}
+              src={"/logo.png"}
               alt="Logo"
-              width={90}
-              height={50}
+              width={130}
+              height={60}
             />
           </Link>
         </div>

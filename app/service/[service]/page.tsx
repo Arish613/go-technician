@@ -21,7 +21,8 @@ interface ServicePageProps {
 }
 
 export default async function ServicePage({ params }: ServicePageProps) {
-  const result = await getServiceBySlug(params.service);
+  const resolvedParams = await params;
+  const result = await getServiceBySlug(resolvedParams.service);
 
   if (!result.success || !result.data) {
     notFound();
@@ -219,7 +220,8 @@ export async function generateStaticParams() {
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: ServicePageProps) {
-  const result = await getServiceBySlug(params.service);
+  const resolvedParams = await params;
+  const result = await getServiceBySlug(resolvedParams.service);
 
   if (!result.success || !result.data) {
     return {

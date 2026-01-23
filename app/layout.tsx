@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://gotechnicians.in",
+    url: "https://gotechnicians.com",
     siteName: "Go Technicians",
     title: "Go Technicians | Trusted Home & Office Services",
     description:

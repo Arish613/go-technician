@@ -49,6 +49,7 @@ export function MobileNav({ navLinks }: MobileNavProps) {
               <Link
                 key={link.name}
                 href={link.href}
+                prefetch={true}
                 onClick={() => setOpen(false)}
                 className="text-base font-medium text-slate-700 transition-colors hover:text-blue-600 py-2 px-4 rounded-md hover:bg-slate-100"
               >
