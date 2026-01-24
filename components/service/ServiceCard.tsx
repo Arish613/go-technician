@@ -50,17 +50,6 @@ export function ServiceCard({ service }: ServiceCardProps) {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {/* Service Types */}
-        {service.type.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {service.type.map((type) => (
-              <Badge key={type} variant="secondary">
-                {type}
-              </Badge>
-            ))}
-          </div>
-        )}
-
         {/* Stats */}
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-1 text-muted-foreground">

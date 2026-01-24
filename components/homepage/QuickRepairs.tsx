@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 
 const repairs = [
   {
@@ -13,6 +14,10 @@ const repairs = [
     title: "Washing Machine",
     image: "/icons/washing-machine.png",
   },
+  {
+    title: "Plumbing",
+    image: "/icons/plumbing.png",
+  }
 ];
 
 export function QuickRepairs() {
@@ -27,35 +32,44 @@ export function QuickRepairs() {
         </div>
         <h2 className="mb-2 text-center text-4xl font-bold text-slate-900">
           Book Quick Device Repairs Online
-
         </h2>
         <p className="mb-12 text-center text-sm md:text-lg text-slate-500">
           Hassle-free service at your doorstep
         </p>
 
-        {/* Devices Grid */}
-        <div className="relative flex justify-center">
-          <div className="grid w-full max-w-5xl grid-cols-1 gap-6 md:grid-cols-3">
-            {repairs.map((item, idx) => (
-              <div
-                key={idx}
-                className="flex flex-col items-center justify-center bg-blue-50 py-10 px-4 rounded-lg"
-              >
-
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  width={150}
-                  height={150}
-                  className="object-contain"
-                />
-
-                <h3 className="text-xl font-semibold text-slate-900">
-                  {item.title}
-                </h3>
-              </div>
-            ))}
-          </div>
+        {/* Carousel */}
+        <div className="relative px-2 md:px-12">
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-4">
+              {repairs.map((item, idx) => (
+                <CarouselItem
+                  key={idx}
+                  className="pl-4 basis-2/3 md:basis-1/3 lg:basis-1/3"
+                >
+                  <div className="flex flex-col items-center justify-center bg-blue-50 py-10 px-4 rounded-lg h-full">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      width={150}
+                      height={150}
+                      className="object-contain"
+                    />
+                    <h3 className="text-xl font-semibold text-slate-900 mt-4">
+                      {item.title}
+                    </h3>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute -left-2 md:-left-4 top-1/2 -translate-y-1/2 h-10 w-10 border-slate-200 bg-white shadow-md hover:bg-slate-50 hover:text-blue-600" />
+            <CarouselNext className="absolute -right-2 md:-right-4 top-1/2 -translate-y-1/2 h-10 w-10 border-slate-200 bg-white shadow-md hover:bg-slate-50 hover:text-blue-600" />
+          </Carousel>
         </div>
       </div>
     </section>

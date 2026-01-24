@@ -107,7 +107,7 @@ export function Hero() {
                         </CarouselContent>
                     </Carousel>
                 </div>
-                <div className="py-10 md:py-28 px-5 md:px-0">
+                <div className="py-10 md:py-20 px-5 md:px-0">
                     <h1 className="text-center text-4xl md:text-5xl font-extrabold text-primary mb-4 drop-shadow-lg">
                         Expert Care For Your Devices
                     </h1>
