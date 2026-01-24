@@ -31,7 +31,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Edit, MoreHorizontal, Trash2, Eye } from "lucide-react";
-import { deleteService } from "@/lib/action/service";
+import { deleteService, togglePublishService } from "@/lib/action/service";
 import type { ServiceWithRelations } from "@/types/service";
 import Link from "next/link";
 import Image from "next/image";
@@ -73,6 +73,19 @@ export function ServicesTable({ services }: ServicesTableProps) {
     });
   };
 
+  const handleTogglePublish = async (id: string, isPublished: boolean) => {
+    try {
+      const result = await togglePublishService(id, isPublished);
+      if (result.success) {
+        router.refresh();
+      } else {
+        alert(result.error || "Failed to update publish status");
+      }
+    } catch (error) {
+      console.error("Toggle publish error:", error);
+      alert("An error occurred while updating publish status");
+    }
+  };
   return (
     <>
       <div className="rounded-md border">
@@ -119,7 +132,7 @@ export function ServicesTable({ services }: ServicesTableProps) {
                   <TableCell className="font-medium">
                     <div>
                       <p className="font-semibold">{service.name}</p>
-                      <p className="text-sm text-muted-foreground line-clamp-1">
+                      <p className="text-sm text-muted-foreground truncate">
                         {service.description}
                       </p>
                     </div>
@@ -180,7 +193,7 @@ export function ServicesTable({ services }: ServicesTableProps) {
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                          <Link href={`/services/${service.slug}`}>
+                          <Link href={`/service/${service.slug}`}>
                             <Eye className="w-4 h-4 mr-2" />
                             View
                           </Link>
@@ -192,6 +205,12 @@ export function ServicesTable({ services }: ServicesTableProps) {
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => handleTogglePublish(service.id, service.isPublished)}
+                        >
+                          {service.isPublished ? "Unpublish" : "Publish"}
+                        </DropdownMenuItem>
+
                         <DropdownMenuItem
                           className="text-destructive focus:text-destructive"
                           onClick={() => setDeleteId(service.id)}

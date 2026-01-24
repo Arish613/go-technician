@@ -119,7 +119,7 @@ export function Footer() {
             </h3>
             <div className="space-y-3 text-sm text-slate-600">
               <p>
-                Mumbai/Navi Mumbai, Maharashtra
+                Mumbai/Navi Mumbai/ Thane
                 {/* <br />
                 400076 */}
               </p>

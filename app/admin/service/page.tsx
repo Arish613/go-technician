@@ -6,7 +6,6 @@ import { Plus } from "lucide-react";
 
 export default async function AdminServicesPage() {
   const result = await getServices();
-
   return (
     <div className="md:mx-20 py-8">
       <div className="flex justify-between items-center mb-6">

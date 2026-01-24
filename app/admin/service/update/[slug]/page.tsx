@@ -5,9 +5,10 @@ import { notFound } from "next/navigation";
 export default async function UpdateService({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const result = await getServiceBySlug(params.slug);
+  const { slug } = await params;
+  const result = await getServiceBySlug(slug);
 
   if (!result.success || !result.data) {
     notFound();

@@ -20,7 +20,8 @@ export async function createService(data: CreateServiceInput) {
       },
     });
 
-    revalidatePath("/services");
+    revalidatePath("/service");
+    revalidatePath(`/service/${service.slug}`);
     return { success: true, data: service };
   } catch (error) {
     console.error("Error creating service:", error);
@@ -126,8 +127,8 @@ export async function updateService(data: UpdateServiceInput) {
       },
     });
 
-    revalidatePath("/services");
-    revalidatePath(`/services/${service.slug}`);
+    revalidatePath("/service");
+    revalidatePath(`/service/${service.slug}`);
     return { success: true, data: service };
   } catch (error) {
     console.error("Error updating service:", error);
@@ -141,7 +142,7 @@ export async function deleteService(id: string) {
       where: { id },
     });
 
-    revalidatePath("/services");
+    revalidatePath("/service");
     return { success: true, message: "Service deleted successfully" };
   } catch (error) {
     console.error("Error deleting service:", error);
@@ -215,5 +216,20 @@ export async function getServiceAndSubService(userInput: string) {
   } catch (error) {
     console.error("Error fetching service and subservice:", error);
     return [];
+  }
+}
+
+export async function togglePublishService(id: string, isPublished: boolean) {
+  try {
+    const service = await prisma.services.update({
+      where: { id },
+      data: { isPublished: !isPublished },
+    });
+    revalidatePath("/service");
+    revalidatePath(`/service/${service.slug}`);
+    return { success: true, data: service };
+  } catch (error) {
+    console.error("Error toggling publish status:", error);
+    return { success: false, error: "Failed to update publish status" };
   }
 }

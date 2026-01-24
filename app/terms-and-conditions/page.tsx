@@ -61,7 +61,7 @@ export default function TermsAndConditionsPage() {
     {
       title: "Contact",
       content:
-        "For questions regarding these Terms, email legal@go-technicians.com or write to Go Technicians, 901 Tech Park, Andheri East, Mumbai 400093.",
+        "Mumbai, Navi Mumbai/Thane"
     },
   ];
 

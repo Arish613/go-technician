@@ -78,11 +78,10 @@ function StarRating({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((star) => (
         <Star
           key={star}
-          className={`h-4 w-4 ${
-            star <= rating
-              ? "fill-yellow-400 text-yellow-400"
-              : "fill-slate-200 text-slate-200"
-          }`}
+          className={`h-4 w-4 ${star <= rating
+            ? "fill-yellow-400 text-yellow-400"
+            : "fill-slate-200 text-slate-200"
+            }`}
         />
       ))}
     </div>
@@ -90,8 +89,6 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export function CustomerReviews() {
-  const averageRating =
-    reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
 
   return (
     <section id="reviews" className="border-t border-slate-200 bg-white py-16">
@@ -114,7 +111,7 @@ export function CustomerReviews() {
             <div className="flex items-center gap-1">
               <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
               <span className="text-2xl font-bold text-slate-900">
-                {averageRating.toFixed(1)}
+                4.9
               </span>
             </div>
             <div className="h-6 w-px bg-slate-300" />
@@ -169,7 +166,7 @@ export function CustomerReviews() {
               ))}
             </CarouselContent>
             <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 p-1 shadow md:left-4 w-10 h-10" />
-            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 p-1 shadow md:right-4 w-10 h-10" />  
+            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 p-1 shadow md:right-4 w-10 h-10" />
           </Carousel>
         </div>
 
@@ -178,7 +175,9 @@ export function CustomerReviews() {
           <p className="text-sm text-slate-600">
             Join thousands of satisfied customers.{" "}
             <a
-              href="#"
+              href="https://wa.me/917977661546"
+              target="_blank"
+              rel="noopener noreferrer"
               className="font-semibold text-blue-600 hover:text-blue-700"
             >
               Book your first service today →

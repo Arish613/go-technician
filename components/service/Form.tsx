@@ -259,6 +259,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
               label="Service Image"
               description="Upload a representative image for this service"
               disabled={isSubmitting}
+              defaultValue="/service.png"
             />
 
             <div className="flex items-center space-x-2">
@@ -663,7 +664,32 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
                 </div>
               ))
             )}
+            <Button
+              type="button"
+              variant="default"
+              size="sm"
+              onClick={() =>
+                appendSubService({
+                  name: "",
+                  description: "",
+                  price: 0,
+                  discountedPrice: undefined,
+                  type: undefined,
+                  imageUrl: undefined,
+                  whatIncluded: [],
+                  whatExcluded: [],
+                  duration: undefined,
+                  isPopular: false,
+                  isActive: true,
+                })
+              }
+              disabled={isSubmitting}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Sub Service
+            </Button>
           </CardContent>
+
         </Card>
 
         {/* Submit Buttons */}

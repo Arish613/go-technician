@@ -45,7 +45,7 @@ const ImageUpload = <T extends FieldValues>({
   label,
   description,
   disabled = false,
-  defaultValue = "/logo.png",
+  defaultValue = "/favicon.png",
 }: ImageUploadProps<T>) => {
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState(false);

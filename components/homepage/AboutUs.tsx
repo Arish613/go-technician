@@ -16,6 +16,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel";
+import Link from "next/link";
 
 const features = [
   {
@@ -37,7 +38,7 @@ const features = [
   },
   {
     icon: Users,
-    title: "50,000+ Happy Customers",
+    title: "25,000+ Happy Customers",
     description:
       "Join thousands of satisfied customers who trust our services.",
   },
@@ -52,13 +53,18 @@ const features = [
     description:
       "Book in seconds through our app or website. Track in real-time.",
   },
+  {
+    icon: Clock,
+    title: "Service Charges",
+    description: "Starting at just 199 for AC repair and maintenance.",
+  }
 ];
 
 const stats = [
-  { value: "50,000+", label: "Happy Customers" },
-  { value: "30+", label: "Cities Covered" },
+  { value: "25,000+", label: "Happy Customers" },
+  { value: "10+", label: "Cities Covered" },
   { value: "10,000+", label: "Services Completed" },
-  { value: "4.8/5", label: "Average Rating" },
+  { value: "4.9/5", label: "Average Rating" },
 ];
 
 export function AboutUs() {
@@ -111,7 +117,7 @@ export function AboutUs() {
                 return (
                   <CarouselItem
                     key={idx}
-                    className="pl-1 md:basis-1/2 lg:basis-1/5"
+                    className="pl-1  md:basis-1/2 lg:basis-1/5 max-sm:shadow-xl max-sm:border"
                   >
                     <div className="p-1">
                       <Card className="border-none bg-white shadow-none rounded-xl ring-0 py-0">
@@ -149,7 +155,7 @@ export function AboutUs() {
               </p>
               <p className="mt-4 text-base leading-relaxed text-slate-600">
                 Today, we&apos;ve grown to 30+ cities across India, serving
-                50,000+ happy customers with a network of verified
+                25,000+ happy customers with a network of verified
                 professionals. Every service is backed by our quality guarantee
                 and transparent pricing.
               </p>
@@ -191,9 +197,11 @@ export function AboutUs() {
               </div>
             </div>
 
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              Book a Service Now
-            </Button>
+            <Link href="/contact" prefetch={true}>
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                Book a Service Now
+              </Button>
+            </Link>
           </div>
 
           <div className="relative">
@@ -205,7 +213,7 @@ export function AboutUs() {
                     alt="Go Technicians Team"
                     width={900}
                     height={450}
-                    // className="object-cover"
+                  // className="object-cover"
                   />
                 </div>
               </CardContent>
@@ -219,7 +227,7 @@ export function AboutUs() {
                     <Users className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-blue-600">500+</div>
+                    <div className="text-2xl font-bold text-blue-600">100+</div>
                     <div className="text-sm text-slate-600">
                       Expert Technicians
                     </div>

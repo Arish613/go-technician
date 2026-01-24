@@ -13,6 +13,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SubServiceCard } from "@/components/service/SubServiceCard";
 import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 
 interface ServicePageProps {
   params: {
@@ -197,9 +198,11 @@ export default async function ServicePage({ params }: ServicePageProps) {
             Book our professional {service.name.toLowerCase()} and experience
             quality service at your doorstep
           </p>
-          <Button size="lg" variant="secondary">
-            Book Now
-          </Button>
+          <Link href={"/contact"} prefetch={true}>
+            <Button size="lg" variant="secondary">
+              Book Now
+            </Button>
+          </Link>
         </div>
       </section>
     </div>

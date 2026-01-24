@@ -443,7 +443,7 @@ export default function AboutPage() {
                 </div>
                 <h3 className="font-semibold">Our Office</h3>
                 <p className="mt-1 text-sm text-blue-100">
-                  Mumbai, Maharashtra, India
+                  Mumbai/ Navi Mumbai/ Thane
                 </p>
               </div>
               <div className="flex flex-col items-center">

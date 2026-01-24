@@ -25,7 +25,7 @@ const contactHighlights = [
 ];
 
 const officeDetails = [
-  { icon: MapPin, title: "Head Office", desc: "Mumbai, Navi Mumbai" },
+  { icon: MapPin, title: "Head Office", desc: "Mumbai/Navi Mumbai/Thane" },
   { icon: Clock, title: "Working Hours", desc: "Mon–Sun" },
 ];
 
