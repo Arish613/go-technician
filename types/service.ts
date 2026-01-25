@@ -7,6 +7,12 @@ export type ServiceWithRelations = Services & {
   subServices: SubService[];
 };
 
+export type WhyChooseUsItem = {
+  icon?: string;
+  title: string;
+  description: string;
+};
+
 export type CreateServiceInput = {
   name: string;
   description: string;
@@ -16,6 +22,7 @@ export type CreateServiceInput = {
   imageUrl?: string;
   type?: string[];
   isPublished?: boolean;
+  whyChooseUs?: WhyChooseUsItem[];
   faqs?: {
     question: string;
     answer: string;

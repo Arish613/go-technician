@@ -28,6 +28,13 @@ const serviceSchema = z.object({
   imageUrl: z.string().optional(),
   type: z.array(z.string()),
   isPublished: z.boolean(),
+  whyChooseUs: z.array(
+    z.object({
+      icon: z.string().optional(),
+      title: z.string().min(1, "Title is required"),
+      description: z.string().min(1, "Description is required"),
+    })
+  ),
   faqs: z.array(
     z.object({
       question: z.string().min(1, "Question is required"),
@@ -80,6 +87,12 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
       imageUrl: service?.imageUrl || "",
       type: service?.type || [],
       isPublished: service?.isPublished || false,
+      whyChooseUs: service?.whyChooseUs
+        ? service.whyChooseUs.map((item) => ({
+            ...item,
+            icon: item.icon === null ? undefined : item.icon,
+          }))
+        : [],
       faqs: service?.faqs || [],
       subServices:
         service?.subServices.map((sub) => ({
@@ -114,6 +127,15 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
   } = useFieldArray({
     control: form.control,
     name: "subServices",
+  });
+
+  const {
+    fields: whyChooseUsFields,
+    append: appendWhyChooseUs,
+    remove: removeWhyChooseUs,
+  } = useFieldArray({
+    control: form.control,
+    name: "whyChooseUs",
   });
 
   const generateSlug = (name: string) => {
@@ -302,7 +324,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
               <Button
                 type="button"
                 onClick={addType}
-                variant="outline"
+                variant="default"
                 disabled={isSubmitting}
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -351,7 +373,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
               <CardTitle>FAQs</CardTitle>
               <Button
                 type="button"
-                variant="outline"
+                variant="default"
                 size="sm"
                 onClick={() => appendFaq({ question: "", answer: "" })}
                 disabled={isSubmitting}
@@ -361,7 +383,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 md:grid md:grid-cols-2 gap-3">
             {faqFields.length === 0 ? (
               <p className="text-sm text-muted-foreground text-center py-8">
                 No FAQs added yet. Click &quot;Add FAQ&quot; to get started.
@@ -401,6 +423,70 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
             )}
           </CardContent>
         </Card>
+        {/* Why choose us */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Why Choose Us</CardTitle>
+              <Button
+                type="button"
+                variant="default"
+                size="sm"
+                onClick={() => appendWhyChooseUs({ icon: "", title: "", description: "" })}
+                disabled={isSubmitting}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Reason
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6 md:grid md:grid-cols-2 gap-3 ">
+            {whyChooseUsFields.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-8">
+                No reasons added yet. Click &quot;Add Reason&quot; to get started.
+              </p>
+            ) : (
+              whyChooseUsFields.map((field, index) => (
+                <div key={field.id} className="space-y-4 p-4 border rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <h4 className="font-medium">Reason #{index + 1}</h4>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeWhyChooseUs(index)}
+                      disabled={isSubmitting}
+                    >
+                      <Trash2 className="w-4 h-4 text-destructive" />
+                    </Button>
+                  </div>
+                  <FormFields
+                    name={`whyChooseUs.${index}.icon`}
+                    control={form.control}
+                    label="Icon (optional, e.g. star, shield)"
+                    placeholder="e.g., star"
+                    disabled={isSubmitting}
+                  />
+                  <FormFields
+                    name={`whyChooseUs.${index}.title`}
+                    control={form.control}
+                    label="Title"
+                    placeholder="e.g., Qualified Engineers"
+                    disabled={isSubmitting}
+                  />
+                  <FormFields
+                    name={`whyChooseUs.${index}.description`}
+                    control={form.control}
+                    label="Description"
+                    type="textarea"
+                    placeholder="e.g., In-house AC Technicians with 10+ years of experience"
+                    disabled={isSubmitting}
+                  />
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
 
         {/* Sub Services */}
         <Card>
@@ -409,7 +495,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
               <CardTitle>Sub Services</CardTitle>
               <Button
                 type="button"
-                variant="outline"
+                variant="default"
                 size="sm"
                 onClick={() =>
                   appendSubService({
@@ -433,7 +519,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 md:grid md:grid-cols-2 gap-3">
             {subServiceFields.length === 0 ? (
               <p className="text-sm text-muted-foreground text-center py-8">
                 No sub-services added yet. Click &quot;Add Sub Service&quot; to

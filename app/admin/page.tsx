@@ -209,8 +209,13 @@ export default async function AdminPage() {
               <Button size="sm">Blogs</Button>
             </Link>
             <Link href="/admin/service">
-              <Button size="sm" variant="outline">
+              <Button size="sm" variant="default">
                 Services
+              </Button>
+            </Link>
+            <Link href="/admin/review">
+              <Button size="sm" variant="default">
+                Reviews
               </Button>
             </Link>
           </div>
@@ -240,9 +245,8 @@ export default async function AdminPage() {
                   <CardContent>
                     <div className="text-2xl font-semibold">{stat.value}</div>
                     <p
-                      className={`text-xs ${
-                        stat.positive ? "text-emerald-600" : "text-rose-600"
-                      } flex items-center gap-1`}
+                      className={`text-xs ${stat.positive ? "text-emerald-600" : "text-rose-600"
+                        } flex items-center gap-1`}
                     >
                       <PositiveIcon className="h-3 w-3" />
                       {stat.change}
@@ -334,9 +338,8 @@ export default async function AdminPage() {
                   <CardContent>
                     <div className="text-2xl font-semibold">{stat.value}</div>
                     <p
-                      className={`text-xs ${
-                        stat.positive ? "text-emerald-600" : "text-rose-600"
-                      } flex items-center gap-1`}
+                      className={`text-xs ${stat.positive ? "text-emerald-600" : "text-rose-600"
+                        } flex items-center gap-1`}
                     >
                       <PositiveIcon className="h-3 w-3" />
                       {stat.change}

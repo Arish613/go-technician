@@ -15,6 +15,9 @@ import { SubServiceCard } from "@/components/service/SubServiceCard";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { ServiceContent } from "@/components/service/Content";
+import { getReviewsByService } from "@/lib/action/review";
+import { ServiceReviews } from "@/components/service/Reviews";
+import { WhyChooseUs } from "@/components/service/WhyChooseUs";
 
 interface ServicePageProps {
   params: {
@@ -32,6 +35,8 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
   const service = result.data;
   const hasTypes = service.type.length > 0;
+
+  const reviews = await getReviewsByService(service.id);
 
   return (
     <div className="min-h-screen">
@@ -151,6 +156,14 @@ export default async function ServicePage({ params }: ServicePageProps) {
           )}
         </div>
       </section>
+      {/* Why choose us */}
+      {service.whyChooseUs && (
+        <WhyChooseUs service={{ name: service.name, whyChooseUs: service.whyChooseUs }} />
+      )}
+
+      {reviews && reviews.length > 0 && <ServiceReviews reviews={reviews} />}
+
+
       {/* Service Content */}
       <section className="py-10 md:py-12 md:px-10 bg-muted/30">
         <div className="md:mx-20 px-4">

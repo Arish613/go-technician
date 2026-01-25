@@ -6,11 +6,12 @@ import { revalidatePath } from "next/cache";
 
 export async function createService(data: CreateServiceInput) {
   try {
-    const { faqs, subServices, ...serviceData } = data;
+    const { faqs, subServices, whyChooseUs, ...serviceData } = data;
 
     const service = await prisma.services.create({
       data: {
         ...serviceData,
+        whyChooseUs: whyChooseUs ?? [],
         faqs: faqs ? { create: faqs } : undefined,
         subServices: subServices ? { create: subServices } : undefined,
       },
@@ -102,12 +103,13 @@ export async function getServiceBySlug(slug: string) {
 
 export async function updateService(data: UpdateServiceInput) {
   try {
-    const { id, faqs, subServices, ...serviceData } = data;
+    const { id, faqs, subServices, whyChooseUs, ...serviceData } = data;
 
     const service = await prisma.services.update({
       where: { id },
       data: {
         ...serviceData,
+        whyChooseUs: whyChooseUs ?? [],
         faqs: faqs
           ? {
               deleteMany: {},

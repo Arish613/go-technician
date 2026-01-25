@@ -52,11 +52,11 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
       <CardContent className="space-y-4">
         {/* Pricing */}
         <div className="flex items-baseline gap-2">
-          <span className="text-3xl font-bold text-primary">
+          <span className="md:text-3xl font-bold text-primary">
             ₹{hasDiscount ? subService.discountedPrice : subService.price}
           </span>
           {hasDiscount && (
-            <span className="text-lg text-muted-foreground line-through">
+            <span className="md:text-lg text-muted-foreground line-through">
               ₹{subService.price}
             </span>
           )}
