@@ -13,6 +13,7 @@ const categories = [
     name: "Laptop Service",
     icon: "/icons/laptop-service.png",
     badgeColor: "bg-green-600",
+    link:"/service/laptop-repair",
   },
   {
     name: "Refrigerator Repair",

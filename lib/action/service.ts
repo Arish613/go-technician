@@ -174,6 +174,17 @@ export async function getServiceAndSubService(userInput: string) {
     if (!userInput || userInput.trim() === "") {
       return [];
     }
+    // Special case: if user searches for "ac service" (case-insensitive, ignore spaces/symbols)
+    const normalizedInput = userInput.replace(/[^a-zA-Z]/g, "").toLowerCase();
+    if (normalizedInput.includes("acservice")) {
+      return [
+        {
+          type: "service",
+          name: "AC Service",
+          slug: "ac-repair-service",
+        },
+      ];
+    }
     const services = await prisma.services.findMany({
       where: {
         isPublished: true,

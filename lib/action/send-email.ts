@@ -5,7 +5,6 @@ interface ComplaintFormData {
   name: string;
   email: string;
   phoneNumber: string;
-  city: string;
   complaintType: string;
   bookingId: string | undefined;
   description: string;
@@ -81,10 +80,6 @@ export async function sendEmailForComplaint(formData: ComplaintFormData) {
                                 <tr>
                                     <td style="padding: 8px 0; border-bottom: 1px dashed #e9ecef; width: 40%; font-weight: bold; color: #555555;">Phone:</td>
                                     <td style="padding: 8px 0; border-bottom: 1px dashed #e9ecef; width: 60%; color: #333333; word-break: break-all;">${formData.phoneNumber}</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 8px 0; border-bottom: 1px dashed #e9ecef; width: 40%; font-weight: bold; color: #555555;">City:</td>
-                                    <td style="padding: 8px 0; border-bottom: 1px dashed #e9ecef; width: 60%; color: #333333; word-break: break-all;">${formData.city}</td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 8px 0; border-bottom: 1px dashed #e9ecef; width: 40%; font-weight: bold; color: #555555;">Type:</td>

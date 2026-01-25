@@ -122,7 +122,7 @@ export default function RaiseAComplaintPage() {
                       Working Hours
                     </p>
                     <p className="text-slate-600">
-                      Mon - Sat
+                      Mon - Sun
                     </p>
                   </div>
                 </div>

@@ -18,7 +18,6 @@ export const complaintSchema = z.object({
     .min(10, "Phone number must be at least 10 digits")
     .max(15, "Phone number must not exceed 15 digits")
     .regex(/^[0-9+\-\s]+$/, "Please enter a valid phone number"),
-  city: z.string().min(1, "Please select a city"),
   complaintType: z.string().min(1, "Please select a complaint type"),
   bookingId: z.string().optional(),
   description: z
@@ -55,7 +54,6 @@ export function ComplaintForm() {
       name: "",
       email: "",
       phoneNumber: "",
-      city: "mumbai",
       complaintType: "service_quality",
       bookingId: "",
       description: "",
@@ -72,7 +70,6 @@ export function ComplaintForm() {
         name: data.name,
         email: data.email,
         phoneNumber: data.phoneNumber,
-        city: data.city,
         complaintType: data.complaintType,
         bookingId: data.bookingId,
         description: data.description,
@@ -144,14 +141,6 @@ export function ComplaintForm() {
                 placeholder="Enter your phone number"
                 type="tel"
                 autocomplete="tel"
-              />
-              <FormFields
-                name="city"
-                control={control}
-                label="City"
-                placeholder="Select your city"
-                type="select"
-                options={cities}
               />
             </div>
           </div>

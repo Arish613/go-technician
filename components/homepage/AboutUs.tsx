@@ -56,7 +56,7 @@ const features = [
   {
     icon: Clock,
     title: "Service Charges",
-    description: "Starting at just 199 for AC repair and maintenance.",
+    description: "Please note: if a technician visits and no work is performed, a visit fee of 299 will still apply.",
   }
 ];
 

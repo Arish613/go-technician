@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SubServiceCard } from "@/components/service/SubServiceCard";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import { ServiceContent } from "@/components/service/Content";
 
 interface ServicePageProps {
   params: {
@@ -87,7 +88,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
         </div>
       </section>{" "}
       {/* Sub Services Section */}
-      <section id="services" className="py-12 md:py-16 bg-muted/30 ">
+      <section id="services" className="py-12 md:py-16  ">
         <div className=" md:mx-20 px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -151,12 +152,9 @@ export default async function ServicePage({ params }: ServicePageProps) {
         </div>
       </section>
       {/* Service Content */}
-      <section className="py-12 md:py-16">
+      <section className="py-10 md:py-12 md:px-10 bg-muted/30">
         <div className="md:mx-20 px-4">
-          <div
-            className="blog-content"
-            dangerouslySetInnerHTML={{ __html: service.content }}
-          />
+          <ServiceContent html={service.content} maxHeight={400} />
         </div>
       </section>
       {/* FAQs Section */}
