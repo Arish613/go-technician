@@ -8,13 +8,13 @@
 
 @media (max-width: 640px) {
   h1 {
-    font-size: 1.5rem;
+    font-size: 1.5rem !important;
   }
   h2 {
-    font-size: 1.25rem;
+    font-size: 1.25rem !important;
   }
   h3 {
-    font-size: 1.125rem;
+    font-size: 1.125rem !important;
   }
 }
 

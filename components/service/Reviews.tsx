@@ -1,6 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { CldImage } from "next-cloudinary";
-import { Star, Quote } from "lucide-react";
+import { Star } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+
 
 export function ServiceReviews({ reviews }: {
     reviews: Array<{
@@ -26,72 +28,82 @@ export function ServiceReviews({ reviews }: {
                 </div>
 
                 {/* Reviews Grid */}
-                {(!reviews || reviews.length === 0) ? (
-                    <div className="flex flex-col items-center justify-center py-16 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50">
-                        <Quote className="h-10 w-10 text-slate-300 mb-4" />
-                        <p className="text-lg font-medium text-slate-900">No reviews yet</p>
-                        <p className="text-slate-500">Be the first to share your experience!</p>
-                    </div>
-                ) : (
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {reviews.map((review) => (
-                            <Card
-                                key={review.id}
-                                className="group flex flex-col h-full border-slate-200 bg-white shadow-sm hover:shadow-lg hover:border-blue-200 transition-all duration-300 rounded-2xl overflow-hidden"
-                            >
-                                <CardContent className="p-6 flex flex-col h-full">
-                                    {/* Header: Name & Date */}
-                                    <div className="flex justify-between items-start mb-3">
-                                        <div>
-                                            <h4 className="font-bold text-slate-900 text-base">
-                                                {review.reviewer}
-                                            </h4>
-                                            <p className="text-xs text-slate-400 mt-0.5">
-                                                {new Date(review.createdAt).toLocaleDateString('en-IN', {
-                                                    day: 'numeric',
-                                                    month: 'short',
-                                                    year: 'numeric'
-                                                })}
-                                            </p>
-                                        </div>
-                                        {/* Star Rating */}
-                                        <div className="flex gap-0.5 bg-yellow-50 px-2 py-1 rounded-md">
-                                            {Array.from({ length: 5 }).map((_, i) => (
-                                                <Star
-                                                    key={i}
-                                                    className={`h-3.5 w-3.5 ${i < Number(review.rating)
-                                                        ? "fill-yellow-400 text-yellow-400"
-                                                        : "fill-slate-200 text-slate-200"
-                                                        }`}
-                                                />
-                                            ))}
-                                        </div>
-                                    </div>
+                {(
+                    <div className="relative px-2 md:px-12">
+                        <Carousel
+                            opts={{
+                                align: "start",
+                                loop: true,
+                            }}
+                            className="w-full"
+                        >
+                            <CarouselContent className="-ml-4">
+                                {reviews.map((review) => (
+                                    <CarouselItem
+                                        key={review.id}
+                                        className="pl-4 basis-full md:basis-1/2 lg:basis-1/3"
+                                    >
+                                        <Card
+                                            className="group flex flex-col h-full border-slate-200 bg-white shadow-sm hover:shadow-lg hover:border-blue-200 transition-all duration-300 rounded-2xl overflow-hidden"
+                                        >
+                                            <CardContent className="p-6 flex flex-col h-full">
+                                                {/* Header: Name & Date */}
+                                                <div className="flex justify-between items-start mb-3">
+                                                    <div>
+                                                        <h4 className="font-bold text-slate-900 text-base">
+                                                            {review.reviewer}
+                                                        </h4>
+                                                        <p className="text-xs text-slate-400 mt-0.5">
+                                                            {new Date(review.createdAt).toLocaleDateString('en-IN', {
+                                                                day: 'numeric',
+                                                                month: 'short',
+                                                                year: 'numeric'
+                                                            })}
+                                                        </p>
+                                                    </div>
+                                                    {/* Star Rating */}
+                                                    <div className="flex gap-0.5 bg-yellow-50 px-2 py-1 rounded-md">
+                                                        {Array.from({ length: 5 }).map((_, i) => (
+                                                            <Star
+                                                                key={i}
+                                                                className={`h-3.5 w-3.5 ${i < Number(review.rating)
+                                                                    ? "fill-yellow-400 text-yellow-400"
+                                                                    : "fill-slate-200 text-slate-200"
+                                                                    }`}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </div>
 
-                                    {/* Comment */}
-                                    <div className="grow">
-                                        <p className="text-slate-600 text-sm leading-relaxed">
-                                            &quot;{review.comment}&quot;
-                                        </p>
-                                    </div>
+                                                {/* Comment */}
+                                                <div className="grow">
+                                                    <p className="text-slate-600 text-sm leading-relaxed">
+                                                        &quot;{review.comment}&quot;
+                                                    </p>
+                                                </div>
 
-                                    {/* Optional Image */}
-                                    {review.imageUrl && (
-                                        <div className="mt-4 pt-4 border-t border-slate-100">
-                                            <div className="relative h-32 w-full overflow-hidden rounded-lg bg-slate-100">
-                                                <CldImage
-                                                    src={review.imageUrl}
-                                                    alt={`Review by ${review.reviewer}`}
-                                                    fill
-                                                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                />
-                                            </div>
-                                        </div>
-                                    )}
-                                </CardContent>
-                            </Card>
-                        ))}
+                                                {/* Optional Image */}
+                                                {review.imageUrl && (
+                                                    <div className="mt-4 pt-4 border-t border-slate-100">
+                                                        <div className="relative h-32 w-full overflow-hidden rounded-lg bg-slate-100">
+                                                            <CldImage
+                                                                src={review.imageUrl}
+                                                                alt={`Review by ${review.reviewer}`}
+                                                                fill
+                                                                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </CardContent>
+                                        </Card>
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                            <CarouselPrevious className="absolute -left-2 md:-left-4 top-1/2 -translate-y-1/2 h-10 w-10 border-slate-200 bg-white shadow-md hover:bg-slate-50 hover:text-blue-600" />
+                            <CarouselNext className="absolute -right-2 md:-right-4 top-1/2 -translate-y-1/2 h-10 w-10 border-slate-200 bg-white shadow-md hover:bg-slate-50 hover:text-blue-600" />
+                        </Carousel>
                     </div>
                 )}
             </div>

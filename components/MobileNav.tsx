@@ -9,7 +9,7 @@ import {
   SheetTrigger,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu, ShoppingCart } from "lucide-react";
 
 interface NavLink {
   name: string;
@@ -18,13 +18,31 @@ interface NavLink {
 
 interface MobileNavProps {
   navLinks: NavLink[];
+  onCartClick?: () => void;
+  cartItemCount?: number;
 }
 
-export function MobileNav({ navLinks }: MobileNavProps) {
+export function MobileNav({ navLinks, onCartClick, cartItemCount = 0 }: MobileNavProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <div className="flex items-center gap-2 lg:hidden">
+      {/* Cart Icon for Mobile */}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={onCartClick}
+        className="relative"
+      >
+        <ShoppingCart className="h-5 w-5" />
+        {cartItemCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+            {cartItemCount}
+          </span>
+        )}
+      </Button>
+
+      <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="lg:hidden">
           <Menu className="h-6 w-6" />
@@ -60,5 +78,6 @@ export function MobileNav({ navLinks }: MobileNavProps) {
         </div>
       </SheetContent>
     </Sheet>
+    </div>
   );
 }

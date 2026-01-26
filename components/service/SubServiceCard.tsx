@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -11,14 +13,31 @@ import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { SubService } from "@prisma/client";
+import { useCart } from "@/context/CartContext";
+import { useState } from "react";
 
 interface SubServiceCardProps {
   subService: SubService;
 }
 
 export function SubServiceCard({ subService }: SubServiceCardProps) {
+  const { addToCart, items } = useCart();
+  const [isAdded, setIsAdded] = useState(false);
+
+  const alreadyInCart = items.some((item) => item.id === subService.id);
+
   const hasDiscount =
     subService.discountedPrice && subService.discountedPrice < subService.price;
+
+  const handleAddToCart = () => {
+    if (!alreadyInCart) {
+      addToCart(subService);
+      setIsAdded(true);
+      setTimeout(() => {
+        setIsAdded(false);
+      }, 2000);
+    }
+  };
 
   return (
     <Card className="relative overflow-hidden hover:shadow-lg transition-shadow">
@@ -102,6 +121,14 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
             </ul>
           </div>
         )}
+        <Button
+          variant="default"
+          className="w-full mt-2 cursor-pointer"
+          onClick={handleAddToCart}
+          disabled={alreadyInCart}
+        >
+          {alreadyInCart ? "Added to Cart ✓" : "Add to Cart"}
+        </Button>
       </CardContent>
     </Card>
   );

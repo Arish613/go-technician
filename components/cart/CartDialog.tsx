@@ -1,0 +1,438 @@
+"use client";
+
+import { useState } from "react";
+import { useCart } from "@/context/CartContext";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { X, Calendar, CheckCircle2 } from "lucide-react";
+import { z } from "zod";
+import { format, isValid, parseISO } from "date-fns";
+
+
+// Validation schemas
+const contactSchema = z.object({
+  phone: z.string().min(10, "Phone number must be at least 10 digits"),
+  email: z.string().email("Invalid email address"),
+});
+
+const addressSchema = z.object({
+  region: z.string().min(2, "Region is required"),
+  flatNo: z.string().min(1, "Flat/House number is required"),
+  landmark: z.string().min(2, "Landmark is required"),
+});
+
+interface CartDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+const getFormattedDate = (dateStr: string) => {
+  if (!dateStr) return "Pick a date";
+  const date = parseISO(dateStr);
+  if (!isValid(date)) return "Pick a date";
+  return format(date, "d MMM (EEEE)");
+};
+
+export function CartDialog({ open, onOpenChange }: CartDialogProps) {
+  const { items, removeFromCart, clearCart, getTotalPrice } = useCart();
+  const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Form data
+  const [contactData, setContactData] = useState({ phone: "", email: "" });
+  const [addressData, setAddressData] = useState({
+    region: "",
+    flatNo: "",
+    landmark: "",
+  });
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
+
+  // Error states
+  const [contactErrors, setContactErrors] = useState<{ phone?: string; email?: string }>({});
+  const [addressErrors, setAddressErrors] = useState<{ region?: string; flatNo?: string; landmark?: string }>({});
+
+  const handleNext = () => {
+    if (step === 1 && items.length === 0) {
+      return; // Don't proceed if cart is empty
+    }
+
+    if (step === 2) {
+      // Validate contact info
+      const result = contactSchema.safeParse(contactData);
+      if (!result.success) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const errors: any = {};
+        result.error.issues.forEach((issue) => {
+          errors[issue.path[0]] = issue.message;
+        });
+        setContactErrors(errors);
+        return;
+      }
+      setContactErrors({});
+    }
+
+    if (step === 3) {
+      // Validate address
+      const result = addressSchema.safeParse(addressData);
+      if (!result.success) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const errors: any = {};
+        result.error.issues.forEach((issue) => {
+          errors[issue.path[0]] = issue.message;
+        });
+        setAddressErrors(errors);
+        return;
+      }
+      setAddressErrors({});
+    }
+
+    if (step === 4) {
+      // Validate date and time
+      if (!selectedDate || !selectedTime) {
+        alert("Please select date and time for booking");
+        return;
+      }
+      handleSubmit();
+      return;
+    }
+
+    setStep(step + 1);
+  };
+
+  const handleBack = () => {
+    setStep(step - 1);
+  };
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      const bookingData = {
+        items: items.map((item) => ({
+          id: item.id,
+          name: item.name,
+          price: item.discountedPrice || item.price,
+          quantity: item.quantity,
+        })),
+        contact: contactData,
+        address: addressData,
+        schedule: {
+          date: selectedDate,
+          time: selectedTime,
+        },
+        totalPrice: getTotalPrice(),
+      };
+
+      const response = await fetch("/api/booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      if (response.ok) {
+        setStep(5); // Success step
+      } else {
+        throw new Error("Failed to submit booking");
+      }
+    } catch (error) {
+      console.error("Error submitting booking:", error);
+      alert("Failed to submit booking. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleClose = () => {
+    if (step === 5) {
+      clearCart();
+      setStep(1);
+      setContactData({ phone: "", email: "" });
+      setAddressData({ region: "", flatNo: "", landmark: "" });
+      setSelectedDate("");
+      setSelectedTime("");
+    }
+    onOpenChange(false);
+  };
+
+  const timeSlots = [
+    "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM",
+    "03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM", "08:00 PM"
+  ];
+
+  return (
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>
+            {step === 1 && "Your Cart"}
+            {step === 2 && "Contact Information"}
+            {step === 3 && "Service Address"}
+            {step === 4 && "Booking Schedule"}
+            {step === 5 && "Booking Confirmed"}
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="py-4">
+          {/* Progress indicator */}
+          {step < 5 && (
+            <div className="flex items-center justify-between mb-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="flex items-center">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center ${i <= step
+                      ? "bg-primary text-white"
+                      : "bg-gray-200 text-gray-500"
+                      }`}
+                  >
+                    {i}
+                  </div>
+                  {i < 4 && (
+                    <div
+                      className={`w-12 h-1 ${i < step ? "bg-primary" : "bg-gray-200"
+                        }`}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Step 1: Cart Items */}
+          {step === 1 && (
+            <div className="space-y-4">
+              {items.length === 0 ? (
+                <p className="text-center text-muted-foreground py-8">
+                  Your cart is empty
+                </p>
+              ) : (
+                <>
+                  {items.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-start justify-between border rounded-lg p-4"
+                    >
+                      <div className="flex-1">
+                        <h3 className="font-semibold">{item.name}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {item.description}
+                        </p>
+                        <p className="text-sm font-medium mt-2">
+                          ₹{item.discountedPrice || item.price}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeFromCart(item.id)}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  <div className="border-t pt-4 mt-4">
+                    <div className="flex justify-between items-center text-lg font-bold">
+                      <span>Total:</span>
+                      <span>₹{getTotalPrice()}</span>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Step 2: Contact Information */}
+          {step === 2 && (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="phone">Phone Number *</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={contactData.phone}
+                  onChange={(e) =>
+                    setContactData({ ...contactData, phone: e.target.value })
+                  }
+                  placeholder="Enter your phone number"
+                />
+                {contactErrors.phone && (
+                  <p className="text-sm text-red-500 mt-1">{contactErrors.phone}</p>
+                )}
+              </div>
+              <div>
+                <Label htmlFor="email">Email Address *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={contactData.email}
+                  onChange={(e) =>
+                    setContactData({ ...contactData, email: e.target.value })
+                  }
+                  placeholder="Enter your email"
+                />
+                {contactErrors.email && (
+                  <p className="text-sm text-red-500 mt-1">{contactErrors.email}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Address */}
+          {step === 3 && (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="region">Region/City *</Label>
+                <Input
+                  id="region"
+                  value={addressData.region}
+                  onChange={(e) =>
+                    setAddressData({ ...addressData, region: e.target.value })
+                  }
+                  placeholder="Enter your city/region"
+                />
+                {addressErrors.region && (
+                  <p className="text-sm text-red-500 mt-1">{addressErrors.region}</p>
+                )}
+              </div>
+              <div>
+                <Label htmlFor="flatNo">Flat/House Number & Building *</Label>
+                <Input
+                  id="flatNo"
+                  value={addressData.flatNo}
+                  onChange={(e) =>
+                    setAddressData({ ...addressData, flatNo: e.target.value })
+                  }
+                  placeholder="Enter flat/house number and building name"
+                />
+                {addressErrors.flatNo && (
+                  <p className="text-sm text-red-500 mt-1">{addressErrors.flatNo}</p>
+                )}
+              </div>
+              <div>
+                <Label htmlFor="landmark">Landmark *</Label>
+                <Input
+                  id="landmark"
+                  value={addressData.landmark}
+                  onChange={(e) =>
+                    setAddressData({ ...addressData, landmark: e.target.value })
+                  }
+                  placeholder="Enter nearby landmark"
+                />
+                {addressErrors.landmark && (
+                  <p className="text-sm text-red-500 mt-1">{addressErrors.landmark}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Booking Schedule */}
+          {step === 4 && (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="date">Select Date *</Label>
+                <div className="relative">
+                  <Input
+                    id="date"
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    min={new Date().toISOString().split("T")[0]}
+                    className="cursor-pointer"
+                  />
+                  {selectedDate && (
+                    <div className="mt-2 text-sm text-muted-foreground">
+                      Selected: {getFormattedDate(selectedDate)}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div>
+                <Label>Select Time Slot *</Label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+                  {timeSlots.map((slot) => (
+                    <button
+                      key={slot}
+                      onClick={() => setSelectedTime(slot)}
+                      className={`p-3 border rounded-lg text-left transition-colors ${selectedTime === slot
+                        ? "border-primary bg-primary/10"
+                        : "hover:border-gray-400"
+                        }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        <span>{slot}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 5: Success */}
+          {step === 5 && (
+            <div className="text-center py-8">
+              <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold mb-2">Booking Confirmed!</h3>
+              <p className="text-muted-foreground mb-4">
+                Thank you for your booking. We&apos;ve sent a confirmation email to{" "}
+                {contactData.email}
+              </p>
+              <div className="bg-gray-50 rounded-lg p-4 text-left space-y-2">
+                <p>
+                  <strong>Date:</strong> {selectedDate}
+                </p>
+                <p>
+                  <strong>Time:</strong> {selectedTime}
+                </p>
+                <p>
+                  <strong>Total:</strong> ₹{getTotalPrice()}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer Buttons */}
+        <div className="md:flex justify-between pt-4 border-t">
+          {step > 1 && step < 5 && (
+            <Button variant="outline" onClick={handleBack}>
+              Back
+            </Button>
+          )}
+          {step < 4 && (
+            <Button
+              onClick={handleNext}
+              disabled={step === 1 && items.length === 0}
+              className="ml-auto"
+            >
+              Next
+            </Button>
+          )}
+          {step === 4 && (
+            <Button
+              onClick={handleNext}
+              disabled={isSubmitting}
+              className="ml-auto"
+            >
+              {isSubmitting ? "Submitting..." : "Confirm Booking"}
+            </Button>
+          )}
+          {step === 5 && (
+            <Button onClick={handleClose} className="ml-auto">
+              Close
+            </Button>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

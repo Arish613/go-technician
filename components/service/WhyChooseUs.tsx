@@ -37,7 +37,7 @@ export function WhyChooseUs({ service }: { service: WhyChooseUsProps }) {
                         <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
                             Why Choose Gotechnicians <span className="text-primary">{service.name}</span> Service?
                         </h2>
-                        <p className="text-sm text-slate-600">
+                        <p className="text-sm md:text-lg text-slate-600">
                             Experience reliability, transparency, and expertise with every service booking.
                         </p>
                     </div>
@@ -48,7 +48,7 @@ export function WhyChooseUs({ service }: { service: WhyChooseUsProps }) {
                                 key={idx}
                                 className="group relative h-full border-slate-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden"
                             >
-                                <CardHeader className="flex flex-col items-center text-center pb-2 pt-8">
+                                <CardHeader className="flex flex-col items-center text-center ">
                                     {/* Icon Container with Hover Effect */}
                                     <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors duration-300  group-hover:text-white">
                                         {item.icon ? (
