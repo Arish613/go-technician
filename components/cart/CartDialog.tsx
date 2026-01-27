@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import {
   Dialog,
@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { X, Calendar, CheckCircle2 } from "lucide-react";
+import { X, Calendar, CheckCircle2, Minus, Plus } from "lucide-react";
 import { z } from "zod";
 import { format, isValid, parseISO } from "date-fns";
 
@@ -41,9 +41,11 @@ const getFormattedDate = (dateStr: string) => {
 };
 
 export function CartDialog({ open, onOpenChange }: CartDialogProps) {
-  const { items, removeFromCart, clearCart, getTotalPrice } = useCart();
+  const { items, removeFromCart, clearCart, getTotalPrice, updateQuantity } = useCart();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const dateInputRef = useRef<HTMLInputElement>(null);
 
   // Form data
   const [contactData, setContactData] = useState({ phone: "", email: "" });
@@ -225,8 +227,35 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                         <p className="text-sm text-muted-foreground">
                           {item.description}
                         </p>
-                        <p className="text-sm font-medium mt-2">
-                          ₹{item.discountedPrice || item.price}
+                        <div className="flex items-center gap-4 mt-3">
+                          <p className="text-sm font-medium">
+                            ₹{item.discountedPrice || item.price}
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              disabled={item.quantity <= 1}
+                            >
+                              <Minus className="h-4 w-4" />
+                            </Button>
+                            <span className="w-8 text-center font-medium">
+                              {item.quantity}
+                            </span>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                        <p className="text-sm font-semibold mt-2">
+                          Subtotal: ₹{(item.discountedPrice || item.price) * item.quantity}
                         </p>
                       </div>
                       <Button
@@ -239,8 +268,8 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                     </div>
                   ))}
                   <div className="border-t pt-4 mt-4">
-                    <div className="flex justify-between items-center text-lg font-bold">
-                      <span>Total:</span>
+                    <div className=" md:flex justify-between items-center text-lg font-bold">
+                      <span className="max-sm:mr-2">Total:</span>
                       <span>₹{getTotalPrice()}</span>
                     </div>
                   </div>
@@ -338,8 +367,12 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
             <div className="space-y-4">
               <div>
                 <Label htmlFor="date">Select Date *</Label>
-                <div className="relative">
+                <div
+                  className="relative cursor-pointer"
+                  onClick={() => dateInputRef.current?.showPicker()}
+                >
                   <Input
+                    ref={dateInputRef}
                     id="date"
                     type="date"
                     value={selectedDate}

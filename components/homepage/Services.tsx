@@ -7,13 +7,13 @@ const categories = [
     icon: "/icons/ac-repair.png",
     badge: "Starts ₹199",
     badgeColor: "bg-green-600",
-    link: "/service/ac-service",
+    link: "/service/ac-repair-service",
   },
   {
     name: "Laptop Service",
     icon: "/icons/laptop-service.png",
     badgeColor: "bg-green-600",
-    link:"/service/laptop-repair",
+    link: "/service/laptop-repair",
   },
   {
     name: "Refrigerator Repair",

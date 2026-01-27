@@ -18,6 +18,7 @@ import { ServiceContent } from "@/components/service/Content";
 import { getReviewsByService } from "@/lib/action/review";
 import { ServiceReviews } from "@/components/service/Reviews";
 import { WhyChooseUs } from "@/components/service/WhyChooseUs";
+import { StickyCart } from "@/components/cart/StickyCart";
 
 interface ServicePageProps {
   params: {
@@ -40,6 +41,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
   return (
     <div className="min-h-screen">
+      <StickyCart />
       {/* Hero Section */}
       <section className="relative bg-linear-to-b from-primary/10 to-background py-12 md:py-20 ">
         <div className="md:mx-20 px-4">

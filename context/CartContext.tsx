@@ -11,6 +11,7 @@ interface CartContextType {
   items: CartItem[];
   addToCart: (service: SubService) => void;
   removeFromCart: (serviceId: string) => void;
+  updateQuantity: (serviceId: string, quantity: number) => void;
   clearCart: () => void;
   getTotalPrice: () => number;
   itemCount: number;
@@ -39,6 +40,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems((prevItems) => prevItems.filter((item) => item.id !== serviceId));
   };
 
+  const updateQuantity = (serviceId: string, quantity: number) => {
+    if (quantity < 1) return; // Prevent quantity less than 1
+    
+    setItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === serviceId ? { ...item, quantity } : item
+      )
+    );
+  };
+
   const clearCart = () => {
     setItems([]);
   };
@@ -58,6 +69,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         items,
         addToCart,
         removeFromCart,
+        updateQuantity,
         clearCart,
         getTotalPrice,
         itemCount,

@@ -3,11 +3,6 @@
 import Link from "next/link";
 import { MobileNav } from "./MobileNav";
 import Image from "next/image";
-import { ShoppingCart } from "lucide-react";
-import { useCart } from "@/context/CartContext";
-import { CartDialog } from "./cart/CartDialog";
-import { useState } from "react";
-import { Button } from "./ui/button";
 
 const navLinks = [
   { name: "Blogs", href: "/blog" },
@@ -17,8 +12,6 @@ const navLinks = [
 ];
 
 export function Navbar() {
-  const { itemCount } = useCart();
-  const [cartOpen, setCartOpen] = useState(false);
 
   return (
     <>
@@ -48,33 +41,15 @@ export function Navbar() {
                 {link.name}
               </Link>
             ))}
-            
-            {/* Cart Icon */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setCartOpen(true)}
-              className="relative"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {itemCount}
-                </span>
-              )}
-            </Button>
+
           </div>
 
           {/* Mobile Menu */}
-          <MobileNav 
-            navLinks={navLinks} 
-            onCartClick={() => setCartOpen(true)}
-            cartItemCount={itemCount}
+          <MobileNav
+            navLinks={navLinks}
           />
         </nav>
       </header>
-      
-      <CartDialog open={cartOpen} onOpenChange={setCartOpen} />
     </>
   );
 }

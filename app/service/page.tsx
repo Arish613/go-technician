@@ -1,9 +1,7 @@
 import { getServices } from "@/lib/action/service";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { ServicesFilter } from "@/components/service/ServiceFilter";
 import { ServiceCard } from "@/components/service/ServiceCard";
 
 interface ServicesPageProps {
@@ -50,18 +48,18 @@ export default async function ServicesPage({
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-linear-to-b from-primary/10 to-background py-16 md:py-24">
+      <section className="relative bg-linear-to-b from-primary/10 to-background py-6 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center space-y-6">
+          <div className="max-w-4xl mx-auto text-center space-y-3 md:space-y-6">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
               Professional Home Services
             </h1>
-            <p className="text-xl text-muted-foreground">
+            <p className="md:text-xl text-muted-foreground">
               Expert technicians for all your home maintenance and repair needs
             </p>
 
             {/* Search Bar */}
-            <div className="relative max-w-2xl mx-auto">
+            {/* <div className="relative max-w-2xl mx-auto">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <Input
                 type="search"
@@ -70,10 +68,10 @@ export default async function ServicesPage({
                 defaultValue={params.search}
                 name="search"
               />
-            </div>
+            </div> */}
 
             {/* Quick Stats */}
-            <div className="flex flex-wrap justify-center gap-8 pt-8">
+            {/* <div className="flex flex-wrap justify-center gap-8 pt-8">
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">
                   {services.length}+
@@ -87,26 +85,26 @@ export default async function ServicesPage({
                 <div className="text-sm text-muted-foreground">
                   Service Options
                 </div>
-              </div>
-              {/* <div className="text-center">
+              </div> */}
+            {/* <div className="text-center">
                 <div className="text-3xl font-bold text-primary">
                   {locations.length}+
                 </div>
                 <div className="text-sm text-muted-foreground">Cities</div>
               </div> */}
-            </div>
+            {/* </div> */}
           </div>
         </div>
       </section>
 
       {/* Filters & Services */}
-      <section className="py-12 md:py-16">
+      <section className="py-8 md:py-12">
         <div className="md:mx-20 px-4">
           {/* Filter Bar */}
-          <ServicesFilter
+          {/* <ServicesFilter
             currentLocation={params.location}
             locations={locations}
-          />
+          /> */}
 
           {/* Services Grid */}
           {services.length > 0 ? (
