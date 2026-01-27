@@ -154,7 +154,7 @@ export function AboutUs() {
                 in 2020 with a small team of 10 technicians serving one city.
               </p>
               <p className="mt-4 text-base leading-relaxed text-slate-600">
-                Today, we&apos;ve grown to 30+ cities across India, serving
+                Today, we&apos;ve grown to 10+ cities across India, serving
                 25,000+ happy customers with a network of verified
                 professionals. Every service is backed by our quality guarantee
                 and transparent pricing.

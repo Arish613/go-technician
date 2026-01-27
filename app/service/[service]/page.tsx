@@ -19,6 +19,7 @@ import { getReviewsByService } from "@/lib/action/review";
 import { ServiceReviews } from "@/components/service/Reviews";
 import { WhyChooseUs } from "@/components/service/WhyChooseUs";
 import { StickyCart } from "@/components/cart/StickyCart";
+import { AMCComparisonTable } from "@/components/service/AMCTable";
 
 interface ServicePageProps {
   params: {
@@ -38,6 +39,8 @@ export default async function ServicePage({ params }: ServicePageProps) {
   const hasTypes = service.type.length > 0;
 
   const reviews = await getReviewsByService(service.id);
+
+  const showAMCTable = resolvedParams.service.toLowerCase().includes("ac");
 
   return (
     <div className="min-h-screen">
@@ -201,6 +204,10 @@ export default async function ServicePage({ params }: ServicePageProps) {
           </div>
         </section>
       )}
+
+      <section>
+        {showAMCTable && <AMCComparisonTable />}
+      </section>
       {/* CTA Section */}
       <section className="py-12 md:py-16 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
