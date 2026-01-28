@@ -19,6 +19,7 @@ interface MarqueeProps extends React.HTMLAttributes<HTMLDivElement> {
    * @default 16
    */
   gap?: number;
+  pauseOnHover?: boolean;
 }
 
 export function Marquee({
@@ -26,12 +27,21 @@ export function Marquee({
   direction = "left",
   speed = 40,
   gap = 16,
+  pauseOnHover = false,
   className,
   ...props
 }: MarqueeProps) {
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  const animationPlayState = pauseOnHover && isHovered ? "paused" : "running";
+
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
   return (
     <div
       className={cn("group relative flex overflow-hidden", className)}
+      onMouseEnter={pauseOnHover ? handleMouseEnter : undefined}
+      onMouseLeave={pauseOnHover ? handleMouseLeave : undefined}
       {...props}
     >
       <div
@@ -40,6 +50,7 @@ export function Marquee({
           gap: `${gap}px`,
           animationDuration: `${speed}s`,
           animationDirection: direction === "right" ? "reverse" : "normal",
+          animationPlayState,
         }}
       >
         {children}
@@ -51,6 +62,7 @@ export function Marquee({
           gap: `${gap}px`,
           animationDuration: `${speed}s`,
           animationDirection: direction === "right" ? "reverse" : "normal",
+          animationPlayState,
         }}
       >
         {children}

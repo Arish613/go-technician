@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { X, Calendar, CheckCircle2, Minus, Plus } from "lucide-react";
+import { X, Calendar, CheckCircle2, Minus, Plus, Clock } from "lucide-react";
 import { z } from "zod";
 import { format, isValid, parseISO } from "date-fns";
 
@@ -186,20 +186,20 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
         <div className="py-4">
           {/* Progress indicator */}
           {step < 5 && (
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-6 px-4 md:ml-10">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="flex items-center">
+                <div key={i} className="flex items-center flex-1">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center ${i <= step
-                      ? "bg-primary text-white"
-                      : "bg-gray-200 text-gray-500"
+                    className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${i <= step
+                        ? "bg-primary text-white"
+                        : "bg-gray-200 text-gray-500"
                       }`}
                   >
                     {i}
                   </div>
                   {i < 4 && (
                     <div
-                      className={`w-12 h-1 ${i < step ? "bg-primary" : "bg-gray-200"
+                      className={`h-1 flex-1 mx-2 ${i < step ? "bg-primary" : "bg-gray-200"
                         }`}
                     />
                   )}
@@ -400,7 +400,7 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                         }`}
                     >
                       <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
+                        <Clock className="w-4 h-4" />
                         <span>{slot}</span>
                       </div>
                     </button>

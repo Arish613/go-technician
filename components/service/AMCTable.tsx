@@ -20,8 +20,7 @@ export function AMCComparisonTable() {
                         <CardTitle className="text-3xl md:text-4xl font-bold">
                             <h2>
                                 Compare AMC Plans We Offer
-                            </h2>
-                            <sup className="text-sm text-muted-foreground ml-1">*</sup>
+                            </h2> 
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="overflow-x-auto">

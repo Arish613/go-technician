@@ -610,6 +610,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
                     control={form.control}
                     label="Sub Service Image"
                     disabled={isSubmitting}
+                    defaultValue="/service.png"
                   />
 
                   {/* What's Included */}

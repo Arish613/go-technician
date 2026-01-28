@@ -45,7 +45,7 @@ export function Services() {
           <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
             Explore What We Offer
           </h2>
-          <p className="mx-auto text-sm mt-4 max-w-2xl md:text-base text-slate-600">
+          <p className="max-sm:hidden mx-auto text-sm mt-4 max-w-2xl md:text-base text-slate-600">
             Discover a wide range of home and appliance services provided by
             trusted professionals. Quality service, transparent pricing, and
             customer satisfaction guaranteed.

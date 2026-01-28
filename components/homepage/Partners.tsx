@@ -79,7 +79,7 @@ export function Partners() {
 
         {/* Partners Marquee - First Row (Left to Right) */}
         <div className="relative mb-4">
-          <Marquee direction="left" speed={35} gap={24}>
+          <Marquee direction="left" speed={35} gap={24} pauseOnHover>
             {partners.map((partner) => (
               <PartnerCard key={partner.name} partner={partner} />
             ))}

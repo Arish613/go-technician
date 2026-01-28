@@ -52,7 +52,7 @@ export function QuickRepairs() {
                   key={idx}
                   className="pl-4 basis-2/3 md:basis-1/3 lg:basis-1/3"
                 >
-                  <div className="flex flex-col items-center justify-center bg-blue-50 py-10 px-4 rounded-lg h-full">
+                  <div className="flex flex-col items-center justify-center bg-blue-50 py-5 px-4 rounded-lg h-full">
                     <Image
                       src={item.image}
                       alt={item.title}

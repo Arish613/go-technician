@@ -84,7 +84,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
             </div>
 
             {service.imageUrl && (
-              <div className="relative h-75 md:h-100 rounded-lg overflow-hidden ">
+              <div className="relative h-75 md:h-100 rounded-lg overflow-hidden max-sm:hidden">
                 <Image
                   src={service.imageUrl}
                   alt={service.name}

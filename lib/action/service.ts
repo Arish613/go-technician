@@ -21,8 +21,9 @@ export async function createService(data: CreateServiceInput) {
       },
     });
 
-    revalidatePath("/service");
-    revalidatePath(`/service/${service.slug}`);
+    revalidatePath("/service", "page");
+    revalidatePath("/admin/service", "page");
+    revalidatePath(`/service/${service.slug}`, "page");
     return { success: true, data: service };
   } catch (error) {
     console.error("Error creating service:", error);
@@ -129,8 +130,9 @@ export async function updateService(data: UpdateServiceInput) {
       },
     });
 
-    revalidatePath("/service");
-    revalidatePath(`/service/${service.slug}`);
+    revalidatePath("/service", "page");
+    revalidatePath("/admin/service", "page");
+    revalidatePath(`/service/${service.slug}`, "page");
     return { success: true, data: service };
   } catch (error) {
     console.error("Error updating service:", error);
@@ -144,7 +146,8 @@ export async function deleteService(id: string) {
       where: { id },
     });
 
-    revalidatePath("/service");
+    revalidatePath("/service", "page");
+    revalidatePath("/admin/service", "page");
     return { success: true, message: "Service deleted successfully" };
   } catch (error) {
     console.error("Error deleting service:", error);
@@ -238,8 +241,9 @@ export async function togglePublishService(id: string, isPublished: boolean) {
       where: { id },
       data: { isPublished: !isPublished },
     });
-    revalidatePath("/service");
-    revalidatePath(`/service/${service.slug}`);
+    revalidatePath("/service", "page");
+    revalidatePath("/admin/service", "page");
+    revalidatePath(`/service/${service.slug}`, "page");
     return { success: true, data: service };
   } catch (error) {
     console.error("Error toggling publish status:", error);
