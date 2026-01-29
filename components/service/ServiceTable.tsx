@@ -38,6 +38,7 @@ import Image from "next/image";
 
 interface ServicesTableProps {
   services: ServiceWithRelations[];
+  onRefresh?: () => void;
 }
 
 export function ServicesTable({ services }: ServicesTableProps) {

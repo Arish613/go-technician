@@ -12,7 +12,6 @@ import ImageUpload from "@/components/ImageUpload";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, Plus, Trash2, X } from "lucide-react";
-import { createService, updateService } from "@/lib/action/service";
 import type { ServiceWithRelations } from "@/types/service";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -89,9 +88,9 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
       isPublished: service?.isPublished || false,
       whyChooseUs: service?.whyChooseUs
         ? service.whyChooseUs.map((item) => ({
-            ...item,
-            icon: item.icon === null ? undefined : item.icon,
-          }))
+          ...item,
+          icon: item.icon === null ? undefined : item.icon,
+        }))
         : [],
       faqs: service?.faqs || [],
       subServices:
@@ -148,16 +147,42 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
   const onSubmit = async (data: ServiceFormData) => {
     setIsSubmitting(true);
     try {
-      const result =
-        mode === "create"
-          ? await createService(data)
-          : await updateService({ ...data, id: service!.id });
+      if (mode === "create") {
+        // Use the API endpoint instead of server action
+        const response = await fetch("/api/service", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
 
-      if (result.success) {
-        router.push("/admin/service");
-        router.refresh();
+        const result = await response.json();
+
+        if (response.ok) {
+          router.push("/admin/service");
+          router.refresh();
+        } else {
+          alert(result.error || "Failed to create service");
+        }
       } else {
-        alert(result.error || "Operation failed");
+        // Keep existing update logic
+        const response = await fetch(`/api/service/${service!.slug}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          router.push("/admin/service");
+          router.refresh();
+        } else {
+          alert(result.error || "Failed to update service");
+        }
       }
     } catch (error) {
       console.error("Form submission error:", error);

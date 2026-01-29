@@ -29,6 +29,14 @@ const officeDetails = [
   { icon: Clock, title: "Working Hours", desc: "Mon–Sun" },
 ];
 
+export const metadata = {
+  title: "Contact Us | Go Technicians",
+  description: "Get in touch with Go Technicians for bookings, support, or partnership queries. We're here to help you anytime.",
+  alternates: {
+    canonical: "https://gotechnicians.com/contact",
+  },
+};
+
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-slate-50 py-16">

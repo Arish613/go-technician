@@ -1,35 +1,35 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { CreateServiceInput, UpdateServiceInput } from "@/types/service";
+// import { CreateServiceInput, UpdateServiceInput } from "@/types/service";
 import { revalidatePath } from "next/cache";
 
-export async function createService(data: CreateServiceInput) {
-  try {
-    const { faqs, subServices, whyChooseUs, ...serviceData } = data;
+// export async function createService(data: CreateServiceInput) {
+//   try {
+//     const { faqs, subServices, whyChooseUs, ...serviceData } = data;
 
-    const service = await prisma.services.create({
-      data: {
-        ...serviceData,
-        whyChooseUs: whyChooseUs ?? [],
-        faqs: faqs ? { create: faqs } : undefined,
-        subServices: subServices ? { create: subServices } : undefined,
-      },
-      include: {
-        faqs: true,
-        subServices: true,
-      },
-    });
+//     const service = await prisma.services.create({
+//       data: {
+//         ...serviceData,
+//         whyChooseUs: whyChooseUs ?? [],
+//         faqs: faqs ? { create: faqs } : undefined,
+//         subServices: subServices ? { create: subServices } : undefined,
+//       },
+//       include: {
+//         faqs: true,
+//         subServices: true,
+//       },
+//     });
 
-    revalidatePath("/service", "page");
-    revalidatePath("/admin/service", "page");
-    revalidatePath(`/service/${service.slug}`, "page");
-    return { success: true, data: service };
-  } catch (error) {
-    console.error("Error creating service:", error);
-    return { success: false, error: "Failed to create service" };
-  }
-}
+//     revalidatePath("/service", "page");
+//     revalidatePath("/admin/service", "page");
+//     revalidatePath(`/service/${service.slug}`, "page");
+//     return { success: true, data: service };
+//   } catch (error) {
+//     console.error("Error creating service:", error);
+//     return { success: false, error: "Failed to create service" };
+//   }
+// }
 
 export async function getServices(location?: string, isPublished?: boolean) {
   try {
@@ -86,7 +86,8 @@ export async function getServiceBySlug(slug: string) {
         faqs: true,
         subServices: {
           where: { isActive: true },
-          orderBy: { isPopular: "desc" },
+
+          orderBy: { createdAt:"asc" },
         },
       },
     });
@@ -102,43 +103,43 @@ export async function getServiceBySlug(slug: string) {
   }
 }
 
-export async function updateService(data: UpdateServiceInput) {
-  try {
-    const { id, faqs, subServices, whyChooseUs, ...serviceData } = data;
+// export async function updateService(data: UpdateServiceInput) {
+//   try {
+//     const { id, faqs, subServices, whyChooseUs, ...serviceData } = data;
 
-    const service = await prisma.services.update({
-      where: { id },
-      data: {
-        ...serviceData,
-        whyChooseUs: whyChooseUs ?? [],
-        faqs: faqs
-          ? {
-              deleteMany: {},
-              create: faqs,
-            }
-          : undefined,
-        subServices: subServices
-          ? {
-              deleteMany: {},
-              create: subServices,
-            }
-          : undefined,
-      },
-      include: {
-        faqs: true,
-        subServices: true,
-      },
-    });
+//     const service = await prisma.services.update({
+//       where: { id },
+//       data: {
+//         ...serviceData,
+//         whyChooseUs: whyChooseUs ?? [],
+//         faqs: faqs
+//           ? {
+//               deleteMany: {},
+//               create: faqs,
+//             }
+//           : undefined,
+//         subServices: subServices
+//           ? {
+//               deleteMany: {},
+//               create: subServices,
+//             }
+//           : undefined,
+//       },
+//       include: {
+//         faqs: true,
+//         subServices: true,
+//       },
+//     });
 
-    revalidatePath("/service", "page");
-    revalidatePath("/admin/service", "page");
-    revalidatePath(`/service/${service.slug}`, "page");
-    return { success: true, data: service };
-  } catch (error) {
-    console.error("Error updating service:", error);
-    return { success: false, error: "Failed to update service" };
-  }
-}
+//     revalidatePath("/service", "page");
+//     revalidatePath("/admin/service", "page");
+//     revalidatePath(`/service/${service.slug}`, "page");
+//     return { success: true, data: service };
+//   } catch (error) {
+//     console.error("Error updating service:", error);
+//     return { success: false, error: "Failed to update service" };
+//   }
+// }
 
 export async function deleteService(id: string) {
   try {

@@ -155,8 +155,11 @@ export default async function ServicesPage({
 }
 
 // Generate metadata
-export const metadata = {
+export const generateMetadata = () => ({
   title: "Professional Home Services | Expert Technicians",
   description:
     "Browse our complete range of professional home services including AC repair, plumbing, electrical work, and more. Expert technicians at your doorstep.",
-};
+  alternates: {
+    canonical: "/service",
+  },
+});

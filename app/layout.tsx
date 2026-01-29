@@ -20,9 +20,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://gotechnicians.com/"),
   title: {
     default: "Go Technicians | Trusted Home & Office Services",
     template: "%s | Go Technicians",
+  },
+  alternates: {
+    canonical: "./",
   },
   description:
     "Book verified technicians for AC repair, laptop service, appliance repair, home cleaning, plumbing & more. Same-day service, transparent pricing, and 30-day warranty across 30+ cities in India.",

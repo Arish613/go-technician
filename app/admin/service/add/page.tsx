@@ -1,3 +1,4 @@
+"use client"
 import { ServiceForm } from "@/components/service/Form";
 
 export default function AddService() {

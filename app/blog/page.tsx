@@ -4,6 +4,9 @@ import { BlogCard } from "@/components/blog/Card";
 export const metadata = {
   title: "Blog | Go Technicians",
   description: "Read our latest articles, guides, and technical insights",
+  alternates: {
+    canonical: "/blog",
+  }
 };
 
 export default async function BlogsPage() {

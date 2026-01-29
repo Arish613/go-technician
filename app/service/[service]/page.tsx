@@ -262,5 +262,8 @@ export async function generateMetadata({ params }: ServicePageProps) {
       description: service.description,
       images: service.imageUrl ? [service.imageUrl] : [],
     },
+    alternates: {
+      canonical: `/service/${service.slug}`,
+    },
   };
 }
