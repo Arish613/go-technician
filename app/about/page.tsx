@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   description:
     "Learn about Go Technicians - Your trusted partner for home and office services. Verified experts, transparent pricing, and quality guaranteed.",
   alternates: {
-    canonical: "https://gotechnicians.coms/about",
+    canonical: "https://www.gotechnicians.coms/about",
   }
 };
 

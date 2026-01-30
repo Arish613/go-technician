@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://gotechnicians.com/"),
+  metadataBase: new URL("https://www.gotechnicians.com/"),
   title: {
     default: "Go Technicians | Trusted Home & Office Services",
     template: "%s | Go Technicians",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://gotechnicians.com",
+    url: "https://www.gotechnicians.com",
     siteName: "Go Technicians",
     title: "Go Technicians | Trusted Home & Office Services",
     description:

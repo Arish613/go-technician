@@ -2,7 +2,7 @@ export const metadata = {
   title: "Terms and Conditions | Go Technicians",
   description: "Read the terms and conditions for using Go Technicians' services. Your trust and safety are our priority.",
   alternates: {
-    canonical: "https://gotechnicians.com/terms-and-conditions",
+    canonical: "https://www.gotechnicians.com/terms-and-conditions",
   },
 };
 

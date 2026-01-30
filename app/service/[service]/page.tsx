@@ -45,21 +45,21 @@ export default async function ServicePage({ params }: ServicePageProps) {
   return (
     <div className="min-h-screen">
       <StickyCart />
-      {/* Hero Section */}
-      <section className="relative bg-linear-to-b from-primary/10 to-background py-12 md:py-20 ">
+      {/* Hero Section - Reduced height */}
+      <section className="relative bg-linear-to-b from-primary/10 to-background py-6 md:py-0">
         <div className="md:mx-20 px-4">
-          <div className="grid gap-8 lg:grid-cols-2 items-center">
-            <div className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2 items-center">
+            <div className="space-y-4">
               <div className="space-y-2">
                 {service.location && (
                   <Badge variant="outline" className="mb-2">
                     {service.location}
                   </Badge>
                 )}
-                <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
                   {service.name}
                 </h1>
-                <p className="text-xl text-muted-foreground">
+                <p className="text-lg text-muted-foreground">
                   {service.description}
                 </p>
               </div>
@@ -74,17 +74,14 @@ export default async function ServicePage({ params }: ServicePageProps) {
               </div>
 
               <div className="flex gap-4">
-                <Button size="lg" asChild>
+                <Button size="default" asChild>
                   <a href="#services">View Services</a>
-                </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <a href="#faqs">View FAQs</a>
                 </Button>
               </div>
             </div>
 
             {service.imageUrl && (
-              <div className="relative h-75 md:h-100 rounded-lg overflow-hidden max-sm:hidden">
+              <div className="relative h-60 md:h-72 rounded-lg overflow-hidden max-sm:hidden">
                 <Image
                   src={service.imageUrl}
                   alt={service.name}
@@ -96,15 +93,15 @@ export default async function ServicePage({ params }: ServicePageProps) {
             )}
           </div>
         </div>
-      </section>{" "}
-      {/* Sub Services Section */}
-      <section id="services" className="py-12 md:py-16  ">
+      </section>
+      {/* Sub Services Section - Reduced top padding */}
+      <section id="services" className="py-6 md:py-10">
         <div className=" md:mx-20 px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold mb-3">
               Our Services
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-base text-muted-foreground max-w-2xl mx-auto">
               Choose from our range of professional services tailored to your
               needs
             </p>
@@ -113,7 +110,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
           {hasTypes ? (
             <Tabs defaultValue={service.type[0]} className="w-full">
               <TabsList
-                className="grid w-full max-w-md mx-auto mb-8"
+                className="grid w-full max-w-md mx-auto mb-6"
                 style={{
                   gridTemplateColumns: `repeat(${service.type.length}, 1fr)`,
                 }}
@@ -167,7 +164,6 @@ export default async function ServicePage({ params }: ServicePageProps) {
       )}
 
       {reviews && reviews.length > 0 && <ServiceReviews reviews={reviews} />}
-
 
       {/* Service Content */}
       <section className="py-10 md:py-12 md:px-10 bg-muted/30">

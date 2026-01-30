@@ -2,7 +2,7 @@ export const metadata = {
   title: "Disclaimer | Go Technicians",
   description: "Read the disclaimer for Go Technicians regarding service information, liability, and website usage.",
   alternates: {
-    canonical: "https://gotechnicians.com/disclaimer",
+    canonical: "https://www.gotechnicians.com/disclaimer",
   },
 };
 

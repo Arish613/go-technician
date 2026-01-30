@@ -33,7 +33,7 @@ export const metadata = {
   title: "Contact Us | Go Technicians",
   description: "Get in touch with Go Technicians for bookings, support, or partnership queries. We're here to help you anytime.",
   alternates: {
-    canonical: "https://gotechnicians.com/contact",
+    canonical: "https://www.gotechnicians.com/contact",
   },
 };
 
