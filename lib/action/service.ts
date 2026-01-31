@@ -1,8 +1,10 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
 // import { CreateServiceInput, UpdateServiceInput } from "@/types/service";
 import { revalidatePath } from "next/cache";
+import { authOptions } from "../auth";
 
 // export async function createService(data: CreateServiceInput) {
 //   try {
@@ -142,6 +144,10 @@ export async function getServiceBySlug(slug: string) {
 // }
 
 export async function deleteService(id: string) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return { success: false, error: "Unauthorized" };
+  }
   try {
     await prisma.services.delete({
       where: { id },
@@ -237,6 +243,10 @@ export async function getServiceAndSubService(userInput: string) {
 }
 
 export async function togglePublishService(id: string, isPublished: boolean) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return { success: false, error: "Unauthorized" };
+  }
   try {
     const service = await prisma.services.update({
       where: { id },
@@ -254,9 +264,9 @@ export async function togglePublishService(id: string, isPublished: boolean) {
 export async function getSubServiceForGivenService(serviceId: string) {
   try {
     const subServices = await prisma.subService.findMany({
-      where: { 
+      where: {
         serviceId: serviceId,
-        isActive: true 
+        isActive: true,
       },
       orderBy: { price: "asc" },
       select: {
@@ -264,10 +274,9 @@ export async function getSubServiceForGivenService(serviceId: string) {
         name: true,
       },
     });
-
     return { success: true, data: subServices };
   } catch (error) {
     console.error("Error fetching subservices:", error);
-    
+    return { success: false, error: "Failed to fetch subservices" };
   }
 }

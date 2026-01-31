@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 // Configure Cloudinary
 cloudinary.config({
@@ -9,6 +11,10 @@ cloudinary.config({
 });
 
 export async function POST(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if(!session){
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File;
@@ -27,7 +33,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file size (10MB limit for Cloudinary)
-    const maxSize = 1 * 1024 * 1024; // 10MB
+    const maxSize = 1 * 1024 * 1024; // 1MB
     if (file.size > maxSize) {
       return NextResponse.json(
         { error: "File too large. Maximum size is 1MB." },
@@ -97,6 +103,11 @@ export async function POST(request: NextRequest) {
 
 // Delete endpoint
 export async function DELETE(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if(!session){
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const { publicId } = await request.json();
 

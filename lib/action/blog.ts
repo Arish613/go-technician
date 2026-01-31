@@ -7,6 +7,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth";
 
 export async function createBlog(data: CreateBlogInput) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return { success: false, error: "Unauthorized" };
+  }
   try {
     const { faqs, ...blogData } = data;
 
@@ -59,6 +63,10 @@ export async function getBlogBySlug(slug: string) {
 }
 
 export async function updateBlog(data: UpdateBlogInput) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return { success: false, error: "Unauthorized" };
+  }
   try {
     const { id, faqs, ...blogData } = data;
 
