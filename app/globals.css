@@ -6,18 +6,6 @@
   outline: none;
 }
 
-@media (max-width: 640px) {
-  h1 {
-    font-size: 1.5rem !important;
-  }
-  h2 {
-    font-size: 1.25rem !important;
-  }
-  h3 {
-    font-size: 1.125rem !important;
-  }
-}
-
 .ProseMirror h1 {
   font-size: 1.875rem;
   font-weight: bold;
@@ -216,7 +204,7 @@
   @apply bg-gray-700/50;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .blog-content table {
     @apply text-sm;
   }
@@ -224,6 +212,29 @@
   .blog-content th,
   .blog-content td {
     @apply px-2 py-2;
+  }
+
+  .blog-content h1 {
+    font-size: 1.5rem;
+  }
+  .blog-content h2 {
+    font-size: 1.25rem;
+  }
+  .blog-content h3 {
+    font-size: 1.125rem;
+  }
+  h1 {
+    font-size: 1.5rem;
+  }
+  h2 {
+    font-size: 1.25rem;
+  }
+  h3 {
+    font-size: 1.125rem;
+  }
+
+  .subservice h3 {
+    font-size: 15px !important;
   }
 }
 

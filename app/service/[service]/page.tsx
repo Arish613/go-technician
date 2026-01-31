@@ -1,7 +1,6 @@
 import { getServiceBySlug } from "@/lib/action/service";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -45,119 +44,95 @@ export default async function ServicePage({ params }: ServicePageProps) {
   return (
     <div className="min-h-screen">
       <StickyCart />
-      {/* Hero Section - Reduced height */}
-      <section className="relative bg-linear-to-b from-primary/10 to-background py-6 md:py-0">
-        <div className="md:mx-20 px-4">
-          <div className="grid gap-6 lg:grid-cols-2 items-center">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                {service.location && (
-                  <Badge variant="outline" className="mb-2">
-                    {service.location}
-                  </Badge>
-                )}
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-                  {service.name}
-                </h1>
-                <p className="text-lg text-muted-foreground">
-                  {service.description}
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">
-                  {service.subServices.length} Services Available
-                </Badge>
-                {service.faqs.length > 0 && (
-                  <Badge variant="secondary">{service.faqs.length} FAQs</Badge>
-                )}
-              </div>
-
-              <div className="flex gap-4">
-                <Button size="default" asChild>
-                  <a href="#services">View Services</a>
-                </Button>
-              </div>
-            </div>
-
-            {service.imageUrl && (
-              <div className="relative h-60 md:h-72 rounded-lg overflow-hidden max-sm:hidden">
+      <div className="grid grid-cols-2">
+        {/* Hero Section - Reduced height */}
+        <section className="sticky top-10 h-screen mt-10 hidden lg:block">
+          <div className="md:mx-20 px-4">
+            <div className=" gap-6  items-center">
+              {service.imageUrl && (
                 <Image
                   src={service.imageUrl}
                   alt={service.name}
-                  fill
-                  className="object-cover"
+                  width={1000}
+                  height={700}
                   priority
+                  className="w-full"
                 />
+
+              )}
+            </div>
+          </div>
+        </section>
+        {/* Sub Services Section - Reduced top padding */}
+        <section id="services" className="py-6 md:py-10 col-span-2 lg:col-span-1">
+          <div className=" md:mx-20 px-4">
+            <div className="space-y-2 text-center mb-3">
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+                {service.name}
+              </h1>
+              <p className="text-sm md:text-lg text-muted-foreground">
+                {service.description}
+              </p>
+            </div>
+
+            {hasTypes ? (
+              <Tabs defaultValue={service.type[0]} className="w-full ">
+                <div className="sticky top-0 z-20 bg-white py-4 ">
+                  <TabsList
+                    className="grid w-full max-w-md mx-auto gap-2 p-0 bg-transparent"
+                    style={{
+                      gridTemplateColumns: `repeat(${service.type.length}, 1fr)`,
+                    }}
+                  >
+                    {service.type.map((type) => (
+                      <TabsTrigger
+                        key={type}
+                        value={type}
+                        className="md:h-12 max-sm:text-xs data-[state=active]:bg-blue-500/20 data-[state=active]:text-black data-[state=active]:border-primary border-2 border-gray-300 rounded-md data-[state=inactive]:bg-transparent data-[state=inactive]:text-black transition-all"
+                      >
+                        {type}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                </div>
+
+                {service.type.map((type) => {
+                  const filteredSubServices = service.subServices.filter(
+                    (sub) => sub.type === type
+                  );
+
+                  return (
+                    <TabsContent key={type} value={type} className="space-y-6">
+                      {filteredSubServices.length > 0 ? (
+                        <div className="flex flex-col gap-10 md:gap-5">
+                          {filteredSubServices.map((subService) => (
+                            <SubServiceCard
+                              key={subService.id}
+                              subService={subService}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-12">
+                          <p className="text-muted-foreground">
+                            No services available for {type} at the moment.
+                          </p>
+                        </div>
+                      )}
+                    </TabsContent>
+                  );
+                })}
+              </Tabs>
+            ) : (
+              <div className="flex flex-col gap-5">
+                {service.subServices.map((subService) => (
+                  <SubServiceCard key={subService.id} subService={subService} />
+                ))}
               </div>
             )}
           </div>
-        </div>
-      </section>
-      {/* Sub Services Section - Reduced top padding */}
-      <section id="services" className="py-6 md:py-10">
-        <div className=" md:mx-20 px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold mb-3">
-              Our Services
-            </h2>
-            <p className="text-base text-muted-foreground max-w-2xl mx-auto">
-              Choose from our range of professional services tailored to your
-              needs
-            </p>
-          </div>
-
-          {hasTypes ? (
-            <Tabs defaultValue={service.type[0]} className="w-full">
-              <TabsList
-                className="grid w-full max-w-md mx-auto mb-6"
-                style={{
-                  gridTemplateColumns: `repeat(${service.type.length}, 1fr)`,
-                }}
-              >
-                {service.type.map((type) => (
-                  <TabsTrigger key={type} value={type}>
-                    {type}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-
-              {service.type.map((type) => {
-                const filteredSubServices = service.subServices.filter(
-                  (sub) => sub.type === type
-                );
-
-                return (
-                  <TabsContent key={type} value={type} className="space-y-6">
-                    {filteredSubServices.length > 0 ? (
-                      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        {filteredSubServices.map((subService) => (
-                          <SubServiceCard
-                            key={subService.id}
-                            subService={subService}
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-center py-12">
-                        <p className="text-muted-foreground">
-                          No services available for {type} at the moment.
-                        </p>
-                      </div>
-                    )}
-                  </TabsContent>
-                );
-              })}
-            </Tabs>
-          ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {service.subServices.map((subService) => (
-                <SubServiceCard key={subService.id} subService={subService} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+        </section>
+      </div>
       {/* Why choose us */}
       {service.whyChooseUs && (
         <WhyChooseUs service={{ name: service.name, whyChooseUs: service.whyChooseUs }} />

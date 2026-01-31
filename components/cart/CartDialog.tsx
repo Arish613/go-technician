@@ -186,7 +186,7 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
         <div className="py-4">
           {/* Progress indicator */}
           {step < 5 && (
-            <div className="flex items-center justify-between mb-6 px-4 md:ml-10">
+            <div className="flex items-center justify-between mb-6 px-4 ml-10">
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="flex items-center flex-1">
                   <div

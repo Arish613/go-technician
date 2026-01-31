@@ -22,6 +22,10 @@ interface MobileNavProps {
 
 export function MobileNav({ navLinks }: MobileNavProps) {
   const [open, setOpen] = useState(false);
+  const mobileNavLinks = [
+    { name: "Home", href: "/" },
+    ...navLinks
+  ];
 
   return (
     <div className="flex items-center gap-2 lg:hidden">
@@ -46,7 +50,7 @@ export function MobileNav({ navLinks }: MobileNavProps) {
               ></Button>
             </div>
             <nav className="flex flex-col gap-4">
-              {navLinks.map((link) => (
+              {mobileNavLinks.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}

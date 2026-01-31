@@ -87,7 +87,7 @@ export async function getServiceBySlug(slug: string) {
         subServices: {
           where: { isActive: true },
 
-          orderBy: { createdAt:"asc" },
+          orderBy: { price: "asc" },
         },
       },
     });
@@ -240,10 +240,9 @@ export async function togglePublishService(id: string, isPublished: boolean) {
   try {
     const service = await prisma.services.update({
       where: { id },
-      data: { isPublished: !isPublished },
+      data: { isPublished },
     });
     revalidatePath("/service", "page");
-    revalidatePath("/admin/service", "page");
     revalidatePath(`/service/${service.slug}`, "page");
     return { success: true, data: service };
   } catch (error) {

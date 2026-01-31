@@ -18,7 +18,6 @@ export async function PUT(
     const { faqs, subServices, whyChooseUs, ...serviceData } = data;
 
     // Check if new slug already exists (only if slug is being changed)
-
     if (data.slug && data.slug !== slug) {
       const existingService = await prisma.services.findUnique({
         where: { slug: data.slug },

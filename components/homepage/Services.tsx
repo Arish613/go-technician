@@ -26,6 +26,7 @@ const categories = [
   {
     name: "Washing Machine Repair",
     icon: "/icons/washing-machine.png",
+    link: "/service/washing-machine-repair",
   },
   {
     name: "Plumbing",

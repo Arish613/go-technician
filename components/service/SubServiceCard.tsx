@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, Star, Info, X } from "lucide-react";
+import { Clock, Info, } from "lucide-react";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { Button } from "../ui/button";
@@ -47,15 +47,15 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
     <div
       id={`service-${subService.id}`}
       data-subservice-id={subService.id}
-      className="relative bg-card border rounded-lg overflow-hidden  transition-shadow scroll-mt-24 p-4"
+      className="relative bg-card rounded-lg overflow-hidden scroll-mt-24 px-4 subservice"
     >
-      <div className="flex flex-col md:flex-row md:items-center gap-4">
+      <div className="flex flex-row md:items-center gap-4">
         {/* Left: Content */}
         <div className="flex-1 space-y-3">
           {/* Title */}
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <h3 className="text-base md:text-lg font-semibold line-clamp-2">
+              <h3 className="text-sm md:text-lg font-semibold line-clamp-2">
                 {subService.name}
               </h3>
               {/* {subService.isPopular && (
@@ -70,7 +70,7 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
                 <SubServiceDialog subService={subService} />
               )}
             </div>
-            <p className="text-xs md:text-sm text-muted-foreground line-clamp-2">
+            <p className="text-[11px] md:text-sm text-muted-foreground line-clamp-2">
               {subService.description}
             </p>
           </div>
@@ -78,7 +78,7 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
           {/* Pricing & Duration */}
           <div className="flex items-center gap-3 flex-wrap">
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl md:text-3xl font-bold text-primary">
+              <span className="text-lg md:text-2xl font-bold text-primary">
                 ₹{hasDiscount ? subService.discountedPrice : subService.price}
               </span>
               {hasDiscount && (
@@ -86,7 +86,7 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
                   <span className="text-sm text-muted-foreground line-through">
                     ₹{subService.price}
                   </span>
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge variant="secondary" className="max-sm:text-[10px]">
                     Save ₹{subService.price - (subService.discountedPrice || 0)}
                   </Badge>
                 </>
@@ -102,23 +102,24 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
         </div>
 
         {/* Right: Image & Button */}
-        <div className="flex flex-col items-center gap-3 md:min-w-[200px]">
+        <div className="flex flex-col items-center gap-2 max-sm:max-w-25  md:min-w-50">
           {subService.imageUrl && (
-            <div className="relative w-full md:w-48 h-32 md:h-36 rounded-lg overflow-hidden">
-              <Image
-                src={subService.imageUrl}
-                alt={subService.name}
-                fill
-                className="object-cover"
-              />
-            </div>
+
+            <Image
+              src={subService.imageUrl}
+              alt={subService.name}
+              width={200}
+              height={200}
+              className="max-sm:w-32"
+            />
+
           )}
 
           {alreadyInCart ? (
             <div className="flex gap-2 w-full md:w-[80%]">
               <Button
                 variant="destructive"
-                className="flex-1 cursor-pointer"
+                className="flex-1 cursor-pointer text-xs"
                 onClick={handleRemoveFromCart}
               >
                 Remove
@@ -127,7 +128,8 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
           ) : (
             <Button
               variant="outline"
-              className="w-full md:w-auto px-8 cursor-pointer border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+              // size={"sm"}
+              className="text-xs md:text-[0.8rem] w-full md:w-auto px-8 cursor-pointer border-primary text-primary hover:bg-primary hover:text-primary-foreground"
               onClick={handleAddToCart}
             >
               Add To Cart
@@ -147,8 +149,17 @@ function SubServiceDialog({ subService }: { subService: SubService }) {
           <Info className="w-4 h-4" />
         </button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="md:max-w-md overflow-y-auto max-sm:max-h-[80vh]">
         <DialogHeader>
+          {subService.imageUrl && (
+            <Image
+              src={subService.imageUrl}
+              alt={subService.name}
+              width={400}
+              height={300}
+
+            />
+          )}
           <DialogTitle>{subService.name}</DialogTitle>
           <DialogDescription>
             {subService.description}
