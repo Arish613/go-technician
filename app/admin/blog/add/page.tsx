@@ -1,3 +1,4 @@
+"use client"
 import { BlogForm } from "@/components/blog/Form";
 
 export default function AddBlogPage() {

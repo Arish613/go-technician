@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
+    // Get all services with their reviews
     const services = await prisma.services.findMany({
       where: {
         reviews: {
@@ -13,10 +14,31 @@ export async function GET() {
         reviews: {
           orderBy: { createdAt: "desc" },
         },
+        subServices: {
+          include: {
+            reviews: {
+              orderBy: { createdAt: "desc" },
+            },
+          },
+        },
       },
       orderBy: { name: "asc" },
     });
-    return NextResponse.json(services, { status: 200 });
+
+    // Transform data to include subservice reviews
+    const servicesWithAllReviews = services.map((service) => ({
+      id: service.id,
+      name: service.name,
+      slug: service.slug,
+      reviews: service.reviews,
+      subServices: service.subServices.map((subService) => ({
+        id: subService.id,
+        name: subService.name,
+        reviews: subService.reviews,
+      })).filter((subService) => subService.reviews.length > 0),
+    }));
+
+    return NextResponse.json(servicesWithAllReviews, { status: 200 });
   } catch (error) {
     console.error("Error fetching reviews:", error);
     return NextResponse.json(

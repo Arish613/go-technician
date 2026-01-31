@@ -1,3 +1,5 @@
+"use client"
+
 import { ReviewForm } from "@/components/review/Form";
 
 export default function AddReviewPage() {

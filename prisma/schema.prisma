@@ -86,18 +86,21 @@ model SubService {
   service         Services @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  reviews         Review[]
 }
 
 model Review {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  rating    String
-  comment   String
-  imageUrl  String?
-  reviewer  String
-  serviceId String   @db.ObjectId
-  service   Services @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  rating       String
+  comment      String
+  imageUrl     String?
+  reviewer     String
+  serviceId    String?     @db.ObjectId
+  service      Services?   @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  subServiceId String?     @db.ObjectId
+  subService   SubService? @relation(fields: [subServiceId], references: [id], onDelete: Cascade)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }
 
 type WhyChooseUsItem {

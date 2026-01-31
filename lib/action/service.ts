@@ -250,3 +250,24 @@ export async function togglePublishService(id: string, isPublished: boolean) {
     return { success: false, error: "Failed to update publish status" };
   }
 }
+
+export async function getSubServiceForGivenService(serviceId: string) {
+  try {
+    const subServices = await prisma.subService.findMany({
+      where: { 
+        serviceId: serviceId,
+        isActive: true 
+      },
+      orderBy: { price: "asc" },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    return { success: true, data: subServices };
+  } catch (error) {
+    console.error("Error fetching subservices:", error);
+    
+  }
+}

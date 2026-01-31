@@ -3,6 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { CreateBlogInput, UpdateBlogInput } from "@/types/blog";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth";
 
 export async function createBlog(data: CreateBlogInput) {
   try {
@@ -85,6 +87,10 @@ export async function updateBlog(data: UpdateBlogInput) {
 }
 
 export async function deleteBlog(id: string) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return { success: false, error: "Unauthorized" };
+  }
   try {
     await prisma.blog.delete({
       where: { id },
@@ -99,6 +105,10 @@ export async function deleteBlog(id: string) {
 }
 
 export async function toggleBlogPublish(id: string, isPublished: boolean) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return { success: false, error: "Unauthorized" };
+  }
   try {
     const blog = await prisma.blog.update({
       where: { id },
@@ -111,5 +121,19 @@ export async function toggleBlogPublish(id: string, isPublished: boolean) {
   } catch (error) {
     console.error("Error updating blog:", error);
     return { success: false, error: "Failed to update blog status" };
+  }
+}
+
+export async function getRecentBlogs(limit: number = 3) {
+  try {
+    const blogs = await prisma.blog.findMany({
+      where: { isPublished: true },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+    });
+    return { success: true, data: blogs };
+  } catch (error) {
+    console.log("Error fetching recent blogs:", error);
+    return { success: false, error: "Failed to fetch recent blogs" };
   }
 }

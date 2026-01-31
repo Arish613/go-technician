@@ -43,7 +43,7 @@ function PartnerCard({ partner }: { partner: (typeof partners)[0] }) {
     <div className="group relative mx-4">
       <div className="relative overflow-hidden bg-white/80 backdrop-blur-sm p-8 transition-all duration-500">
         {/* Logo container */}
-        <div className="relative h-16 w-40 transition-all duration-500">
+        <div className="relative w-20 h-16 md:w-40 transition-all duration-500">
           <Image
             src={partner.logo}
             alt={partner.name}

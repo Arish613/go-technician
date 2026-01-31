@@ -2,7 +2,9 @@
 
 import { prisma } from "@/lib/prisma";
 import { Review } from "@/types/review";
+import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
+import { authOptions } from "../auth";
 
 // Create a review
 export async function createReview(
@@ -15,10 +17,21 @@ export async function createReview(
         service: {
           select: { slug: true },
         },
+        subService: {
+          select: {
+            service: {
+              select: { slug: true },
+            },
+          },
+        },
       },
     });
 
-    revalidatePath(`/service/${review.service.slug}`);
+    const slug = review.service?.slug || review.subService?.service?.slug;
+    if (slug) {
+      revalidatePath(`/service/${slug}`);
+    }
+
     return review;
   } catch (error) {
     console.log("Error creating review:", error);
@@ -39,11 +52,27 @@ export async function getReviewsByService(serviceId: string) {
   }
 }
 
+export async function getReviewsBySubService(subServiceId: string) {
+  try {
+    return prisma.review.findMany({
+      where: { subServiceId },
+      orderBy: { createdAt: "desc" },
+    });
+  } catch (error) {
+    console.log("Error fetching reviews:", error);  
+    return [];
+  }
+}
+
 // Update a review
 export async function updateReview(
   id: string,
   data: Partial<Omit<Review, "id" | "createdAt" | "updatedAt">>,
 ) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return null;
+  }
   try {
     const review = await prisma.review.update({
       where: { id },
@@ -52,10 +81,19 @@ export async function updateReview(
         service: {
           select: { slug: true },
         },
+        subService: {
+          select: {
+            service: {
+              select: { slug: true },
+            },
+          },
+        },
       },
     });
-
-    revalidatePath(`/service/${review.service.slug}`);
+    const slug = review.service?.slug || review.subService?.service?.slug;
+    if (slug) {
+      revalidatePath(`/service/${slug}`);
+    }
 
     return review;
   } catch (error) {
@@ -66,12 +104,23 @@ export async function updateReview(
 
 // Delete a review
 export async function deleteReview(id: string) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return null;
+  }
   try {
     const review = await prisma.review.findUnique({
       where: { id },
       include: {
         service: {
           select: { slug: true },
+        },
+        subService: {
+          select: {
+            service: {
+              select: { slug: true },
+            },
+          },
         },
       },
     });
@@ -82,7 +131,11 @@ export async function deleteReview(id: string) {
       where: { id },
     });
 
-    revalidatePath(`/service/${review.service.slug}`);
+    const slug = review.service?.slug || review.subService?.service?.slug;
+    if (slug) {
+      revalidatePath(`/service/${slug}`);
+    }
+
     return review;
   } catch (error) {
     console.log("Error deleting review:", error);

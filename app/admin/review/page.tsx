@@ -6,6 +6,7 @@ import { Star, Edit, Trash2, Plus, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { deleteReview } from "@/lib/action/review";
 
 interface Review {
   id: string;
@@ -16,38 +17,69 @@ interface Review {
   createdAt: string;
 }
 
+interface SubService {
+  id: string;
+  name: string;
+  reviews: Review[];
+}
+
 interface Service {
   id: string;
   name: string;
   slug: string;
   reviews: Review[];
+  subServices: SubService[];
 }
 
 export default function GetAllReviews() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchReviews() {
-      try {
-        const response = await fetch("/api/service/review");
-        if (!response.ok) throw new Error("Failed to fetch reviews");
-        const data = await response.json();
-        setServices(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchReviews();
   }, []);
 
+  async function fetchReviews() {
+    try {
+      const response = await fetch("/api/service/review");
+      if (!response.ok) throw new Error("Failed to fetch reviews");
+      const data = await response.json();
+      setServices(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleDelete = async (reviewId: string) => {
+    if (!confirm("Are you sure you want to delete this review?")) {
+      return;
+    }
+
+    setDeletingId(reviewId);
+    try {
+      const result = await deleteReview(reviewId);
+      if (result) {
+        // Refresh the reviews list
+        await fetchReviews();
+        alert("Review deleted successfully!");
+      } else {
+        alert("Failed to delete review");
+      }
+    } catch (error) {
+      console.error("Error deleting review:", error);
+      alert("Failed to delete review");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="md:mx-20 py-8 px-4 flex items-center justify-center min-h-[400px]">
+      <div className="md:mx-20 py-8 px-4 flex items-center justify-center min-h-100">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
@@ -64,6 +96,67 @@ export default function GetAllReviews() {
       </div>
     );
   }
+
+  const renderReviewCard = (review: Review) => (
+    <Card key={review.id} className="border-l-4 border-l-primary">
+      <CardContent className="pt-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`h-4 w-4 ${
+                      i < Number(review.rating)
+                        ? "fill-yellow-400 text-yellow-400"
+                        : "text-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="font-semibold">{review.reviewer}</span>
+              <span className="text-xs text-muted-foreground">
+                {new Date(review.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground">{review.comment}</p>
+            {review.imageUrl && (
+              <div className="mt-3">
+                <Image
+                  src={review.imageUrl}
+                  alt="Review"
+                  width={200}
+                  height={150}
+                  className="rounded-lg object-cover"
+                />
+              </div>
+            )}
+          </div>
+          <div className="flex gap-2">
+            <Link href={`/admin/review/update/${review.id}`}>
+              <Button size="icon" variant="outline">
+                <Edit className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Button 
+              size="icon" 
+              variant="outline" 
+              className="text-destructive"
+              onClick={() => handleDelete(review.id)}
+              disabled={deletingId === review.id}
+            >
+              {deletingId === review.id ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Trash2 className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 
   return (
     <div className="md:mx-20 py-8 px-4">
@@ -102,64 +195,29 @@ export default function GetAllReviews() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {service.reviews.map((review) => (
-                    <Card key={review.id} className="border-l-4 border-l-primary">
-                      <CardContent className="pt-6">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <div className="flex items-center">
-                                {Array.from({ length: 5 }).map((_, i) => (
-                                  <Star
-                                    key={i}
-                                    className={`h-4 w-4 ${
-                                      i < Number(review.rating)
-                                        ? "fill-yellow-400 text-yellow-400"
-                                        : "text-gray-300"
-                                    }`}
-                                  />
-                                ))}
-                              </div>
-                              <span className="font-semibold">
-                                {review.reviewer}
-                              </span>
-                              <span className="text-xs text-muted-foreground">
-                                {new Date(review.createdAt).toLocaleDateString()}
-                              </span>
-                            </div>
-                            <p className="text-sm text-muted-foreground">
-                              {review.comment}
-                            </p>
-                            {review.imageUrl && (
-                              <div className="mt-3">
-                                <Image
-                                  src={review.imageUrl}
-                                  alt="Review"
-                                  width={200}
-                                  height={150}
-                                  className="rounded-lg object-cover"
-                                />
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex gap-2">
-                            <Link href={`/admin/review/update/${review.id}`}>
-                              <Button size="icon" variant="outline">
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                            </Link>
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              className="text-destructive"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                <div className="space-y-6">
+                  {/* Service-level reviews */}
+                  {service.reviews.length > 0 && (
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-sm text-muted-foreground">
+                        Service Reviews
+                      </h3>
+                      {service.reviews.map(renderReviewCard)}
+                    </div>
+                  )}
+
+                  {/* SubService reviews */}
+                  {service.subServices.map((subService) => (
+                    <div key={subService.id} className="space-y-4">
+                      <h3 className="font-semibold text-sm text-muted-foreground flex items-center gap-2">
+                        {subService.name}
+                        <span className="text-xs font-normal">
+                          ({subService.reviews.length} review
+                          {subService.reviews.length !== 1 ? "s" : ""})
+                        </span>
+                      </h3>
+                      {subService.reviews.map(renderReviewCard)}
+                    </div>
                   ))}
                 </div>
               </CardContent>

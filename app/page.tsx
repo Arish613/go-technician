@@ -5,6 +5,7 @@ import HeroSSR from "@/components/homepage/hero/HeroSSR";
 import { JoinProNetwork } from "@/components/homepage/Join";
 import { Partners } from "@/components/homepage/Partners";
 import { QuickRepairs } from "@/components/homepage/QuickRepairs";
+import { RecentBlogs } from "@/components/homepage/RecentBlogs";
 import { CustomerReviews } from "@/components/homepage/Reviews";
 import { Services } from "@/components/homepage/Services";
 
@@ -19,6 +20,7 @@ export default function Page() {
         <AboutUs />
         <Partners />
         <CustomerReviews />
+        <RecentBlogs />
         <JoinProNetwork />
         <FAQ />
       </div>

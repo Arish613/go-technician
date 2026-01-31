@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Calendar, User, Clock, Share2, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -88,11 +87,6 @@ export default async function BlogPage({ params }: BlogPageProps) {
             {/* Header */}
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-4">
-                {blog.isPublished ? (
-                  <Badge>Published</Badge>
-                ) : (
-                  <Badge variant="secondary">Draft</Badge>
-                )}
                 {blog.authorName && (
                   <span className="text-sm text-muted-foreground flex items-center gap-1">
                     <User className="w-4 h-4" />

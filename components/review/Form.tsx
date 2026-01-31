@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createReview, updateReview } from "@/lib/action/review";
 import type { Review } from "@/types/review";
 import FormFields from "@/components/FormFields";
-import { getServices } from "@/lib/action/service";
+import { getServices, getSubServiceForGivenService } from "@/lib/action/service";
 import {
     FieldGroup,
     FieldLabel,
@@ -30,6 +30,7 @@ const reviewSchema = z.object({
     imageUrl: z.string().optional(),
     reviewer: z.string().min(1, "Reviewer name is required"),
     serviceId: z.string().min(1, "Service is required"),
+    subServiceId: z.string().optional(),
 });
 
 type ReviewFormData = z.infer<typeof reviewSchema>;
@@ -43,7 +44,10 @@ interface ReviewFormProps {
 export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [serviceOptions, setServiceOptions] = useState<{ label: string; value: string }[]>([]);
+    const [subServiceOptions, setSubServiceOptions] = useState<{ label: string; value: string }[]>([]);
+    const [loadingSubServices, setLoadingSubServices] = useState(false);
     const router = useRouter();
+
     const form = useForm<ReviewFormData>({
         resolver: zodResolver(reviewSchema),
         defaultValues: {
@@ -52,8 +56,11 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
             imageUrl: review?.imageUrl || "",
             reviewer: review?.reviewer || "",
             serviceId: review?.serviceId || "",
+            subServiceId: review?.subServiceId ?? "",
         },
     });
+
+    const selectedServiceId = form.watch("serviceId");
 
     // Fetch services for dropdown
     useEffect(() => {
@@ -71,15 +78,51 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
         })();
     }, []);
 
+    // Fetch subservices when service is selected
+    useEffect(() => {
+        if (!selectedServiceId) {
+            setSubServiceOptions([]);
+            form.setValue("subServiceId", "");
+            return;
+        }
+
+        (async () => {
+            setLoadingSubServices(true);
+            try {
+                const result = await getSubServiceForGivenService(selectedServiceId);
+                if (result && result.success && result.data) {
+                    const options = result.data.map((ss) => ({
+                        label: ss.name,
+                        value: ss.id,
+                    }));
+                    setSubServiceOptions(options);
+                } else {
+                    setSubServiceOptions([]);
+                }
+            } catch (error) {
+                console.error("Error fetching subservices:", error);
+                setSubServiceOptions([]);
+            } finally {
+                setLoadingSubServices(false);
+            }
+        })();
+    }, [selectedServiceId, form]);
+
     const onSubmit = async (data: ReviewFormData) => {
         setIsSubmitting(true);
         try {
+            // Prepare review data - include subServiceId only if selected
+            const reviewData = {
+                ...data,
+                subServiceId: data.subServiceId || null,
+            };
+
             if (mode === "create") {
-                await createReview(data);
+                await createReview(reviewData);
                 alert("Review created successfully!");
                 router.push("/admin/review");
             } else if (review) {
-                await updateReview(review.id, data);
+                await updateReview(review.id, reviewData);
                 alert("Review updated successfully!");
                 router.push("/admin/review");
             }
@@ -100,12 +143,15 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
                     <CardTitle>{mode === "create" ? "Add Review" : "Edit Review"}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {/* Custom Select Field for Service */}
+                    {/* Service Select */}
                     <FieldGroup>
                         <FieldLabel>Service</FieldLabel>
                         <Select
                             value={form.watch("serviceId")}
-                            onValueChange={(value) => form.setValue("serviceId", value)}
+                            onValueChange={(value) => {
+                                form.setValue("serviceId", value);
+                                form.setValue("subServiceId", "");
+                            }}
                             disabled={isSubmitting}
                         >
                             <SelectTrigger>
@@ -123,6 +169,39 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
                             <FieldError>{form.formState.errors.serviceId.message}</FieldError>
                         )}
                     </FieldGroup>
+
+                    {/* SubService Select - Only show if service is selected */}
+                    {selectedServiceId && (
+                        <FieldGroup>
+                            <FieldLabel>Sub Service (Optional)</FieldLabel>
+                            <Select
+                                value={form.watch("subServiceId") || "none"}
+                                onValueChange={(value) => form.setValue("subServiceId", value === "none" ? "" : value)}
+                                disabled={isSubmitting || loadingSubServices}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder={
+                                        loadingSubServices
+                                            ? "Loading..."
+                                            : subServiceOptions.length === 0
+                                                ? "No sub-services available"
+                                                : "Select a sub-service (optional)"
+                                    } />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="none">None (Service-level review)</SelectItem>
+                                    {subServiceOptions.map((option) => (
+                                        <SelectItem key={option.value} value={option.value}>
+                                            {option.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {form.formState.errors.subServiceId && (
+                                <FieldError>{form.formState.errors.subServiceId.message}</FieldError>
+                            )}
+                        </FieldGroup>
+                    )}
 
                     <FormFields
                         name="rating"

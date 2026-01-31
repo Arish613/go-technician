@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, Clock, ArrowRight, User, MessageSquare } from "lucide-react";
+import { Calendar, Clock, ArrowRight, User } from "lucide-react";
 import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -53,12 +52,6 @@ export function BlogCard({ blog }: BlogCardProps) {
               <Clock className="w-3 h-3" />
               {readingTime} min read
             </span>
-            {blog.faqs.length > 0 && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 font-medium">
-                <MessageSquare className="w-3 h-3" />
-                {blog.faqs.length} FAQ
-              </span>
-            )}
           </div>
 
           <h3 className="text-2xl font-semibold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
@@ -73,11 +66,6 @@ export function BlogCard({ blog }: BlogCardProps) {
         </CardContent>
 
         <CardFooter className="border-t px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Badge variant={blog.isPublished ? "default" : "secondary"}>
-              {blog.isPublished ? "Published" : "Draft"}
-            </Badge>
-          </div>
           <div className="flex items-center gap-2 text-sm font-semibold text-primary">
             Read more
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

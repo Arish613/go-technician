@@ -4,7 +4,8 @@ export type Review = {
   comment: string;
   imageUrl?: string;
   reviewer: string;
-  serviceId: string;
+  serviceId: string | null;
+  subServiceId: string | null;
   createdAt: Date;
   updatedAt: Date;
 };

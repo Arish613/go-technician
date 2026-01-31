@@ -1,20 +1,13 @@
 "use client";
 
-import { Clock, Info, } from "lucide-react";
-import { Badge } from "../ui/badge";
+import { Clock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { SubService } from "@prisma/client";
 import { useCart } from "@/context/CartContext";
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { SubServiceDialog } from "./Dialog";
 
 interface SubServiceCardProps {
   subService: SubService;
@@ -58,12 +51,6 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
               <h3 className="text-sm md:text-lg font-semibold line-clamp-2">
                 {subService.name}
               </h3>
-              {/* {subService.isPopular && (
-                <Badge className="bg-orange-500 text-xs py-0 px-2 shrink-0">
-                  <Star className="w-3 h-3 mr-1" />
-                  Popular
-                </Badge>
-              )} */}
 
               {/* Info Dialog */}
               {(subService.whatIncluded.length > 0 || subService.whatExcluded.length > 0) && (
@@ -102,9 +89,8 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
         </div>
 
         {/* Right: Image & Button */}
-        <div className="flex flex-col items-center gap-2 max-sm:max-w-25  md:min-w-50">
+        <div className="flex flex-col items-center gap-2 max-sm:max-w-25 md:min-w-50">
           {subService.imageUrl && (
-
             <Image
               src={subService.imageUrl}
               alt={subService.name}
@@ -112,7 +98,6 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
               height={200}
               className="max-sm:w-32"
             />
-
           )}
 
           {alreadyInCart ? (
@@ -128,8 +113,7 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
           ) : (
             <Button
               variant="outline"
-              // size={"sm"}
-              className="text-xs md:text-[0.8rem] w-full md:w-auto px-8 cursor-pointer border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+              className="text-xs md:text-[0.8rem] w-full md:w-auto px-8 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 shadow-md font-semibold hover:text-white"
               onClick={handleAddToCart}
             >
               Add To Cart
@@ -139,69 +123,4 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
       </div>
     </div>
   );
-}
-
-function SubServiceDialog({ subService }: { subService: SubService }) {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <button className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
-          <Info className="w-4 h-4" />
-        </button>
-      </DialogTrigger>
-      <DialogContent className="md:max-w-md overflow-y-auto max-sm:max-h-[80vh]">
-        <DialogHeader>
-          {subService.imageUrl && (
-            <Image
-              src={subService.imageUrl}
-              alt={subService.name}
-              width={400}
-              height={300}
-
-            />
-          )}
-          <DialogTitle>{subService.name}</DialogTitle>
-          <DialogDescription>
-            {subService.description}
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4 mt-4">
-          {/* What's Included */}
-          {subService.whatIncluded.length > 0 && (
-            <div>
-              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                <span className="text-green-600">✓</span> What&apos;s Included
-              </h4>
-              <ul className="space-y-1.5">
-                {subService.whatIncluded.map((item, idx) => (
-                  <li key={idx} className="text-sm flex items-start gap-2">
-                    <span className="text-green-600 mt-0.5">•</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* What's Excluded */}
-          {subService.whatExcluded.length > 0 && (
-            <div>
-              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                <span className="text-red-600">✗</span> What&apos;s Not Included
-              </h4>
-              <ul className="space-y-1.5">
-                {subService.whatExcluded.map((item, idx) => (
-                  <li key={idx} className="text-sm flex items-start gap-2">
-                    <span className="text-red-600 mt-0.5">•</span>
-                    <span className="text-muted-foreground">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
-  )
 }

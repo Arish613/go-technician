@@ -13,6 +13,7 @@ interface Review {
     comment: string;
     imageUrl?: string | null;
     serviceId: string;
+    subServiceId: string | null;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -83,6 +84,7 @@ export default function UpdateReviewPage({
                     ...review,
                     rating: String(review.rating),
                     imageUrl: review.imageUrl === null ? undefined : review.imageUrl,
+                    subServiceId: review.subServiceId,
                 }}
             />
         </div>

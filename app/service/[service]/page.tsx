@@ -10,7 +10,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SubServiceCard } from "@/components/service/SubServiceCard";
+import { SubServiceCard } from "@/components/service/subservice/SubServiceCard";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { ServiceContent } from "@/components/service/Content";
@@ -19,6 +19,7 @@ import { ServiceReviews } from "@/components/service/Reviews";
 import { WhyChooseUs } from "@/components/service/WhyChooseUs";
 import { StickyCart } from "@/components/cart/StickyCart";
 import { AMCComparisonTable } from "@/components/service/AMCTable";
+import { Star } from "lucide-react";
 
 interface ServicePageProps {
   params: {
@@ -39,16 +40,20 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
   const reviews = await getReviewsByService(service.id);
 
+  const averageRating = reviews && reviews.length > 0
+    ? (reviews.reduce((acc, review) => acc + Number(review.rating), 0) / reviews.length).toFixed(2)
+    : "0.00";
+
   const showAMCTable = resolvedParams.service.toLowerCase().includes("ac");
 
   return (
     <div className="min-h-screen">
       <StickyCart />
-      <div className="grid grid-cols-2">
+      <div className="lg:grid md:grid-cols-2">
         {/* Hero Section - Reduced height */}
-        <section className="sticky top-10 h-screen mt-10 hidden lg:block">
-          <div className="md:mx-20 px-4">
-            <div className=" gap-6  items-center">
+        <section className="lg:sticky lg:top-10 lg:h-screen lg:mt-10">
+          <div className="md:mx-20">
+            <div className="gap-6 items-center">
               {service.imageUrl && (
                 <Image
                   src={service.imageUrl}
@@ -56,9 +61,8 @@ export default async function ServicePage({ params }: ServicePageProps) {
                   width={1000}
                   height={700}
                   priority
-                  className="w-full"
+                  className="w-full h-auto max-h-37.5 md:max-h-125 lg:max-h-full object-cover "
                 />
-
               )}
             </div>
           </div>
@@ -66,13 +70,60 @@ export default async function ServicePage({ params }: ServicePageProps) {
         {/* Sub Services Section - Reduced top padding */}
         <section id="services" className="py-6 md:py-10 col-span-2 lg:col-span-1">
           <div className=" md:mx-20 px-4">
-            <div className="space-y-2 text-center mb-3">
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+            <div className="space-y-3 mb-6">
+              {/* <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
+                <span className="bg-green-100 text-green-700 px-2 py-1 rounded-md font-medium flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  9 Minutes
+                </span>
+                <span>Get a Verified AC Technician in</span>
+              </div> */}
+
+              <h1 className="text-2xl md:text-4xl font-bold tracking-tight">
                 {service.name}
               </h1>
-              <p className="text-sm md:text-lg text-muted-foreground">
+
+              <p className="text-sm md:text-base text-muted-foreground">
                 {service.description}
               </p>
+
+              <div className="flex flex-wrap items-center gap-4 pt-0">
+                <div className="flex items-center gap-2">
+                  <Star className="w-5 h-5 text-blue-600 fill-blue-600" />
+                  <span className="font-bold text-base">{averageRating}/5</span>
+                  <span className="text-xs text-muted-foreground">
+                    ({reviews?.length || 0} Review{reviews?.length !== 1 ? 's' : ''})
+                  </span>
+                </div>
+
+                {/* <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span className="font-semibold">30812</span>
+                  <span className="text-xs text-muted-foreground">Successful Bookings</span>
+                </div> */}
+              </div>
+
+              {/* <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 md:p-4 mt-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-orange-100 p-2 rounded-full shrink-0">
+                    <svg className="w-5 h-5 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-sm md:text-base text-orange-900 mb-1">
+                      Best Price Guarantee
+                    </h3>
+                    <p className="text-xs md:text-sm text-orange-800">
+                      Expert technicians with transparent pricing and reliable service. No Hidden Charges.
+                    </p>
+                  </div>
+                </div>
+              </div> */}
             </div>
 
             {hasTypes ? (
@@ -124,7 +175,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
                 })}
               </Tabs>
             ) : (
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-10 md:gap-5">
                 {service.subServices.map((subService) => (
                   <SubServiceCard key={subService.id} subService={subService} />
                 ))}
