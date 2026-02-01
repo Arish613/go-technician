@@ -14,8 +14,8 @@ import { SubServiceCard } from "@/components/service/subservice/SubServiceCard";
 import Link from "next/link";
 import { ServiceContent } from "@/components/service/Content";
 import { getReviewsByService } from "@/lib/action/review";
-import { ServiceReviews } from "@/components/service/Reviews";
-import { WhyChooseUs } from "@/components/service/WhyChooseUs";
+import { ServiceReviews } from "@/components/service/subservice/Reviews";
+import { WhyChooseUs } from "@/components/service/subservice/WhyChooseUs";
 import { StickyCart } from "@/components/cart/StickyCart";
 import { AMCComparisonTable } from "@/components/service/AMCTable";
 import { Star } from "lucide-react";
@@ -200,11 +200,11 @@ export default async function ServicePage({ params }: ServicePageProps) {
       {service.faqs.length > 0 && (
         <section id="faqs" className="py-12 md:py-16">
           <div className="container mx-auto px-4 max-w-4xl">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <div className="text-center mb-5 md:mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-2 md:mb-4">
                 Frequently Asked Questions
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-sm md:text-lg text-muted-foreground">
                 Find answers to common questions about our{" "}
                 {service.name.toLowerCase()}
               </p>

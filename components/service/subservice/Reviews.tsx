@@ -15,14 +15,14 @@ export function ServiceReviews({ reviews }: {
     }>
 }) {
     return (
-        <section className="py-16 md:py-24 md:mx-20 px-4">
+        <section className="py-14 md:py-24 md:mx-20 px-4">
             <div className="container mx-auto px-4 md:px-8">
                 {/* Section Header */}
-                <div className="text-center max-w-2xl mx-auto mb-16">
+                <div className="text-center max-w-2xl mx-auto mb-5 md:mb-16">
                     <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
                         Customer Reviews
                     </h2>
-                    <p className="text-lg text-slate-600">
+                    <p className="md:text-lg text-slate-600">
                         See what our happy customers have to say about our service.
                     </p>
                 </div>
@@ -44,9 +44,9 @@ export function ServiceReviews({ reviews }: {
                                         className="pl-4 basis-full md:basis-1/2 lg:basis-1/3"
                                     >
                                         <Card
-                                            className="group flex flex-col h-full border-slate-200 bg-white shadow-sm hover:shadow-lg hover:border-blue-200 transition-all duration-300 rounded-2xl overflow-hidden"
+                                            className="group flex flex-col h-full bg-white shadow-sm hover:shadow-lg border-none transition-all duration-300 rounded-2xl overflow-hidden"
                                         >
-                                            <CardContent className="p-6 flex flex-col h-full">
+                                            <CardContent className="p-6 flex flex-col h-full border-none">
                                                 {/* Header: Name & Date */}
                                                 <div className="flex justify-between items-start mb-3">
                                                     <div>
