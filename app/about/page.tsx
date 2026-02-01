@@ -145,14 +145,14 @@ export default function AboutPage() {
 
       {/* Stats Section */}
       <section className="container mx-auto -mt-10 px-4">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
           {stats.map((stat) => (
             <Card
               key={stat.label}
               className="border-slate-200 bg-white shadow-lg"
             >
-              <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-blue-600">
+              <CardContent className="md:p-6 text-center">
+                <div className="text-xl md:text-3xl font-bold text-blue-600">
                   {stat.value}
                 </div>
                 <div className="mt-1 text-sm text-slate-600">{stat.label}</div>
@@ -274,7 +274,7 @@ export default function AboutPage() {
 
       {/* Our Values */}
       <section className="md:mx-20 px-4 py-16">
-        <div className="mb-12 text-center">
+        <div className="mb-6 md:mb-12 text-center">
           <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
             What We Stand For
           </p>
@@ -288,9 +288,9 @@ export default function AboutPage() {
                 key={value.title}
                 className="border-slate-200 bg-white shadow-sm transition-all hover:shadow-md"
               >
-                <CardContent className="p-6 text-center">
-                  <div className="mx-auto mb-4 inline-block rounded-full bg-blue-100 p-4">
-                    <Icon className="h-8 w-8 text-blue-600" />
+                <CardContent className="p-3 md:p-6 text-center">
+                  <div className="mx-auto mb-4 inline-block rounded-full bg-blue-100 p-2 md:p-4">
+                    <Icon className="md:h-8 md:w-8 text-blue-600" />
                   </div>
                   <h3 className="mb-2 text-lg font-semibold text-slate-900">
                     {value.title}

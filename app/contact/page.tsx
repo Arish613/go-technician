@@ -55,24 +55,6 @@ export default function ContactPage() {
           </p>
         </section>
 
-        {/* Quick contact cards */}
-        <section className="mt-12 grid gap-6 md:grid-cols-3">
-          {contactHighlights.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Card key={item.label} className="border-slate-200 shadow-sm">
-                <CardContent className="flex flex-col gap-3 p-6">
-                  <div className="inline-flex w-fit rounded-xl bg-blue-50 p-3">
-                    <Icon className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <p className="text-xs uppercase tracking-wider text-slate-500">{item.label}</p>
-                  <p className="text-lg font-semibold text-slate-900">{item.value}</p>
-                  <p className="text-sm text-slate-500">{item.helper}</p>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </section>
 
         {/* Form + office info */}
         <section className="mt-12 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
@@ -125,6 +107,26 @@ export default function ContactPage() {
             </Card>
           </div>
         </section>
+
+        {/* Quick contact cards */}
+        <section className="mt-12 grid gap-6 md:grid-cols-3">
+          {contactHighlights.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Card key={item.label} className="border-slate-200 shadow-sm p-0">
+                <CardContent className="flex flex-col gap-3 p-4 md:p-6">
+                  <div className="inline-flex w-fit rounded-xl bg-blue-50 p-3">
+                    <Icon className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <p className="text-xs uppercase tracking-wider text-slate-500">{item.label}</p>
+                  <p className="text-lg font-semibold text-slate-900">{item.value}</p>
+                  <p className="text-sm text-slate-500">{item.helper}</p>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </section>
+
       </div>
     </main>
   );

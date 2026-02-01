@@ -54,7 +54,7 @@ export default function RaiseAComplaintPage() {
 
       {/* Support Features */}
       <section className="container mx-auto -mt-8 px-4">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
           {supportFeatures.map((feature) => {
             const Icon = feature.icon;
             return (
@@ -63,7 +63,7 @@ export default function RaiseAComplaintPage() {
                 className="border-slate-200 bg-white shadow-md"
               >
                 <CardContent className="flex items-start gap-4 p-4">
-                  <div className="rounded-lg bg-blue-100 p-2">
+                  <div className="rounded-lg bg-blue-100 p-2 hidden md:block">
                     <Icon className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
