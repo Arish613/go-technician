@@ -47,7 +47,7 @@ export async function getServices(location?: string, isPublished?: boolean) {
           orderBy: { isPopular: "desc" },
         },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "asc" },
     });
 
     return { success: true, data: services };

@@ -26,7 +26,7 @@ export function QuickRepairs() {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="mb-2 text-center">
-          <p className="text-base font-semibold uppercase tracking-wider text-blue-600">
+          <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
             QUICK REPAIRS
           </p>
         </div>
@@ -58,11 +58,11 @@ export function QuickRepairs() {
                       alt={item.title}
                       width={150}
                       height={150}
-                      className="object-contain"
+                      className="object-contain max-sm:w-32 "
                     />
-                    <h3 className="text-xl font-semibold text-slate-900 mt-4">
+                    <p className="text-sm md:text-xl font-semibold text-slate-900 mt-4 ">
                       {item.title}
-                    </h3>
+                    </p>
                   </div>
                 </CarouselItem>
               ))}

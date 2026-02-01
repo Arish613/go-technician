@@ -53,7 +53,7 @@ const faqs = [
 export function FAQ() {
   return (
     <section id="faq" className="border-t border-slate-200 bg-white py-16">
-      <div className="container mx-auto px-4">
+      <div className=" px-4">
         <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">

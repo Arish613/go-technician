@@ -53,7 +53,7 @@ export function Services() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-y-10 gap-x-6 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3">
+        <div className="grid grid-cols-3 gap-y-10 gap-x-6 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3">
           {categories.map((category) => {
             const cardContent = (
               <div className="group flex cursor-pointer flex-col items-center gap-4">

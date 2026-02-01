@@ -12,7 +12,7 @@ export function JoinProNetwork() {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-100/50 rounded-full blur-[100px] -z-10" />
 
             <div className="container relative z-10 mx-auto px-4">
-                <div className="mx-auto max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-slate-900/5">
+                <div className="mx-auto max-w-4xl overflow-hidden rounded-3xl bg-white  md:shadow-2xl ring-1 ring-slate-900/5">
                     <div className="flex flex-col md:flex-row">
 
                         {/* Left Content Area */}

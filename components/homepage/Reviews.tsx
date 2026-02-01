@@ -94,7 +94,7 @@ export function CustomerReviews() {
     <section id="reviews" className="border-t border-slate-200 bg-white py-16">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="mb-12 text-center">
+        <div className="mb-5 md:mb-12 text-center">
           <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
             Testimonials
           </p>
@@ -121,7 +121,7 @@ export function CustomerReviews() {
           </div>
         </div>
 
-        <div className="mb-5">
+        <div className="md:mb-5">
           <Carousel
             className="w-full max-w-5xl mx-auto"
             opts={{
@@ -171,7 +171,7 @@ export function CustomerReviews() {
         </div>
 
         {/* CTA */}
-        <div className="mt-12 text-center">
+        <div className="mt-5 md:mt-12 text-center">
           <p className="text-sm text-slate-600">
             Join thousands of satisfied customers.{" "}
             <a

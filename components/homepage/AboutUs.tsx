@@ -93,8 +93,8 @@ export function AboutUs() {
               key={stat.label}
               className="border-slate-200 bg-white shadow-sm"
             >
-              <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-blue-600">
+              <CardContent className=" md:p-6 text-center">
+                <div className=" text-lg md:text-3xl font-bold text-blue-600">
                   {stat.value}
                 </div>
                 <div className="mt-1 text-sm text-slate-600">{stat.label}</div>
@@ -117,10 +117,10 @@ export function AboutUs() {
                 return (
                   <CarouselItem
                     key={idx}
-                    className="pl-1  md:basis-1/2 lg:basis-1/5 max-sm:shadow-xl max-sm:border"
+                    className="pl-1 basis-2/3 md:basis-1/2 lg:basis-1/5 max-sm:shadow-xl "
                   >
                     <div className="p-1">
-                      <Card className="border-none bg-white shadow-none rounded-xl ring-0 py-0">
+                      <Card className="border-none bg-white shadow-none rounded-xl ring-0 py-0 ">
                         <CardContent className="flex flex-col items-center justify-center aspect-square p-6">
                           <div className="mb-4 inline-flex rounded-lg bg-blue-100 p-3">
                             <Icon className="h-6 w-6 text-blue-600" />
@@ -224,10 +224,10 @@ export function AboutUs() {
               <CardContent className="p-4">
                 <div className="flex items-center gap-4">
                   <div className="rounded-full bg-blue-100 p-3">
-                    <Users className="h-6 w-6 text-blue-600" />
+                    <Users className="h-4 w-4 md:h-6 md:w-6 text-blue-600" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-blue-600">100+</div>
+                    <div className="text-xl md:text-2xl font-bold text-blue-600">100+</div>
                     <div className="text-sm text-slate-600">
                       Expert Technicians
                     </div>
@@ -241,11 +241,11 @@ export function AboutUs() {
         {/* Mission & Vision */}
         <div className="grid gap-6 md:grid-cols-2">
           <Card className="border-slate-200 bg-white shadow-sm">
-            <CardContent className="p-8">
+            <CardContent className="p-4 md:p-8">
               <h3 className="mb-4 text-xl font-bold text-slate-900">
                 Our Mission
               </h3>
-              <p className="text-base leading-relaxed text-slate-600">
+              <p className="text-sm md:text-base leading-relaxed text-slate-600">
                 To make quality home and office services accessible to everyone
                 through technology, verified professionals, and transparent
                 pricing. We believe everyone deserves reliable service without
@@ -255,11 +255,11 @@ export function AboutUs() {
           </Card>
 
           <Card className="border-slate-200 bg-white shadow-sm">
-            <CardContent className="p-8">
+            <CardContent className="p-4 md:p-8">
               <h3 className="mb-4 text-xl font-bold text-slate-900">
                 Our Vision
               </h3>
-              <p className="text-base leading-relaxed text-slate-600">
+              <p className="text-sm md:text-base leading-relaxed text-slate-600">
                 To become India&apos;s most trusted platform for home services,
                 empowering thousands of skilled professionals while making life
                 easier for millions of customers across the country.
