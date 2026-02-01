@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/accordion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SubServiceCard } from "@/components/service/subservice/SubServiceCard";
-import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { ServiceContent } from "@/components/service/Content";
 import { getReviewsByService } from "@/lib/action/review";
@@ -251,17 +250,6 @@ export default async function ServicePage({ params }: ServicePageProps) {
   );
 }
 
-// Generate static params for all services
-export async function generateStaticParams() {
-  const services = await prisma.services.findMany({
-    where: { isPublished: true },
-    select: { slug: true },
-  });
-
-  return services.map((service: { slug: string }) => ({
-    service: service.slug,
-  }));
-}
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: ServicePageProps) {

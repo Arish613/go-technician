@@ -9,7 +9,7 @@ export async function PUT(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const session = await getServerSession(authOptions);
-  if(!session){
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
@@ -56,7 +56,11 @@ export async function PUT(
     });
 
     revalidatePath("/service", "page");
-    revalidatePath(`/service/${service.slug}`, "page");
+    revalidatePath(`/service/${slug }`, "page");
+
+    if (service.slug !== slug) {
+      revalidatePath(`/service/${service.slug}`, "page");
+    }
 
     return NextResponse.json({ data: service }, { status: 200 });
   } catch (error) {
