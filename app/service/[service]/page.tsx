@@ -43,7 +43,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
     ? (reviews.reduce((acc, review) => acc + Number(review.rating), 0) / reviews.length).toFixed(2)
     : "0.00";
 
-  const showAMCTable = resolvedParams.service.toLowerCase().includes("ac");
+  const showAMCTable = resolvedParams.service.toLowerCase().includes("ac-repair");
 
   return (
     <div className="min-h-screen">
@@ -147,9 +147,18 @@ export default async function ServicePage({ params }: ServicePageProps) {
                 </div>
 
                 {service.type.map((type) => {
-                  const filteredSubServices = service.subServices.filter(
-                    (sub) => sub.type === type
-                  );
+                  const filteredSubServices = service.subServices
+                    .filter((sub) => sub.type === type)
+                    .sort((a, b) => {
+                      // If both have order, sort by order
+                      if (a.order != null && b.order != null) return a.order - b.order;
+                      // If only a has order, it comes first
+                      if (a.order != null) return -1;
+                      // If only b has order, it comes first
+                      if (b.order != null) return 1;
+                      // Otherwise, keep original order
+                      return 0;
+                    }); 
 
                   return (
                     <TabsContent key={type} value={type} className="space-y-6">

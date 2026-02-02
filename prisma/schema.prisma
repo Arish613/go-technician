@@ -82,6 +82,7 @@ model SubService {
   duration        String? // e.g., "45 mins", "1-2 hours"
   isPopular       Boolean  @default(false)
   isActive        Boolean  @default(true)
+  order           Int?
   serviceId       String   @db.ObjectId
   service         Services @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   createdAt       DateTime @default(now())

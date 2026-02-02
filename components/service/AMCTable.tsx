@@ -20,7 +20,7 @@ export function AMCComparisonTable() {
                         <CardTitle className="text-3xl md:text-4xl font-bold">
                             <h2>
                                 Compare AMC Plans We Offer
-                            </h2> 
+                            </h2>
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="overflow-x-auto">
@@ -110,23 +110,6 @@ export function AMCComparisonTable() {
                                         <div className="flex justify-center">
                                             <div className="bg-green-500 rounded-full p-1">
                                                 <Check className="h-4 w-4 text-white" />
-                                            </div>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className="pl-8">Physical Damage</TableCell>
-                                    <TableCell className="text-center">
-                                        <div className="flex justify-center">
-                                            <div className="bg-red-500 rounded-full p-1">
-                                                <X className="h-4 w-4 text-white" />
-                                            </div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="text-center">
-                                        <div className="flex justify-center">
-                                            <div className="bg-red-500 rounded-full p-1">
-                                                <X className="h-4 w-4 text-white" />
                                             </div>
                                         </div>
                                     </TableCell>

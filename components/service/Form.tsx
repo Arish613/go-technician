@@ -53,6 +53,7 @@ const serviceSchema = z.object({
       duration: z.string().optional(),
       isPopular: z.boolean(),
       isActive: z.boolean(),
+      order: z.number().min(0).optional(),
     })
   ),
 });
@@ -106,6 +107,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
           duration: sub.duration || undefined,
           isPopular: sub.isPopular,
           isActive: sub.isActive,
+          order: sub?.order ?? undefined,
         })) || [],
     },
   });
@@ -602,7 +604,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
                     disabled={isSubmitting}
                   />
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <FormFields
                       name={`subServices.${index}.price`}
                       control={form.control}
@@ -626,6 +628,14 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
                       control={form.control}
                       label="Duration"
                       placeholder="45 mins"
+                      disabled={isSubmitting}
+                    />
+                    <FormFields
+                      name={`subServices.${index}.order`}
+                      control={form.control}
+                      label="Order (optional)"
+                      type="number"
+                      placeholder="Enter order number"
                       disabled={isSubmitting}
                     />
                   </div>

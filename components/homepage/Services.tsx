@@ -18,6 +18,7 @@ const categories = [
   {
     name: "Refrigerator Repair",
     icon: "/icons/refrigerator-repair.png",
+    link: "/service/refrigerator-repair",
   },
   {
     name: "Home Cleaning",
@@ -31,6 +32,7 @@ const categories = [
   {
     name: "Plumbing",
     icon: "/icons/plumbing.png",
+    link: "/service/plumbing-service",
   },
 ];
 
