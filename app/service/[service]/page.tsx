@@ -19,6 +19,7 @@ import { WhyChooseUs } from "@/components/service/subservice/WhyChooseUs";
 import { StickyCart } from "@/components/cart/StickyCart";
 import { AMCComparisonTable } from "@/components/service/AMCTable";
 import { Star } from "lucide-react";
+import { Benefit } from "@/components/service/subservice/Benefit";
 
 interface ServicePageProps {
   params: {
@@ -64,6 +65,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
                 />
               )}
             </div>
+            {showAMCTable && <Benefit />}
           </div>
         </section>
         {/* Sub Services Section - Reduced top padding */}
@@ -158,7 +160,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
                       if (b.order != null) return 1;
                       // Otherwise, keep original order
                       return 0;
-                    }); 
+                    });
 
                   return (
                     <TabsContent key={type} value={type} className="space-y-6">

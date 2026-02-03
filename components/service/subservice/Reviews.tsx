@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { CldImage } from "next-cloudinary";
-import { Star } from "lucide-react";
+import { Star, StarHalf } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 
@@ -44,7 +44,7 @@ export function ServiceReviews({ reviews }: {
                                         className="pl-4 basis-full md:basis-1/2 lg:basis-1/3"
                                     >
                                         <Card
-                                            className="group flex flex-col h-full bg-white shadow-sm hover:shadow-lg border-none transition-all duration-300 rounded-2xl overflow-hidden"
+                                            className="group flex flex-col h-full bg-white shadow-sm hover:shadow-lg border-none transition-all duration-300 rounded-2xl overflow-hidden ring-0"
                                         >
                                             <CardContent className="p-6 flex flex-col h-full border-none">
                                                 {/* Header: Name & Date */}
@@ -63,15 +63,33 @@ export function ServiceReviews({ reviews }: {
                                                     </div>
                                                     {/* Star Rating */}
                                                     <div className="flex gap-0.5 bg-yellow-50 px-2 py-1 rounded-md">
-                                                        {Array.from({ length: 5 }).map((_, i) => (
-                                                            <Star
-                                                                key={i}
-                                                                className={`h-3.5 w-3.5 ${i < Number(review.rating)
-                                                                    ? "fill-yellow-400 text-yellow-400"
-                                                                    : "fill-slate-200 text-slate-200"
-                                                                    }`}
-                                                            />
-                                                        ))}
+                                                        {(() => {
+                                                            const rating = Number(review.rating);
+                                                            return Array.from({ length: 5 }).map((_, i) => {
+                                                                if (rating >= i + 1) {
+                                                                    return (
+                                                                        <Star
+                                                                            key={i}
+                                                                            className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400"
+                                                                        />
+                                                                    );
+                                                                } else if (rating > i && rating < i + 1) {
+                                                                    return (
+                                                                        <StarHalf
+                                                                            key={i}
+                                                                            className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400"
+                                                                        />
+                                                                    );
+                                                                } else {
+                                                                    return (
+                                                                        <Star
+                                                                            key={i}
+                                                                            className="h-3.5 w-3.5 fill-slate-200 text-slate-200"
+                                                                        />
+                                                                    );
+                                                                }
+                                                            });
+                                                        })()}
                                                     </div>
                                                 </div>
 
