@@ -23,6 +23,7 @@ const categories = [
   {
     name: "Home Cleaning",
     icon: "/icons/home-cleaning.png",
+    link: "/service//home-cleaning-service",
   },
   {
     name: "Washing Machine Repair",
