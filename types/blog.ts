@@ -32,7 +32,7 @@ export type UpdateBlogInput = Partial<CreateBlogInput> & {
 
 export type BlogListItem = Pick<
   Blog,
-  "id" | "h1" | "slug" | "imageUrl" | "Summary" | "isPublished" | "createdAt"
+  "id" | "h1" | "slug" | "imageUrl" | "Summary" | "isPublished" | "createdAt" | "updatedAt" | "authorName"
 >;
 
 export type BlogCard = {

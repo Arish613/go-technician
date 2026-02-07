@@ -14,10 +14,12 @@ export async function GET() {
       ? (blogsRes.data as BlogListItem[]).map(
           (b) =>
             `<url><loc>${BASE_URL}/blog/${b.slug}</loc><lastmod>${
-              (b as { updatedAt?: Date; createdAt?: Date }).updatedAt?.toISOString() ||
-              (b as { createdAt?: Date }).createdAt?.toISOString() ||
-              ""
-            }</lastmod></url>`
+              b.updatedAt
+                ? new Date(b.updatedAt).toISOString().split("T")[0]
+                : b.createdAt
+                  ? new Date(b.createdAt).toISOString().split("T")[0]
+                  : ""
+            }</lastmod></url>`,
         )
       : [];
 
@@ -28,14 +30,21 @@ export async function GET() {
       ? (servicesRes.data as ServiceType[]).map(
           (s) =>
             `<url><loc>${BASE_URL}/service/${s.slug}</loc><lastmod>${
-              (s as { updatedAt?: Date; createdAt?: Date }).updatedAt?.toISOString() ||
-              (s as { createdAt?: Date }).createdAt?.toISOString() ||
-              ""
-            }</lastmod></url>`
+              (s as { updatedAt?: Date; createdAt?: Date }).updatedAt
+                ? (s as { updatedAt: Date }).updatedAt
+                    .toISOString()
+                    .split("T")[0]
+                : (s as { createdAt?: Date }).createdAt
+                  ? (s as { createdAt: Date }).createdAt
+                      .toISOString()
+                      .split("T")[0]
+                  : ""
+            }</lastmod></url>`,
         )
       : [];
 
   // Static routes
+  const staticLastMod = "2026-02-07";
   const staticUrls = [
     "",
     "about",
@@ -45,7 +54,10 @@ export async function GET() {
     "disclaimer",
     "terms-and-conditions",
     "blog",
-  ].map((path) => `<url><loc>${BASE_URL}/${path}</loc></url>`);
+  ].map(
+    (path) =>
+      `<url><loc>${BASE_URL}/${path}</loc><lastmod>${staticLastMod}</lastmod></url>`,
+  );
 
   // Build XML
   const body =

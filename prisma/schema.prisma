@@ -55,6 +55,7 @@ model Services {
   id          String            @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   description String
+  metaTitle   String?
   slug        String            @unique
   imageUrl    String?
   content     String

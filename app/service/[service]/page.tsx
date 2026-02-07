@@ -283,8 +283,8 @@ export async function generateMetadata({ params }: ServicePageProps) {
   const service = result.data;
 
   return {
-    title: `${service.name} | Professional Services`,
-    description: service.description,
+    title: service.metaTitle ?? `${service.name} | Professional Services`,
+    description: service.description, 
     openGraph: {
       title: service.name,
       description: service.description,

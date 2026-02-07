@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 const serviceSchema = z.object({
   name: z.string().min(1, "Service name is required"),
   description: z.string().min(1, "Description is required"),
+  metaTitle: z.string().optional(),
   slug: z.string().min(1, "Slug is required"),
   content: z.string().min(1, "Content is required"),
   location: z.string().optional(),
@@ -81,6 +82,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
     defaultValues: {
       name: service?.name || "",
       description: service?.description || "",
+      metaTitle: service?.metaTitle || "",
       slug: service?.slug || "",
       content: service?.content || "",
       location: service?.location || "",
@@ -288,12 +290,19 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
             <FormFields
               name="description"
               control={form.control}
-              label="Short Description"
+              label="Short Description (Meta Description)"
               type="textarea"
               placeholder="Brief description of the service..."
               disabled={isSubmitting}
             />
 
+            <FormFields
+              name="metaTitle"
+              control={form.control}
+              label="Meta Title (Optional)"
+              placeholder="SEO meta title for the service"
+              disabled={isSubmitting}
+            />
             <FormFields
               name="location"
               control={form.control}
