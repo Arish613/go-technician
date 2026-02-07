@@ -28,7 +28,7 @@ const socialLinks = [
   },
   {
     name: "Facebook",
-    href: "https://www.facebook.com/Official.GoTechnician",
+    href: "https://www.facebook.com/Official.GoTechnicians/",
     icon: Facebook,
   },
   {

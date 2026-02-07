@@ -20,6 +20,7 @@ import { StickyCart } from "@/components/cart/StickyCart";
 import { AMCComparisonTable } from "@/components/service/AMCTable";
 import { Star } from "lucide-react";
 import { Benefit } from "@/components/service/subservice/Benefit";
+import { RecentBlogs } from "@/components/blog/RecentBlogs";
 
 interface ServicePageProps {
   params: {
@@ -55,14 +56,16 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <div className="md:mx-20">
             <div className="gap-6 items-center">
               {service.imageUrl && (
-                <Image
-                  src={service.imageUrl}
-                  alt={service.name}
-                  width={1000}
-                  height={700}
-                  priority
-                  className="w-full h-auto max-h-37.5 md:max-h-125 lg:max-h-full object-cover "
-                />
+                <div className="w-full max-h-56 md:max-h-125 lg:max-h-175 overflow-hidden">
+                  <Image
+                    src={service.imageUrl}
+                    alt={service.name}
+                    width={1000}
+                    height={700}
+                    priority
+                    className="w-full h-full object-cover object-center"
+                  />
+                </div>
               )}
             </div>
             {showAMCTable && <Benefit />}
@@ -209,8 +212,8 @@ export default async function ServicePage({ params }: ServicePageProps) {
       </section>
       {/* FAQs Section */}
       {service.faqs.length > 0 && (
-        <section id="faqs" className="py-12 md:py-16">
-          <div className="container mx-auto px-4 max-w-4xl">
+        <section id="faqs" className="py-12 md:py-16 md:mx-20 px-4">
+          <div className="container mx-auto px-4 ">
             <div className="text-center mb-5 md:mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-2 md:mb-4">
                 Frequently Asked Questions
@@ -221,13 +224,13 @@ export default async function ServicePage({ params }: ServicePageProps) {
               </p>
             </div>
 
-            <Accordion type="single" collapsible className="w-full">
-              {service.faqs.map((faq, index) => (
-                <AccordionItem key={faq.id} value={`item-${index}`}>
-                  <AccordionTrigger className="text-left">
+            <Accordion type="single" collapsible className="space-y-3">
+              {service.faqs.map((faq, idx) => (
+                <AccordionItem key={idx} value={`item-${idx}`}>
+                  <AccordionTrigger className="py-4 text-left text-base font-semibold text-slate-900 hover:no-underline cursor-pointer">
                     {faq.question}
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
+                  <AccordionContent className="pb-4 text-sm leading-relaxed text-slate-600">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>
@@ -239,6 +242,10 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
       <section>
         {showAMCTable && <AMCComparisonTable />}
+      </section>
+
+      <section className="md:mx-20 px-4">
+        <RecentBlogs />
       </section>
       {/* CTA Section */}
       <section className="py-12 md:py-16 bg-primary text-primary-foreground">

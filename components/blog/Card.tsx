@@ -19,7 +19,7 @@ export function BlogCard({ blog }: BlogCardProps) {
   const readingTime = Math.ceil(wordCount / 200);
 
   return (
-    <Card className="group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+    <Card className="group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl p-0">
       <Link href={`/blog/${blog.slug}`} className="flex flex-col h-full">
         <CardHeader className="p-0">
           <div className="relative w-full h-56 overflow-hidden bg-muted">
@@ -54,7 +54,7 @@ export function BlogCard({ blog }: BlogCardProps) {
             </span>
           </div>
 
-          <h3 className="text-2xl font-semibold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
+          <h3 className="text-lg md:text-xl font-semibold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
             {blog.h1}
           </h3>
 

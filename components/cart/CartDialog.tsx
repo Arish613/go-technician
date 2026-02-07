@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { X, Calendar, CheckCircle2, Minus, Plus, Clock } from "lucide-react";
+import { X, CheckCircle2, Minus, Plus, Clock } from "lucide-react";
 import { z } from "zod";
 import { format, isValid, parseISO } from "date-fns";
 
@@ -191,8 +191,8 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                 <div key={i} className="flex items-center flex-1">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${i <= step
-                        ? "bg-primary text-white"
-                        : "bg-gray-200 text-gray-500"
+                      ? "bg-primary text-white"
+                      : "bg-gray-200 text-gray-500"
                       }`}
                   >
                     {i}

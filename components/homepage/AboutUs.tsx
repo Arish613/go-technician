@@ -205,11 +205,11 @@ export function AboutUs() {
           </div>
 
           <div className="relative">
-            <Card className="overflow-hidden border-0 shadow-xl">
+            <Card className="overflow-hidden border-0 shadow-xl py-0">
               <CardContent className="p-0">
-                <div className="relative aspect-4/3">
+                <div className="">
                   <Image
-                    src="/about-us.jpg"
+                    src="/about-us.png"
                     alt="Go Technicians Team"
                     width={900}
                     height={450}
@@ -240,8 +240,8 @@ export function AboutUs() {
 
         {/* Mission & Vision */}
         <div className="grid gap-6 md:grid-cols-2">
-          <Card className="border-slate-200 bg-white shadow-sm">
-            <CardContent className="p-4 md:p-8">
+          <Card className="border-slate-200 bg-white shadow-sm p-0">
+            <CardContent className="p-4 md:p-6">
               <h3 className="mb-4 text-xl font-bold text-slate-900">
                 Our Mission
               </h3>
@@ -254,8 +254,8 @@ export function AboutUs() {
             </CardContent>
           </Card>
 
-          <Card className="border-slate-200 bg-white shadow-sm">
-            <CardContent className="p-4 md:p-8">
+          <Card className="border-slate-200 bg-white shadow-sm p-0">
+            <CardContent className="p-4 md:p-6">
               <h3 className="mb-4 text-xl font-bold text-slate-900">
                 Our Vision
               </h3>

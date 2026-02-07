@@ -203,7 +203,7 @@ export default function AboutPage() {
             <Card className="overflow-hidden border-0 shadow-xl">
               <div className="relative aspect-4/3">
                 <Image
-                  src="/about-us.jpg"
+                  src="/about-us.png"
                   alt="Go Technicians Team"
                   width={900}
                   height={450}

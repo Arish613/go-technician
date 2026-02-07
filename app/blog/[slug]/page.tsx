@@ -162,12 +162,12 @@ export default async function BlogPage({ params }: BlogPageProps) {
                     <AccordionItem
                       key={faq.id}
                       value={`faq-${index}`}
-                      className="border rounded-lg px-6 bg-card"
+                      className="space-y-3"
                     >
-                      <AccordionTrigger className="text-left font-semibold hover:no-underline">
+                      <AccordionTrigger className="py-4 text-left text-base font-semibold text-slate-900 hover:no-underline">
                         {faq.question}
                       </AccordionTrigger>
-                      <AccordionContent className="text-muted-foreground pt-2 pb-4">
+                      <AccordionContent className="pb-4 text-sm leading-relaxed text-slate-600">
                         {faq.answer}
                       </AccordionContent>
                     </AccordionItem>
@@ -253,12 +253,14 @@ export default async function BlogPage({ params }: BlogPageProps) {
         </div>
       </section>
       {/* Schema Markup */}
-      {blog.schema && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: blog.schema }}
-        />
-      )}
-    </article>
+      {
+        blog.schema && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: blog.schema }}
+          />
+        )
+      }
+    </article >
   );
 }
