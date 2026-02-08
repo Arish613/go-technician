@@ -23,6 +23,7 @@ export type CreateServiceInput = {
   type?: string[];
   isPublished?: boolean;
   whyChooseUs?: WhyChooseUsItem[];
+  benefits?: string[];
   faqs?: {
     question: string;
     answer: string;

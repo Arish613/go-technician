@@ -7,38 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  name          String?
-  email         String    @unique
-  password      String
-  emailVerified DateTime?
-  image         String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Blog {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  h1              String
-  title           String?
-  metaTitle       String
-  metaDescription String
-  slug            String   @unique
-  imageUrl        String
-  imageCaption    String?
-  content         String
-  authorName      String?
-  Summary         String?
-  schema          String?
-  canonicalUrl    String?
-  isPublished     Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  faqs            Faq[]
-}
-
 model Faq {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   question  String
@@ -51,59 +19,6 @@ model Faq {
   updatedAt DateTime  @updatedAt
 }
 
-model Services {
-  id          String            @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  description String
-  metaTitle   String?
-  slug        String            @unique
-  imageUrl    String?
-  content     String
-  location    String?
-  type        String[]          @default([])
-  isPublished Boolean           @default(false)
-  whyChooseUs WhyChooseUsItem[]
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
-  faqs        Faq[]
-  subServices SubService[]
-  reviews     Review[]
-}
-
-model SubService {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  name            String
-  description     String
-  price           Int
-  discountedPrice Int?
-  type            String? // "Split AC", "Window AC", or null for services without types
-  imageUrl        String?
-  whatIncluded    String[] @default([]) // Array of included items
-  whatExcluded    String[] @default([]) // Array of excluded items
-  duration        String? // e.g., "45 mins", "1-2 hours"
-  isPopular       Boolean  @default(false)
-  isActive        Boolean  @default(true)
-  order           Int?
-  serviceId       String   @db.ObjectId
-  service         Services @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  reviews         Review[]
-}
-
-model Review {
-  id           String      @id @default(auto()) @map("_id") @db.ObjectId
-  rating       String
-  comment      String
-  imageUrl     String?
-  reviewer     String
-  serviceId    String?     @db.ObjectId
-  service      Services?   @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  subServiceId String?     @db.ObjectId
-  subService   SubService? @relation(fields: [subServiceId], references: [id], onDelete: Cascade)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-}
 
 type WhyChooseUsItem {
   icon        String?

@@ -35,6 +35,7 @@ const serviceSchema = z.object({
       description: z.string().min(1, "Description is required"),
     })
   ),
+  benefits: z.array(z.string()).optional(),
   faqs: z.array(
     z.object({
       question: z.string().min(1, "Question is required"),
@@ -76,6 +77,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
   const [newExcludedItem, setNewExcludedItem] = useState<{
     [key: number]: string;
   }>({});
+  const [newBenefit, setNewBenefit] = useState("");
 
   const form = useForm<ServiceFormData>({
     resolver: zodResolver(serviceSchema),
@@ -89,6 +91,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
       imageUrl: service?.imageUrl || "",
       type: service?.type || [],
       isPublished: service?.isPublished || false,
+      benefits: service?.benefits || [],
       whyChooseUs: service?.whyChooseUs
         ? service.whyChooseUs.map((item) => ({
           ...item,
@@ -146,6 +149,22 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
+  };
+
+  const addBenefit = () => {
+    if (newBenefit.trim()) {
+      const currentBenefits = form.getValues("benefits");
+      form.setValue("benefits", [...currentBenefits, newBenefit.trim()]);
+      setNewBenefit("");
+    }
+  };
+
+  const removeBenefit = (benefitToRemove: string) => {
+    const currentBenefits = form.getValues("benefits");
+    form.setValue(
+      "benefits",
+      currentBenefits.filter((b) => b !== benefitToRemove)
+    );
   };
 
   const onSubmit = async (data: ServiceFormData) => {
@@ -381,6 +400,58 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
                     <X className="w-3 h-3" />
                   </button>
                 </Badge>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Benefits Section - Add this after Service Types */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Service Benefits</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Add key benefits of this service
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex gap-2">
+              <Input
+                value={newBenefit}
+                onChange={(e) => setNewBenefit(e.target.value)}
+                placeholder="e.g., 90-days warranty on spare parts"
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addBenefit();
+                  }
+                }}
+                disabled={isSubmitting}
+              />
+              <Button
+                type="button"
+                onClick={addBenefit}
+                variant="default"
+                disabled={isSubmitting}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add
+              </Button>
+            </div>
+
+            <div className="space-y-2">
+              {form.watch("benefits").map((benefit, index) => (
+                <div key={index} className="flex items-center gap-2 p-2 border rounded">
+                  <span className="flex-1">{benefit}</span>
+                  <Button
+                    type="button"
+                    onClick={() => removeBenefit(benefit)}
+                    variant="ghost"
+                    size="sm"
+                    disabled={isSubmitting}
+                  >
+                    <X className="w-4 h-4 text-destructive" />
+                  </Button>
+                </div>
               ))}
             </div>
           </CardContent>

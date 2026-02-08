@@ -68,7 +68,9 @@ export default async function ServicePage({ params }: ServicePageProps) {
                 </div>
               )}
             </div>
-            {showAMCTable && <Benefit />}
+            {service.benefits && service.benefits.length > 0 && (
+              <Benefit benefits={service.benefits} serviceName={service.name} />
+            )}
           </div>
         </section>
         {/* Sub Services Section - Reduced top padding */}
@@ -284,7 +286,7 @@ export async function generateMetadata({ params }: ServicePageProps) {
 
   return {
     title: service.metaTitle ?? `${service.name} | Professional Services`,
-    description: service.description, 
+    description: service.description,
     openGraph: {
       title: service.name,
       description: service.description,

@@ -42,12 +42,13 @@ export async function POST(request: NextRequest) {
   }
   try {
     const data = await request.json();
-    const { faqs, subServices, whyChooseUs, ...serviceData } = data;
+    const { faqs, subServices, whyChooseUs, benefits, ...serviceData } = data;
 
     const service = await prisma.services.create({
       data: {
         ...serviceData,
         whyChooseUs: whyChooseUs ?? [],
+        benefits: benefits ?? [],
         faqs: faqs ? { create: faqs } : undefined,
         subServices: subServices ? { create: subServices } : undefined,
       },

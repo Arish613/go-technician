@@ -15,7 +15,7 @@ export async function PUT(
   try {
     const { slug } = await params;
     const data = await request.json();
-    const { faqs, subServices, whyChooseUs, ...serviceData } = data;
+    const { faqs, subServices, whyChooseUs, benefits, ...serviceData } = data;
 
     // Check if new slug already exists (only if slug is being changed)
     if (data.slug && data.slug !== slug) {
@@ -36,6 +36,7 @@ export async function PUT(
       data: {
         ...serviceData,
         whyChooseUs: whyChooseUs ?? [],
+        benefits: benefits ?? [],
         faqs: faqs
           ? {
               deleteMany: {},
@@ -56,7 +57,7 @@ export async function PUT(
     });
 
     revalidatePath("/service", "page");
-    revalidatePath(`/service/${slug }`, "page");
+    revalidatePath(`/service/${slug}`, "page");
 
     if (service.slug !== slug) {
       revalidatePath(`/service/${service.slug}`, "page");

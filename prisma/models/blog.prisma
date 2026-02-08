@@ -1,0 +1,19 @@
+model Blog {
+    id              String   @id @default(auto()) @map("_id") @db.ObjectId
+    h1              String
+    title           String?
+    metaTitle       String
+    metaDescription String
+    slug            String   @unique
+    imageUrl        String
+    imageCaption    String?
+    content         String
+    authorName      String?
+    Summary         String?
+    schema          String?
+    canonicalUrl    String?
+    isPublished     Boolean  @default(false)
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+    faqs            Faq[]
+}
