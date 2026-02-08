@@ -15,7 +15,7 @@ export function ServiceReviews({ reviews }: {
     }>
 }) {
     return (
-        <section className="py-14 md:py-24 md:mx-20 px-4">
+        <section className="py-5 md:py-24 md:mx-20 px-4">
             <div className="container mx-auto px-4 md:px-8">
                 {/* Section Header */}
                 <div className="text-center max-w-2xl mx-auto mb-5 md:mb-16">

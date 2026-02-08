@@ -207,7 +207,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
       {reviews && reviews.length > 0 && <ServiceReviews reviews={reviews} />}
 
       {/* Service Content */}
-      <section className="py-10 md:py-12 md:px-10 bg-muted/30">
+      <section className="pb-10 pt-0 md:py-12 md:px-10 bg-muted/30">
         <div className="md:mx-20 px-4">
           <ServiceContent html={service.content} maxHeight={400} />
         </div>
@@ -229,10 +229,10 @@ export default async function ServicePage({ params }: ServicePageProps) {
             <Accordion type="single" collapsible className="space-y-3">
               {service.faqs.map((faq, idx) => (
                 <AccordionItem key={idx} value={`item-${idx}`}>
-                  <AccordionTrigger className="py-4 text-left text-base font-semibold text-slate-900 hover:no-underline cursor-pointer">
+                  <AccordionTrigger className="md:py-4 text-left text-xs md:text-base font-semibold text-slate-900 hover:no-underline cursor-pointer">
                     {faq.question}
                   </AccordionTrigger>
-                  <AccordionContent className="pb-4 text-sm leading-relaxed text-slate-600">
+                  <AccordionContent className="md:pb-4 text-xs md:text-sm leading-relaxed text-slate-600">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>

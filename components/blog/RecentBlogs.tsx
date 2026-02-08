@@ -2,7 +2,7 @@ import { getRecentBlogs } from "@/lib/action/blog";
 import { BlogCard } from "@/components/blog/Card";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 
 export async function RecentBlogs() {
     const result = await getRecentBlogs(3);
@@ -29,10 +29,27 @@ export async function RecentBlogs() {
                 </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                {result.data.map((blog) => (
-                    <BlogCard key={blog.id} blog={{ ...blog, faqs: [] }} />
-                ))}
+            <div className="relative px-2 md:px-12">
+                <Carousel
+                    opts={{
+                        align: "start",
+                        loop: true,
+                    }}
+                    className="w-full"
+                >
+                    <CarouselContent className="-ml-4">
+                        {result.data.map((blog, idx) => (
+                            <CarouselItem
+                                key={blog.id}
+                                className="pl-4 basis-3/3 md:basis-1/3 lg:basis-1/3"
+                            >
+                                <BlogCard blog={{ ...blog, faqs: [] }} />
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="absolute -left-2 md:-left-4 top-1/2 -translate-y-1/2 h-10 w-10 border-slate-200 bg-white shadow-md hover:bg-slate-50 hover:text-blue-600" />
+                    <CarouselNext className="absolute -right-2 md:-right-4 top-1/2 -translate-y-1/2 h-10 w-10 border-slate-200 bg-white shadow-md hover:bg-slate-50 hover:text-blue-600" />
+                </Carousel>
             </div>
         </section>
     );
