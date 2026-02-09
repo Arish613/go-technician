@@ -4,7 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { StickyContactButtons } from "@/components/contact/ContactButtons";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import { CartProvider } from "@/context/CartContext";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
@@ -89,6 +89,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
         <GoogleAnalytics gaId="G-JQHYVKDNZM" />
+        <GoogleTagManager gtmId="GTM-TNWT72QM" />
         <CartProvider>
           <Navbar />
           {children}
