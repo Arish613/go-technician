@@ -93,6 +93,7 @@ export function Services() {
                 key={category.name}
                 href={category.link}
                 className="mx-auto"
+                prefetch={true}
               >
                 {cardContent}
               </Link>

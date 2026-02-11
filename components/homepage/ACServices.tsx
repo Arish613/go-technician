@@ -65,6 +65,7 @@ export function ACServices() {
                   <Link
                     href="/service/ac-repair-service"
                     className="group block h-full no-underline"
+                    prefetch={true}
                   >
                     <div className="flex flex-col gap-3">
                       {/* Image Container - Rounded & Aspect Ratio Fixed */}

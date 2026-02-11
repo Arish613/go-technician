@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import type { BlogListItem } from "@/types/blog";
 import type { ServiceType } from "@/types/service";
 
-const BASE_URL = process.env.NEXTAUTH_URL || "https://gotechnicians.com/";
+const BASE_URL = "https://www.gotechnicians.com/";
 
 export async function GET() {
   // Fetch all published blog slugs
