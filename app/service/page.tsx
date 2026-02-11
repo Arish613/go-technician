@@ -57,42 +57,6 @@ export default async function ServicesPage({
             <p className="md:text-xl text-muted-foreground">
               Expert technicians for all your home maintenance and repair needs
             </p>
-
-            {/* Search Bar */}
-            {/* <div className="relative max-w-2xl mx-auto">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-              <Input
-                type="search"
-                placeholder="Search for services..."
-                className="pl-12 h-14 text-lg"
-                defaultValue={params.search}
-                name="search"
-              />
-            </div> */}
-
-            {/* Quick Stats */}
-            {/* <div className="flex flex-wrap justify-center gap-8 pt-8">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-primary">
-                  {services.length}+
-                </div>
-                <div className="text-sm text-muted-foreground">Services</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-primary">
-                  {services.reduce((acc, s) => acc + s.subServices.length, 0)}+
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  Service Options
-                </div>
-              </div> */}
-            {/* <div className="text-center">
-                <div className="text-3xl font-bold text-primary">
-                  {locations.length}+
-                </div>
-                <div className="text-sm text-muted-foreground">Cities</div>
-              </div> */}
-            {/* </div> */}
           </div>
         </div>
       </section>
@@ -100,11 +64,6 @@ export default async function ServicesPage({
       {/* Filters & Services */}
       <section className="py-8 md:py-12">
         <div className="md:mx-20 px-4">
-          {/* Filter Bar */}
-          {/* <ServicesFilter
-            currentLocation={params.location}
-            locations={locations}
-          /> */}
 
           {/* Services Grid */}
           {services.length > 0 ? (

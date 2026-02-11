@@ -5,8 +5,8 @@ import { MobileNav } from "./MobileNav";
 import Image from "next/image";
 
 const navLinks = [
-  { name: "Blogs", href: "/blog" },
   { name: "Services", href: "/service" },
+  { name: "Blogs", href: "/blog" },
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
 ];
