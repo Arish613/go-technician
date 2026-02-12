@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { X, CheckCircle2, Minus, Plus, Clock } from "lucide-react";
+import { X, CheckCircle2, Minus, Plus, Clock, Calendar } from "lucide-react";
 import { z } from "zod";
 import { format, isValid, parseISO } from "date-fns";
 
@@ -39,6 +39,35 @@ const getFormattedDate = (dateStr: string) => {
   if (!isValid(date)) return "Pick a date";
   return format(date, "d MMM (EEEE)");
 };
+
+function isSlotDisabled(slot: string, selectedDate: string) {
+  if (!selectedDate) return false;
+  const today = new Date();
+  const selected = new Date(selectedDate);
+
+  // Only check if selected date is today
+  if (
+    today.getFullYear() === selected.getFullYear() &&
+    today.getMonth() === selected.getMonth() &&
+    today.getDate() === selected.getDate()
+  ) {
+    // Parse slot hour (e.g., "10:00 AM" => 10, "01:00 PM" => 13)
+    const [time, period] = slot.split(" ");
+    const [hourStr, minuteStr] = time.split(":");
+    let hour = Number(hourStr);
+    const minute = Number(minuteStr);
+    if (period === "AM" && hour === 12) hour = 0;
+
+    // Compare with current hour and minute
+    if (
+      hour < today.getHours() ||
+      (hour === today.getHours() && minute <= today.getMinutes())
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
 
 export function CartDialog({ open, onOpenChange }: CartDialogProps) {
   const { items, removeFromCart, clearCart, getTotalPrice, updateQuantity } = useCart();
@@ -254,9 +283,9 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                             </Button>
                           </div>
                         </div>
-                        <p className="text-sm font-semibold mt-2">
+                        {/* <p className="text-sm font-semibold mt-2">
                           Subtotal: ₹{(item.discountedPrice || item.price) * item.quantity}
-                        </p>
+                        </p> */}
                       </div>
                       <Button
                         variant="ghost"
@@ -367,10 +396,7 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
             <div className="space-y-4">
               <div>
                 <Label htmlFor="date">Select Date *</Label>
-                <div
-                  className="relative cursor-pointer"
-                  onClick={() => dateInputRef.current?.showPicker()}
-                >
+                <div className="relative">
                   <Input
                     ref={dateInputRef}
                     id="date"
@@ -378,14 +404,21 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
                     min={new Date().toISOString().split("T")[0]}
-                    className="cursor-pointer"
+                    className="cursor-pointer pr-10 [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
                   />
-                  {selectedDate && (
-                    <div className="mt-2 text-sm text-muted-foreground">
-                      Selected: {getFormattedDate(selectedDate)}
-                    </div>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => dateInputRef.current?.showPicker()}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none z-10"
+                  >
+                    <Calendar className="w-5 h-5" />
+                  </button>
                 </div>
+                {selectedDate && (
+                  <div className="mt-2 text-sm text-muted-foreground">
+                    Selected: {getFormattedDate(selectedDate)}
+                  </div>
+                )}
               </div>
               <div>
                 <Label>Select Time Slot *</Label>
@@ -398,6 +431,8 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                         ? "border-primary bg-primary/10"
                         : "hover:border-gray-400"
                         }`}
+                      disabled={isSlotDisabled(slot, selectedDate)}
+                      style={isSlotDisabled(slot, selectedDate) ? { opacity: 0.5, cursor: "not-allowed" } : {}}
                     >
                       <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4" />
@@ -435,35 +470,42 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
         </div>
 
         {/* Footer Buttons */}
-        <div className="md:flex justify-between pt-4 border-t">
-          {step > 1 && step < 5 && (
-            <Button variant="outline" onClick={handleBack}>
-              Back
-            </Button>
-          )}
-          {step < 4 && (
-            <Button
-              onClick={handleNext}
-              disabled={step === 1 && items.length === 0}
-              className="ml-auto"
-            >
-              Next
-            </Button>
-          )}
-          {step === 4 && (
-            <Button
-              onClick={handleNext}
-              disabled={isSubmitting}
-              className="ml-auto"
-            >
-              {isSubmitting ? "Submitting..." : "Confirm Booking"}
-            </Button>
-          )}
-          {step === 5 && (
-            <Button onClick={handleClose} className="ml-auto">
-              Close
-            </Button>
-          )}
+        <div className="md:flex justify-between pt-4 border-t items-center">
+          {/* Total always visible */}
+          {step > 1 && step < 5 && (<div className="font-bold text-lg mb-2 md:mb-0">
+            Total: ₹{getTotalPrice()}
+          </div>)}
+
+          <div className="flex gap-2 w-full md:w-auto justify-end">
+            {step > 1 && step < 5 && (
+              <Button variant="outline" onClick={handleBack}>
+                Back
+              </Button>
+            )}
+            {step < 4 && (
+              <Button
+                onClick={handleNext}
+                disabled={step === 1 && items.length === 0}
+                className={`ml-auto ${step === 1 && "max-sm:mr-12"}`}
+              >
+                Next
+              </Button>
+            )}
+            {step === 4 && (
+              <Button
+                onClick={handleNext}
+                disabled={isSubmitting}
+                className="ml-auto"
+              >
+                {isSubmitting ? "Submitting..." : "Confirm Booking"}
+              </Button>
+            )}
+            {step === 5 && (
+              <Button onClick={handleClose} className="ml-auto">
+                Close
+              </Button>
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
