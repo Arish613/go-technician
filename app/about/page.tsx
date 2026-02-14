@@ -26,10 +26,10 @@ export const metadata: Metadata = {
 };
 
 const stats = [
-  { value: "50,000+", label: "Happy Customers" },
-  { value: "30+", label: "Cities Covered" },
+  { value: "25,000+", label: "Happy Customers" },
+  { value: "10+", label: "Cities Covered" },
   { value: "10,000+", label: "Services Completed" },
-  { value: "4.8/5", label: "Average Rating" },
+  { value: "4.9/5", label: "Average Rating" },
 ];
 
 const values = [
@@ -325,7 +325,8 @@ export default function AboutPage() {
                   className={`relative flex flex-col gap-4 md:flex-row md:gap-8 ${index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
                     }`}
                 >
-                  <div className="flex-1 md:text-right">
+                  {/* Desktop: Alternating cards */}
+                  <div className="hidden md:block flex-1 md:text-right">
                     {index % 2 === 0 && (
                       <Card className="border-slate-200 bg-white shadow-sm">
                         <CardContent className="p-6">
@@ -342,11 +343,8 @@ export default function AboutPage() {
                       </Card>
                     )}
                   </div>
-
-                  {/* Timeline Dot */}
                   <div className="absolute left-1/2 top-6 hidden h-4 w-4 -translate-x-1/2 rounded-full border-4 border-blue-600 bg-white md:block" />
-
-                  <div className="flex-1">
+                  <div className="hidden md:block flex-1">
                     {index % 2 !== 0 && (
                       <Card className="border-slate-200 bg-white shadow-sm">
                         <CardContent className="p-6">
@@ -362,21 +360,22 @@ export default function AboutPage() {
                         </CardContent>
                       </Card>
                     )}
-                    {index % 2 === 0 && (
-                      <Card className="border-slate-200 bg-white shadow-sm md:invisible">
-                        <CardContent className="p-6">
-                          <div className="mb-2 text-sm font-semibold text-blue-600">
-                            {milestone.year}
-                          </div>
-                          <h3 className="mb-2 text-lg font-bold text-slate-900">
-                            {milestone.title}
-                          </h3>
-                          <p className="text-sm text-slate-600">
-                            {milestone.description}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    )}
+                  </div>
+                  {/* Mobile: Single card */}
+                  <div className="block md:hidden w-full">
+                    <Card className="border-slate-200 bg-white shadow-sm">
+                      <CardContent className="p-6">
+                        <div className="mb-2 text-sm font-semibold text-blue-600">
+                          {milestone.year}
+                        </div>
+                        <h3 className="mb-2 text-lg font-bold text-slate-900">
+                          {milestone.title}
+                        </h3>
+                        <p className="text-sm text-slate-600">
+                          {milestone.description}
+                        </p>
+                      </CardContent>
+                    </Card>
                   </div>
                 </div>
               ))}
