@@ -1,10 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { CldImage } from "next-cloudinary";
-import { Star, StarHalf } from "lucide-react";
+import { Star, StarHalf, ArrowRight } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 
-export function ServiceReviews({ reviews }: {
+export function ServiceReviews({ reviews, serviceSlug }: {
     reviews: Array<{
         id: string;
         rating: string;
@@ -12,7 +14,8 @@ export function ServiceReviews({ reviews }: {
         imageUrl: string | null;
         reviewer: string;
         createdAt: Date;
-    }>
+    }>;
+    serviceSlug?: string;
 }) {
     return (
         <section className="py-5 md:py-24 md:mx-20 px-4">
@@ -25,6 +28,14 @@ export function ServiceReviews({ reviews }: {
                     <p className="md:text-lg text-slate-600">
                         See what our happy customers have to say about our service.
                     </p>
+                    {serviceSlug && (
+                        <Link href={`/service/${serviceSlug}/reviews`}>
+                            <Button variant="link" className="mt-4 gap-2 text-blue-600">
+                                View all reviews
+                                <ArrowRight className="w-4 h-4" />
+                            </Button>
+                        </Link>
+                    )}
                 </div>
 
                 {/* Reviews Grid */}

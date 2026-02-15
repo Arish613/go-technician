@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SubServiceCard } from "@/components/service/subservice/SubServiceCard";
 import Link from "next/link";
 import { ServiceContent } from "@/components/service/Content";
-import { getReviewsByService } from "@/lib/action/review";
+import { getReviewsByService, getTop5ReviewsByService } from "@/lib/action/review";
 import { ServiceReviews } from "@/components/service/subservice/Reviews";
 import { WhyChooseUs } from "@/components/service/subservice/WhyChooseUs";
 import { StickyCart } from "@/components/cart/StickyCart";
@@ -39,7 +39,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
   const service = result.data;
   const hasTypes = service.type.length > 0;
 
-  const reviews = await getReviewsByService(service.id);
+  const reviews = await getTop5ReviewsByService(service.id);
 
   const averageRating = reviews && reviews.length > 0
     ? (reviews.reduce((acc, review) => acc + Number(review.rating), 0) / reviews.length).toFixed(2)
@@ -96,13 +96,13 @@ export default async function ServicePage({ params }: ServicePageProps) {
               </p>
 
               <div className="flex flex-wrap items-center gap-4 pt-0">
-                <div className="flex items-center gap-2">
+                <Link href={`/service/${resolvedParams.service}/reviews`} className="flex items-center gap-2 group">
                   <Star className="w-5 h-5 text-blue-600 fill-blue-600" />
                   <span className="font-bold text-base">{averageRating}/5</span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs text-muted-foreground group-hover:text-blue-600 transition-colors">
                     ({reviews?.length || 0} Review{reviews?.length !== 1 ? 's' : ''})
                   </span>
-                </div>
+                </Link>
 
                 {/* <div className="flex items-center gap-2">
                   <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -204,7 +204,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
         <WhyChooseUs service={{ name: service.name, whyChooseUs: service.whyChooseUs }} />
       )}
 
-      {reviews && reviews.length > 0 && <ServiceReviews reviews={reviews} />}
+      {reviews && reviews.length > 0 && <ServiceReviews reviews={reviews} serviceSlug={resolvedParams.service} />}
 
       {/* Service Content */}
       <section className="pb-10 pt-0 md:py-12 md:px-10 bg-muted/30">
@@ -284,8 +284,10 @@ export async function generateMetadata({ params }: ServicePageProps) {
 
   const service = result.data;
 
+  console.log("Generating metadata for service:", service.name);
+
   return {
-    title: service.metaTitle ?? `${service.name} | Professional Services`,
+    title: service.metaTitle || `${service.name} | Professional Services`,
     description: service.description,
     openGraph: {
       title: service.name,

@@ -56,7 +56,7 @@ export function Services() {
           </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-y-10 gap-x-6 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3">
+        <div className="grid grid-cols-3 gap-y-10 sm:gap-x-6 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3">
           {categories.map((category) => {
             const cardContent = (
               <div className="group flex cursor-pointer flex-col items-center gap-4">
@@ -70,7 +70,7 @@ export function Services() {
                   )}
 
                   {/* Icon/Image */}
-                  <div className="relative md:h-24 md:w-24 h-16 w-16">
+                  <div className="relative md:h-24 md:w-24 h-24 w-24">
                     <Image
                       src={category.icon}
                       alt={category.name}

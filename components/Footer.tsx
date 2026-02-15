@@ -9,6 +9,7 @@ const navigationLinks = [
   { name: "Blogs", href: "/blog" },
   { name: "Contact Us", href: "/contact" },
   { name: "Raise a Complaint", href: "/raise-a-complaint" },
+  { name: "Add a Review", href: "/review" }
 ];
 
 const legalLinks = [
