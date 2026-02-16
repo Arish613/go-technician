@@ -7,7 +7,7 @@ export const metadata = {
 };
 
 export default function RefundPolicyPage() {
-  const lastUpdated = "July 09, 2025";
+  const lastUpdated = "March 09, 2025";
 
   return (
     <main className="min-h-screen bg-slate-50 py-16">

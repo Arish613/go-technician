@@ -16,7 +16,7 @@ const legalLinks = [
   { name: "Terms & Conditions", href: "/terms-and-conditions" },
   { name: "Privacy Policy", href: "/privacy-policy" },
   //   { name: "Return Policy", href: "/return-policy" },
-    { name: "Refund Policy", href: "/refund-policy" },
+  { name: "Refund Policy", href: "/refund-policy" },
   { name: "Disclaimer", href: "/disclaimer" },
   //   { name: "Profile", href: "/profile" },
 ];
@@ -120,7 +120,9 @@ export function Footer() {
             </h3>
             <div className="space-y-3 text-sm text-slate-600">
               <p>
-                4th Floor “C” Wing, Fakir Shah Apartment, Thane – 400612, Maharashtra, India
+                <Link href={"/"}>
+                  4th Floor “C” Wing, Fakir Shah Apartment, Thane – 400612, Maharashtra, India
+                </Link>
                 {/* <br />
                 400076 */}
               </p>
