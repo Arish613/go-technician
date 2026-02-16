@@ -73,6 +73,7 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
   const { items, removeFromCart, clearCart, getTotalPrice, updateQuantity } = useCart();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [agreed, setAgreed] = useState(false);
 
   const dateInputRef = useRef<HTMLInputElement>(null);
 
@@ -201,7 +202,7 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto" forceMount>
         <DialogHeader>
           <DialogTitle>
             {step === 1 && "Your Cart"}
@@ -309,12 +310,14 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
 
           {/* Step 2: Contact Information */}
           {step === 2 && (
-            <div className="space-y-4">
+            <form className="space-y-4" autoComplete="on">
               <div>
                 <Label htmlFor="phone">Phone Number *</Label>
                 <Input
                   id="phone"
+                  name="phone"
                   type="tel"
+                  autoComplete="tel"
                   value={contactData.phone}
                   onChange={(e) =>
                     setContactData({ ...contactData, phone: e.target.value })
@@ -329,7 +332,9 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                 <Label htmlFor="email">Email Address *</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
+                  autoComplete="email"
                   value={contactData.email}
                   onChange={(e) =>
                     setContactData({ ...contactData, email: e.target.value })
@@ -340,21 +345,23 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                   <p className="text-sm text-red-500 mt-1">{contactErrors.email}</p>
                 )}
               </div>
-            </div>
+            </form>
           )}
 
           {/* Step 3: Address */}
           {step === 3 && (
-            <div className="space-y-4">
+            <form className="space-y-4" autoComplete="on">
               <div>
                 <Label htmlFor="region">Region/City *</Label>
                 <Input
                   id="region"
+                  name="region"
                   value={addressData.region}
                   onChange={(e) =>
                     setAddressData({ ...addressData, region: e.target.value })
                   }
                   placeholder="Enter your city/region"
+                  autoComplete="address-level2"
                 />
                 {addressErrors.region && (
                   <p className="text-sm text-red-500 mt-1">{addressErrors.region}</p>
@@ -364,11 +371,13 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                 <Label htmlFor="flatNo">Flat/House Number & Building *</Label>
                 <Input
                   id="flatNo"
+                  name="flatNo"
                   value={addressData.flatNo}
                   onChange={(e) =>
                     setAddressData({ ...addressData, flatNo: e.target.value })
                   }
                   placeholder="Enter flat/house number and building name"
+                  autoComplete="street-address"
                 />
                 {addressErrors.flatNo && (
                   <p className="text-sm text-red-500 mt-1">{addressErrors.flatNo}</p>
@@ -378,17 +387,19 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                 <Label htmlFor="landmark">Landmark *</Label>
                 <Input
                   id="landmark"
+                  name="landmark"
                   value={addressData.landmark}
                   onChange={(e) =>
                     setAddressData({ ...addressData, landmark: e.target.value })
                   }
                   placeholder="Enter nearby landmark"
+                  autoComplete="address-line2"
                 />
                 {addressErrors.landmark && (
                   <p className="text-sm text-red-500 mt-1">{addressErrors.landmark}</p>
                 )}
               </div>
-            </div>
+            </form>
           )}
 
           {/* Step 4: Booking Schedule */}
@@ -442,17 +453,27 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                   ))}
                 </div>
               </div>
-              <div className="text-xs text-muted-foreground mt-4">
-                By submitting this form, you agree to our{" "}
-                <a
-                  href="/privacy-policy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:text-primary"
-                >
-                  Privacy Policy
-                </a>
-                .
+              <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground">
+                <input
+                  type="checkbox"
+                  id="agree"
+                  required
+                  checked={agreed}
+                  onChange={(e) => setAgreed(e.target.checked)}
+                  className="accent-primary"
+                />
+                <label htmlFor="agree" className="select-none">
+                  By submitting this form, you agree to our{" "}
+                  <a
+                    href="/privacy-policy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-primary"
+                  >
+                    Privacy Policy
+                  </a>
+                  .
+                </label>
               </div>
             </div>
           )}
@@ -510,7 +531,7 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
             {step === 4 && (
               <Button
                 onClick={handleNext}
-                disabled={isSubmitting}
+                disabled={isSubmitting || !agreed}
                 className="ml-auto"
               >
                 {isSubmitting ? "Submitting..." : "Confirm Booking"}
