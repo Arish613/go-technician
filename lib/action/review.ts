@@ -52,18 +52,6 @@ export async function getReviewsByService(serviceId: string) {
   }
 }
 
-export async function getTop5ReviewsByService(serviceId: string) {
-  try {
-    return prisma.review.findMany({
-      where: { serviceId },
-      orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
-      take: 5,
-    });
-  } catch (error) {
-    console.log("Error fetching top 5 reviews:", error);
-    return [];
-  }
-}
 
 export async function getReviewsBySubService(subServiceId: string) {
   try {

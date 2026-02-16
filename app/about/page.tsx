@@ -4,13 +4,12 @@ import {
   Shield,
   Clock,
   Award,
-  Target,
-  Eye,
   Heart,
   CheckCircle2,
   MapPin,
   Phone,
   Mail,
+  Users,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,17 +18,17 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About Us | Go Technicians",
   description:
-    "Learn about Go Technicians - Your trusted partner for home and office services. Verified experts, transparent pricing, and quality guaranteed.",
+    "Gotechnicians is a Mumbai-based home service company providing reliable AC repair, appliance servicing, plumbing, and home cleaning services across Mumbai, Thane, and Navi Mumbai.",
   alternates: {
-    canonical: "https://www.gotechnicians.coms/about",
+    canonical: "https://www.gotechnicians.com/about",
   }
 };
 
 const stats = [
-  { value: "25,000+", label: "Happy Customers" },
-  { value: "10+", label: "Cities Covered" },
-  { value: "10,000+", label: "Services Completed" },
-  { value: "4.9/5", label: "Average Rating" },
+  { value: "1000+", label: "Customers Assisted" },
+  { value: "3", label: "Cities Covered" },
+  { value: "100%", label: "Verified Technicians" },
+  { value: "4.9/5", label: "Customer Satisfaction" },
 ];
 
 const values = [
@@ -59,67 +58,6 @@ const values = [
   },
 ];
 
-const milestones = [
-  {
-    year: "2020",
-    title: "Founded",
-    description:
-      "Go Technicians was born with a vision to transform home services in India.",
-  },
-  {
-    year: "2021",
-    title: "Expansion",
-    description:
-      "Expanded to 10 major cities and onboarded 1,000+ verified technicians.",
-  },
-  {
-    year: "2022",
-    title: "Growth",
-    description:
-      "Crossed 25,000 happy customers and launched new service categories.",
-  },
-  {
-    year: "2023",
-    title: "Recognition",
-    description:
-      "Awarded 'Best Home Services Platform' and expanded to 30+ cities.",
-  },
-  {
-    year: "2024",
-    title: "Innovation",
-    description:
-      "Launched AI-powered service recommendations and same-day service guarantee.",
-  },
-];
-
-const team = [
-  {
-    name: "Rajesh Kumar",
-    role: "Founder & CEO",
-    image: "/team/ceo.jpg",
-    description: "15+ years of experience in technology and service industry.",
-  },
-  {
-    name: "Priya Sharma",
-    role: "Head of Operations",
-    image: "/team/operations.jpg",
-    description: "Expert in scaling service operations across multiple cities.",
-  },
-  {
-    name: "Amit Patel",
-    role: "CTO",
-    image: "/team/cto.jpg",
-    description:
-      "Building technology that connects customers with the right experts.",
-  },
-  {
-    name: "Sneha Reddy",
-    role: "Customer Success",
-    image: "/team/customer-success.jpg",
-    description: "Ensuring every customer has a delightful experience.",
-  },
-];
-
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-50 to-white">
@@ -131,13 +69,10 @@ export default function AboutPage() {
               About Us
             </p>
             <h1 className="text-3xl font-bold sm:text-4xl lg:text-5xl">
-              Making Home Services{" "}
-              <span className="text-blue-200">Simple & Reliable</span>
+              Mumbai&apos;s Trusted Home Service Partner
             </h1>
             <p className="mt-6 text-lg text-blue-100">
-              Go Technicians is on a mission to transform how India experiences
-              home and office services. We connect you with verified, skilled
-              professionals for all your service needs.
+              Gotechnicians is a Mumbai-based home service company dedicated to providing reliable, on-time, and professional repair and maintenance solutions for households and offices.
             </p>
           </div>
         </div>
@@ -162,33 +97,31 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Our Story Section */}
+      {/* About Content Section */}
       <section className=" px-4 py-16 md:mx-20">
-        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+        <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
-              Our Story
+              Who We Are
             </p>
             <h2 className="mt-2 text-3xl font-bold text-slate-900">
-              From a Simple Idea to Transforming Home Services
+              Professional Home Services You Can Trust
             </h2>
             <div className="mt-6 space-y-4 text-slate-600">
               <p>
-                Go Technicians started with a simple observation: finding
-                reliable home service professionals was a frustrating
-                experience. From unverified technicians to unclear pricing,
-                customers deserved better.
+                Gotechnicians is a Mumbai-based home service company dedicated to providing reliable, on-time, and professional repair and maintenance solutions for households and offices. We specialize in AC repair and servicing, laptop repair, washing machine repair, refrigerator repair, plumbing services, and home cleaning, serving customers across Mumbai, Thane, and Navi Mumbai.
               </p>
               <p>
-                Founded in 2020, we set out to build a platform that brings
-                transparency, reliability, and quality to home services. We
-                carefully vet every technician, ensure fair pricing, and back
-                every service with our satisfaction guarantee.
+                Founded by Arish Sayyed, Gotechnicians was built with a clear goal — to make home services simple, transparent, and trustworthy. Over time, we have successfully assisted 1000+ customers by connecting them with trained, experienced, and background-verified technicians who understand the importance of quality work and customer satisfaction.
               </p>
               <p>
-                Today, we serve over 50,000 happy customers across 30+ cities,
-                and we&apos;re just getting started. Our vision is to be the
-                most trusted name in home services across India.
+                At Gotechnicians, we follow a strict verification process before onboarding any technician. Every professional is skill-tested, ID-verified, and experienced in their respective service area. This ensures that our customers receive safe, dependable, and hassle-free service every time they book with us.
+              </p>
+              <p>
+                We believe in transparent pricing with no hidden charges. Customers are informed about service costs upfront, and our technicians focus on delivering effective solutions rather than unnecessary upselling. Whether it&apos;s an urgent AC breakdown, appliance repair, or routine home maintenance, our team responds quickly and works efficiently to minimize inconvenience.
+              </p>
+              <p>
+                With a growing presence across Mumbai, Thane, and Navi Mumbai, Gotechnicians continues to expand its service network while maintaining high service standards. Our commitment to quality workmanship, honest pricing, and timely support makes us a preferred choice for home services in the region.
               </p>
             </div>
             <div className="mt-8">
@@ -204,10 +137,9 @@ export default function AboutPage() {
               <div className="relative aspect-4/3">
                 <Image
                   src="/about-us.png"
-                  alt="Go Technicians Team"
+                  alt="Gotechnicians Team"
                   width={900}
                   height={450}
-                // className="object-cover"
                 />
               </div>
             </Card>
@@ -232,201 +164,149 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Mission & Vision */}
+      {/* Services We Offer */}
       <section className="bg-slate-50 py-16">
         <div className="md:mx-20 px-4">
-          <div className="grid gap-8 md:grid-cols-2">
-            <Card className="border-blue-200 bg-linear-to-br from-blue-50 to-white shadow-md">
-              <CardContent className="p-8">
-                <div className="mb-4 inline-block rounded-lg bg-blue-100 p-3">
-                  <Target className="h-8 w-8 text-blue-600" />
-                </div>
-                <h3 className="mb-4 text-2xl font-bold text-slate-900">
-                  Our Mission
-                </h3>
-                <p className="text-slate-600">
-                  To make quality home and office services accessible,
-                  affordable, and hassle-free for every household in India.
-                  We&apos;re committed to empowering skilled professionals while
-                  delivering exceptional experiences to our customers.
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="border-blue-200 bg-linear-to-br from-blue-50 to-white shadow-md">
-              <CardContent className="p-8">
-                <div className="mb-4 inline-block rounded-lg bg-blue-100 p-3">
-                  <Eye className="h-8 w-8 text-blue-600" />
-                </div>
-                <h3 className="mb-4 text-2xl font-bold text-slate-900">
-                  Our Vision
-                </h3>
-                <p className="text-slate-600">
-                  To become India&apos;s most trusted platform for home
-                  services, known for quality, reliability, and customer
-                  satisfaction. We envision a future where every home has access
-                  to professional services at the tap of a button.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Our Values */}
-      <section className="md:mx-20 px-4 py-16">
-        <div className="mb-6 md:mb-12 text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
-            What We Stand For
-          </p>
-          <h2 className="mt-2 text-3xl font-bold text-slate-900">Our Values</h2>
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {values.map((value) => {
-            const Icon = value.icon;
-            return (
-              <Card
-                key={value.title}
-                className="border-slate-200 bg-white shadow-sm transition-all hover:shadow-md"
-              >
-                <CardContent className="p-3 md:p-6 text-center">
-                  <div className="mx-auto mb-4 inline-block rounded-full bg-blue-100 p-2 md:p-4">
-                    <Icon className="md:h-8 md:w-8 text-blue-600" />
-                  </div>
-                  <h3 className="mb-2 text-lg font-semibold text-slate-900">
-                    {value.title}
-                  </h3>
-                  <p className="text-sm text-slate-600">{value.description}</p>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Journey/Timeline */}
-      <section className="bg-slate-50 py-16">
-        <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
             <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
-              Our Journey
+              Our Services
             </p>
             <h2 className="mt-2 text-3xl font-bold text-slate-900">
-              Milestones Along the Way
+              Services We Specialize In
             </h2>
           </div>
-          <div className="relative mx-auto max-w-4xl">
-            {/* Timeline Line */}
-            <div className="absolute left-1/2 top-0 hidden h-full w-0.5 -translate-x-1/2 bg-blue-200 md:block" />
-
-            <div className="space-y-8">
-              {milestones.map((milestone, index) => (
-                <div
-                  key={milestone.year}
-                  className={`relative flex flex-col gap-4 md:flex-row md:gap-8 ${index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-                    }`}
-                >
-                  {/* Desktop: Alternating cards */}
-                  <div className="hidden md:block flex-1 md:text-right">
-                    {index % 2 === 0 && (
-                      <Card className="border-slate-200 bg-white shadow-sm">
-                        <CardContent className="p-6">
-                          <div className="mb-2 text-sm font-semibold text-blue-600">
-                            {milestone.year}
-                          </div>
-                          <h3 className="mb-2 text-lg font-bold text-slate-900">
-                            {milestone.title}
-                          </h3>
-                          <p className="text-sm text-slate-600">
-                            {milestone.description}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    )}
-                  </div>
-                  <div className="absolute left-1/2 top-6 hidden h-4 w-4 -translate-x-1/2 rounded-full border-4 border-blue-600 bg-white md:block" />
-                  <div className="hidden md:block flex-1">
-                    {index % 2 !== 0 && (
-                      <Card className="border-slate-200 bg-white shadow-sm">
-                        <CardContent className="p-6">
-                          <div className="mb-2 text-sm font-semibold text-blue-600">
-                            {milestone.year}
-                          </div>
-                          <h3 className="mb-2 text-lg font-bold text-slate-900">
-                            {milestone.title}
-                          </h3>
-                          <p className="text-sm text-slate-600">
-                            {milestone.description}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    )}
-                  </div>
-                  {/* Mobile: Single card */}
-                  <div className="block md:hidden w-full">
-                    <Card className="border-slate-200 bg-white shadow-sm">
-                      <CardContent className="p-6">
-                        <div className="mb-2 text-sm font-semibold text-blue-600">
-                          {milestone.year}
-                        </div>
-                        <h3 className="mb-2 text-lg font-bold text-slate-900">
-                          {milestone.title}
-                        </h3>
-                        <p className="text-sm text-slate-600">
-                          {milestone.description}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { title: "AC Repair & Servicing", desc: "Complete AC solutions including installation, repair, and annual maintenance" },
+              { title: "Laptop Repair", desc: "Hardware and software troubleshooting for all major laptop brands" },
+              { title: "Washing Machine Repair", desc: "Expert repair services for all types of washing machines" },
+              { title: "Refrigerator Repair", desc: "Cooling issues, compressor problems, and general maintenance" },
+              { title: "Plumbing Services", desc: "Leak repairs, pipe fitting, bathroom fittings, and drainage solutions" },
+              { title: "Home Cleaning", desc: "Deep cleaning, regular maintenance, and specialized cleaning services" },
+            ].map((service) => (
+              <Card key={service.title} className="border-slate-200 bg-white shadow-sm">
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                    {service.title}
+                  </h3>
+                  <p className="text-sm text-slate-600">{service.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Team Section */}
-      {/* <section className="md:mx-20 px-4 py-16">
+      {/* Service Areas */}
+      <section className="md:mx-20 px-4 py-16">
         <div className="mb-12 text-center">
           <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
-            Meet The Team
+            Coverage Areas
           </p>
           <h2 className="mt-2 text-3xl font-bold text-slate-900">
-            The People Behind Go Technicians
+            Serving Across Mumbai Region
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600">
-            Our leadership team brings decades of combined experience in
-            technology, operations, and customer service.
-          </p>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {team.map((member) => (
-            <Card
-              key={member.name}
-              className="border-slate-200 bg-white shadow-sm transition-all hover:shadow-md"
-            >
+        <div className="grid gap-6 sm:grid-cols-3">
+          {[
+            { city: "Mumbai", desc: "All major areas and localities" },
+            { city: "Thane", desc: "Complete Thane district coverage" },
+            { city: "Navi Mumbai", desc: "All nodes and surrounding areas" },
+          ].map((area) => (
+            <Card key={area.city} className="border-slate-200 bg-white shadow-sm">
               <CardContent className="p-6 text-center">
-                <div className="relative mx-auto mb-4 h-24 w-24 overflow-hidden rounded-full bg-slate-200">
-                  <Image
-                    src={member.image}
-                    alt={member.name}
-                    fill
-                    className="object-cover"
-                  />
+                <div className="mx-auto mb-4 inline-block rounded-full bg-blue-100 p-4">
+                  <MapPin className="h-6 w-6 text-blue-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-slate-900">
-                  {member.name}
+                  {area.city}
                 </h3>
-                <p className="text-sm font-medium text-blue-600">
-                  {member.role}
-                </p>
-                <p className="mt-2 text-sm text-slate-600">
-                  {member.description}
-                </p>
+                <p className="text-sm text-slate-600 mt-1">{area.desc}</p>
               </CardContent>
             </Card>
           ))}
         </div>
-      </section> */}
+        <p className="mt-6 text-center text-slate-600">And nearby surrounding locations</p>
+      </section>
+
+      {/* Our Values */}
+      <section className="bg-slate-50 py-16">
+        <div className="md:mx-20 px-4">
+          <div className="mb-12 text-center">
+            <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
+              What We Stand For
+            </p>
+            <h2 className="mt-2 text-3xl font-bold text-slate-900">Our Values</h2>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {values.map((value) => {
+              const Icon = value.icon;
+              return (
+                <Card
+                  key={value.title}
+                  className="border-slate-200 bg-white shadow-sm transition-all hover:shadow-md"
+                >
+                  <CardContent className="p-3 md:p-6 text-center">
+                    <div className="mx-auto mb-4 inline-block rounded-full bg-blue-100 p-2 md:p-4">
+                      <Icon className="md:h-8 md:w-8 text-blue-600" />
+                    </div>
+                    <h3 className="mb-2 text-lg font-semibold text-slate-900">
+                      {value.title}
+                    </h3>
+                    <p className="text-sm text-slate-600">{value.description}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us */}
+      <section className="md:mx-20 px-4 py-16">
+        <div className="grid gap-12 lg:grid-cols-2 items-center">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
+              Why Gotechnicians
+            </p>
+            <h2 className="mt-2 text-3xl font-bold text-slate-900">
+              What Makes Us Different
+            </h2>
+            <div className="mt-6 space-y-4">
+              {[
+                "Strict verification process for all technicians",
+                "Skill-tested and ID-verified professionals",
+                "Transparent pricing with no hidden charges",
+                "Upfront cost information before service",
+                "Quick response and efficient service delivery",
+                "Focus on effective solutions, not upselling",
+              ].map((point, index) => (
+                <div key={index} className="flex items-start gap-3">
+                  <div className="rounded-full bg-green-100 p-1 mt-0.5">
+                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  </div>
+                  <p className="text-slate-700">{point}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="relative">
+            <Card className="border-blue-200 bg-linear-to-br from-blue-50 to-white shadow-lg">
+              <CardContent className="p-8">
+                <div className="mb-4 inline-block rounded-lg bg-blue-100 p-3">
+                  <Users className="h-8 w-8 text-blue-600" />
+                </div>
+                <h3 className="mb-4 text-2xl font-bold text-slate-900">
+                  Founded by Arish Sayyed
+                </h3>
+                <p className="text-slate-600">
+                  With a vision to transform home services in Mumbai, Arish Sayyed founded Gotechnicians to make home services simple, transparent, and trustworthy for every household.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
 
       {/* Contact CTA */}
       <section className="bg-blue-600 py-16 text-white">
@@ -434,8 +314,7 @@ export default function AboutPage() {
           <div className="mx-auto max-w-4xl text-center">
             <h2 className="text-3xl font-bold">Get in Touch</h2>
             <p className="mt-4 text-blue-100">
-              Have questions or want to learn more about our services? We&apos;d
-              love to hear from you.
+              Have questions or want to book a service? We&apos;d love to hear from you.
             </p>
 
             <div className="mt-8 grid gap-6 sm:grid-cols-3">
@@ -445,7 +324,7 @@ export default function AboutPage() {
                 </div>
                 <h3 className="font-semibold">Our Office</h3>
                 <p className="mt-1 text-sm text-blue-100">
-                  Mumbai/ Navi Mumbai/ Thane
+                  Mumbai / Thane / Navi Mumbai
                 </p>
               </div>
               <div className="flex flex-col items-center">
@@ -483,12 +362,12 @@ export default function AboutPage() {
                   Book a Service
                 </Button>
               </Link>
-              <Link href="/raise-a-complaint">
+              <Link href="/contact">
                 <Button
                   size="lg"
-                  className="border-white text-white hover:bg-white/10"
+                  className="bg-black"
                 >
-                  Raise a Complaint
+                  Contact Us
                 </Button>
               </Link>
             </div>

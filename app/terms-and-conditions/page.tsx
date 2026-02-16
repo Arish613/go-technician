@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export const metadata = {
   title: "Terms and Conditions | Go Technicians",
   description: "Read the terms and conditions for using Go Technicians' services. Your trust and safety are our priority.",
@@ -7,7 +9,7 @@ export const metadata = {
 };
 
 export default function TermsAndConditionsPage() {
-  const lastUpdated = "December 29, 2025";
+  const lastUpdated = "July 09, 2025";
 
   const sections = [
     {
@@ -68,8 +70,10 @@ export default function TermsAndConditionsPage() {
     },
     {
       title: "Contact",
-      content:
-        "Mumbai, Navi Mumbai/Thane"
+      points: [
+        "4th Floor “C” Wing, Fakir Shah Apartment, Thane – 400612, Maharashtra, India",
+        "Email: gotechnicians.com@gmail.com"
+      ]
     },
   ];
 
@@ -118,8 +122,8 @@ export default function TermsAndConditionsPage() {
 
         <section className="mt-12 rounded-2xl border border-blue-200 bg-linear-to-r from-blue-600/10 to-sky-500/10 p-6 text-sm text-slate-600">
           By using Go Technicians, you acknowledge and agree to these Terms &
-          Conditions. For additional policies, please visit our Privacy Policy
-          and Refund Policy pages.
+          Conditions. For additional policies, please visit our <Link href={"/privacy-policy"} className="hover:text-blue-500 hover:underline">Privacy Policy</Link> {" "}
+          and {" "}<Link href={"/refund-policy"} className="hover:text-blue-500 hover:underline"> Refund Policy </Link> pages.
         </section>
       </div>
     </main>

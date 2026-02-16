@@ -442,6 +442,18 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                   ))}
                 </div>
               </div>
+              <div className="text-xs text-muted-foreground mt-4">
+                By submitting this form, you agree to our{" "}
+                <a
+                  href="/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-primary"
+                >
+                  Privacy Policy
+                </a>
+                .
+              </div>
             </div>
           )}
 
@@ -464,6 +476,10 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                 <p>
                   <strong>Total:</strong> ₹{getTotalPrice()}
                 </p>
+              </div>
+              <div className="mt-6 text-sm text-muted-foreground">
+                For any assistance, call us at <a href="tel:7977661546" className="underline hover:text-primary"> 7977661546</a> or email <a href="mailto:gotechnicians.com@gmail.com" className="underline hover:text-primary">gotechnicians.com@gmail.com</a>.<br />
+                Your satisfaction is our priority. Thank you for choosing GoTechnicians!
               </div>
             </div>
           )}

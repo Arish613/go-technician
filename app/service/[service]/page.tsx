@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SubServiceCard } from "@/components/service/subservice/SubServiceCard";
 import Link from "next/link";
 import { ServiceContent } from "@/components/service/Content";
-import { getReviewsByService, getTop5ReviewsByService } from "@/lib/action/review";
+import { getReviewsByService } from "@/lib/action/review";
 import { ServiceReviews } from "@/components/service/subservice/Reviews";
 import { WhyChooseUs } from "@/components/service/subservice/WhyChooseUs";
 import { StickyCart } from "@/components/cart/StickyCart";
@@ -39,7 +39,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
   const service = result.data;
   const hasTypes = service.type.length > 0;
 
-  const reviews = await getTop5ReviewsByService(service.id);
+  const reviews = await getReviewsByService(service.id);
 
   const averageRating = reviews && reviews.length > 0
     ? (reviews.reduce((acc, review) => acc + Number(review.rating), 0) / reviews.length).toFixed(2)
