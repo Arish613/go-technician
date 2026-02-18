@@ -16,11 +16,11 @@ export default function Page() {
       <HeroSSR />
       <div className="md:mx-20">
         <Services />
-        <WhyChooseUs />
         <ACServices />
         <QuickRepairs />
         <AboutUs />
         <Partners />
+        <WhyChooseUs />
         <CustomerReviews />
         <RecentBlogs />
         <JoinProNetwork />
