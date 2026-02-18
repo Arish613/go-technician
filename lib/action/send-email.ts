@@ -1,4 +1,4 @@
-"use server"
+"use server";
 import * as Brevo from "@getbrevo/brevo";
 
 interface ComplaintFormData {
@@ -30,7 +30,7 @@ interface BookingFormData {
   items: BookingItem[];
   contact: {
     phone: string;
-    email: string;
+    email?: string;
   };
   address: {
     region: string;
@@ -64,7 +64,7 @@ export async function sendEmailForComplaint(formData: ComplaintFormData) {
 
     apiInstance.setApiKey(
       Brevo.TransactionalEmailsApiApiKeys.apiKey,
-      process.env.BREVO_API_KEY
+      process.env.BREVO_API_KEY,
     );
     const emailContent = `
    <!DOCTYPE html>
@@ -157,7 +157,7 @@ export async function sendContactFormEmail(formData: ContactFormData) {
     const apiInstance = new Brevo.TransactionalEmailsApi();
     apiInstance.setApiKey(
       Brevo.TransactionalEmailsApiApiKeys.apiKey,
-      process.env.BREVO_API_KEY
+      process.env.BREVO_API_KEY,
     );
 
     const emailContent = `
@@ -256,7 +256,7 @@ export async function sendBookingEmail(formData: BookingFormData) {
     const apiInstance = new Brevo.TransactionalEmailsApi();
     apiInstance.setApiKey(
       Brevo.TransactionalEmailsApiApiKeys.apiKey,
-      process.env.BREVO_API_KEY
+      process.env.BREVO_API_KEY,
     );
 
     // Generate service items HTML
@@ -269,7 +269,7 @@ export async function sendBookingEmail(formData: BookingFormData) {
         <td style="padding: 12px 0; border-bottom: 1px solid #e9ecef; color: #333333; text-align: right;">₹${item.price}</td>
         <td style="padding: 12px 0; border-bottom: 1px solid #e9ecef; color: #333333; text-align: right; font-weight: bold;">₹${item.price * item.quantity}</td>
       </tr>
-    `
+    `,
       )
       .join("");
 
@@ -328,11 +328,15 @@ export async function sendBookingEmail(formData: BookingFormData) {
                                 👤 Customer Information
                             </h2>
                             <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px;">
-                                <tr>
-                                    <td style="padding: 8px 0; border-bottom: 1px dashed #e9ecef; width: 30%; font-weight: bold; color: #555555;">Email:</td>
-                                    <td style="padding: 8px 0; border-bottom: 1px dashed #e9ecef; width: 70%; color: #333333;">
-                                        <a href="mailto:${formData.contact.email}" style="color: #2563eb; text-decoration: none;">${formData.contact.email}</a>
-                                    </td>
+                               <tr>
+                                <td style="padding: 8px 0; border-bottom: 1px dashed #e9ecef; width: 30%; font-weight: bold; color: #555555;">Email:</td>
+                                <td style="padding: 8px 0; border-bottom: 1px dashed #e9ecef; width: 70%; color: #333333;">
+                                    ${
+                                      formData.contact.email
+                                        ? `<a href="mailto:${formData.contact.email}" style="color: #2563eb; text-decoration: none;">${formData.contact.email}</a>`
+                                        : `<span style="color: #888;">(not provided)</span>`
+                                    }
+                                </td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 8px 0; border-bottom: 1px dashed #e9ecef; font-weight: bold; color: #555555;">Phone:</td>
@@ -453,7 +457,7 @@ export async function sendBookingEmail(formData: BookingFormData) {
                                         <td style="padding: 12px; border-bottom: 1px solid #e9ecef; color: #333333; text-align: center;">${item.quantity}</td>
                                         <td style="padding: 12px; border-bottom: 1px solid #e9ecef; color: #333333; text-align: right;">₹${item.price * item.quantity}</td>
                                       </tr>
-                                    `
+                                    `,
                                       )
                                       .join("")}
                                     <tr>
@@ -523,16 +527,22 @@ export async function sendBookingEmail(formData: BookingFormData) {
     adminEmail.subject = `New Service Booking - ₹${formData.totalPrice} | ${formData.schedule.date}`;
     adminEmail.htmlContent = adminEmailContent;
 
-    // Send customer confirmation email
-    const customerConfirmationEmail = new Brevo.SendSmtpEmail();
-    customerConfirmationEmail.sender = { name: "Go Technicians", email: senderEmail };
-    customerConfirmationEmail.to = [{ email: customerEmailAddress }];
-    customerConfirmationEmail.subject = "Booking Confirmation - Go Technicians";
-    customerConfirmationEmail.htmlContent = customerEmailContent;
-
-    // Send both emails
     await apiInstance.sendTransacEmail(adminEmail);
-    await apiInstance.sendTransacEmail(customerConfirmationEmail);
+
+    // Send customer confirmation email
+    if (customerEmailAddress) {
+      const customerConfirmationEmail = new Brevo.SendSmtpEmail();
+      customerConfirmationEmail.sender = {
+        name: "Go Technicians",
+        email: senderEmail,
+      };
+      customerConfirmationEmail.to = [{ email: customerEmailAddress }];
+      customerConfirmationEmail.subject =
+        "Booking Confirmation - Go Technicians";
+      customerConfirmationEmail.htmlContent = customerEmailContent;
+
+      await apiInstance.sendTransacEmail(customerConfirmationEmail);
+    }
 
     return { status: 200, message: "Booking emails sent successfully" };
   } catch (error) {

@@ -19,7 +19,7 @@ import { format, isValid, parseISO } from "date-fns";
 // Validation schemas
 const contactSchema = z.object({
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
-  email: z.string().email("Invalid email address"),
+  email: z.string().email("Invalid email address").or(z.literal("")),
 });
 
 const addressSchema = z.object({
@@ -329,7 +329,7 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                 )}
               </div>
               <div>
-                <Label htmlFor="email">Email Address *</Label>
+                <Label htmlFor="email">Email Address</Label>
                 <Input
                   id="email"
                   name="email"
