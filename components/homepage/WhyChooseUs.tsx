@@ -91,12 +91,12 @@ export function WhyChooseUs() {
                   className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm transition-all duration-200 hover:shadow-md"
                 >
                   <div className={`shrink-0 rounded-lg bg-slate-100 p-2.5`}>
-                    <Icon className={`h-5 w-5 ${reason.color}`} />
+                    <Icon className={`h-4 w-4 md:h-5 md:w-5 ${reason.color}`} />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-slate-900">
+                    <p className="font-semibold text-slate-900 md:text-xl text-base">
                       {reason.title}
-                    </h3>
+                    </p>
                     <p className="mt-0.5 text-sm text-slate-600">
                       {reason.description}
                     </p>
