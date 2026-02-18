@@ -55,10 +55,10 @@ export function WhyChooseUs() {
       <div className="container mx-auto px-4">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
+            <p className="text-xs font-semibold uppercase tracking-wider text-blue-600 max-sm:text-center">
               Why Choose Us
             </p>
-            <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
+            <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl max-sm:text-center">
               The Go Technicians Advantage
             </h2>
             <p className="mt-4 text-sm md:text-base text-slate-600">
@@ -68,15 +68,15 @@ export function WhyChooseUs() {
 
             <div className="mt-8 flex flex-wrap gap-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">25,000+</div>
+                <div className="text-xl md:text-3xl font-bold text-blue-600">25,000+</div>
                 <div className="mt-1 text-sm text-slate-600">Happy Customers</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">4.9/5</div>
+                <div className="text-xl md:text-3xl font-bold text-blue-600">4.9/5</div>
                 <div className="mt-1 text-sm text-slate-600">Average Rating</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">10+</div>
+                <div className="text-xl md:text-3xl font-bold text-blue-600">10+</div>
                 <div className="mt-1 text-sm text-slate-600">Cities Covered</div>
               </div>
             </div>
