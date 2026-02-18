@@ -8,6 +8,7 @@ import { QuickRepairs } from "@/components/homepage/QuickRepairs";
 import { RecentBlogs } from "@/components/blog/RecentBlogs";
 import { CustomerReviews } from "@/components/homepage/Reviews";
 import { Services } from "@/components/homepage/Services";
+import { WhyChooseUs } from "@/components/homepage/WhyChooseUs";
 
 export default function Page() {
   return (
@@ -19,6 +20,7 @@ export default function Page() {
         <QuickRepairs />
         <AboutUs />
         <Partners />
+        <WhyChooseUs />
         <CustomerReviews />
         <RecentBlogs />
         <JoinProNetwork />
