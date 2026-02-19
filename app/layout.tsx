@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { StickyContactButtons } from "@/components/contact/ContactButtons";
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import { CartProvider } from "@/context/CartContext";
+import Script from "next/script";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -84,6 +85,18 @@ export default function RootLayout({
     <html lang="en" className={dmSans.variable}>
       <head>
         <link rel="icon" href="/favicon.png" sizes="any" />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17908761237"
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-gtag" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-17908761237');
+          `}
+        </Script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
