@@ -2,7 +2,6 @@ import {
   Award,
   Clock,
   ShieldCheck,
-  ThumbsUp,
   Wallet,
   HeadphonesIcon,
   CheckCircle2,
@@ -59,7 +58,7 @@ export function WhyChooseUs() {
               Why Choose Us
             </p>
             <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl max-sm:text-center">
-              The Go Technicians Advantage
+              The Gotechnicians Advantage
             </h2>
             <p className="mt-4 text-sm md:text-base text-slate-600">
               Experience the difference with our commitment to quality,

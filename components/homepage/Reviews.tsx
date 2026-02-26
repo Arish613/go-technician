@@ -102,8 +102,7 @@ export function CustomerReviews() {
             Read Customer Reviews
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm md:text-base text-slate-600">
-            See what our customers have to say about their experience with Go
-            Technicians. Real reviews from real people.
+            See what our customers have to say about their experience with Gotechnicians. Real reviews from real people.
           </p>
 
           {/* Overall Rating */}

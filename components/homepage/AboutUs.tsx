@@ -77,7 +77,7 @@ export function AboutUs() {
             About Us
           </p>
           <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
-            Why Thousands Trust Go Technicians
+            Why Thousands Trust Gotechnicians
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm md:text-base text-slate-600">
             We&apos;re on a mission to make home and office maintenance
@@ -149,7 +149,7 @@ export function AboutUs() {
             <div>
               <h3 className="text-2xl font-bold text-slate-900">Our Story</h3>
               <p className="mt-4 text-base leading-relaxed text-slate-600">
-                Go Technicians was founded with a simple idea: home and office
+                Gotechnicians was founded with a simple idea: home and office
                 services should be as easy as ordering food online. We started
                 in 2020 with a small team of 10 technicians serving one city.
               </p>

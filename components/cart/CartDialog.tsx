@@ -57,6 +57,7 @@ function isSlotDisabled(slot: string, selectedDate: string) {
     let hour = Number(hourStr);
     const minute = Number(minuteStr);
     if (period === "AM" && hour === 12) hour = 0;
+    if (period === "PM" && hour !== 12) hour += 12;
 
     // Compare with current hour and minute
     if (
