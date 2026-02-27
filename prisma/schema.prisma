@@ -25,3 +25,28 @@ type WhyChooseUsItem {
   title       String
   description String
 }
+
+model LocationPage {
+  id          String            @id @default(auto()) @map("_id") @db.ObjectId
+  slug        String            @unique // e.g. "ac-repair-service-in-mumbai"
+  serviceSlug String // e.g. "ac-repair-service" — links to the parent service by slug
+  location    String // e.g. "mumbai", "thane", "navi-mumbai"
+  title       String // e.g. "AC Repair Service in Mumbai"
+  metaTitle   String?
+  description String
+  content     String // Rich HTML content
+  isPublished Boolean           @default(false)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  faqs        LocationPageFaq[]
+}
+
+model LocationPageFaq {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  question       String
+  answer         String
+  locationPageId String       @db.ObjectId
+  locationPage   LocationPage @relation(fields: [locationPageId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Instagram, Facebook, Linkedin } from "lucide-react";
 import Image from "next/image";
+import { getAllLocationPages } from "@/lib/action/locationPage";
 
 const navigationLinks = [
   { name: "Home", href: "/" },
@@ -39,7 +40,41 @@ const socialLinks = [
   },
 ];
 
-export function Footer() {
+// Display order for locations
+const LOCATION_ORDER = ["Mumbai", "Thane", "Navi Mumbai"];
+
+export async function Footer() {
+  // Fetch published location pages for Quick Links
+  const locationPagesRes = await getAllLocationPages(true);
+  const locationPages =
+    locationPagesRes.success && locationPagesRes.data
+      ? locationPagesRes.data
+      : [];
+
+  // Group location pages by location
+  const quickLinksByLocation: Record<
+    string,
+    { title: string; slug: string }[]
+  > = {};
+  for (const page of locationPages) {
+    if (!quickLinksByLocation[page.location]) {
+      quickLinksByLocation[page.location] = [];
+    }
+    quickLinksByLocation[page.location].push({
+      title: page.title,
+      slug: page.slug,
+    });
+  }
+
+  // Sort locations: known locations first in order, then any extras alphabetically
+  const sortedLocations = [
+    ...LOCATION_ORDER.filter((loc) => quickLinksByLocation[loc]),
+    ...Object.keys(quickLinksByLocation)
+      .filter((loc) => !LOCATION_ORDER.includes(loc))
+      .sort(),
+  ];
+
+  const hasQuickLinks = sortedLocations.length > 0;
   return (
     <footer className="border-t border-slate-200 bg-white">
       <div className="px-4 py-12 md:mx-20">
@@ -145,6 +180,36 @@ export function Footer() {
             </div>
           </div>
         </div>
+
+        {/* Quick Links by Location */}
+        {hasQuickLinks && (
+          <div className="mt-10 border-t border-slate-200 pt-8">
+            <h3 className="mb-6 text-lg font-semibold text-slate-900">
+              Quick Links
+            </h3>
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {sortedLocations.map((location) => (
+                <div key={location}>
+                  <h4 className="mb-3 text-sm font-semibold text-slate-800">
+                    {location}
+                  </h4>
+                  <ul className="space-y-2">
+                    {quickLinksByLocation[location].map((page) => (
+                      <li key={page.slug}>
+                        <Link
+                          href={`/service/${page.slug}`}
+                          className="text-sm text-slate-600 transition-colors hover:text-blue-600"
+                        >
+                          {page.title}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Bottom Bar */}
