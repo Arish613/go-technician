@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import ImageUpload from "@/components/ImageUpload";
+import TextEditor from "@/components/TextEditor";
 
 const categorySchema = z.object({
   name: z.string().min(1, "Category name is required"),
@@ -19,6 +20,7 @@ const categorySchema = z.object({
   metaDescription: z.string().optional(),
   image: z.string().optional(),
   isVisible: z.boolean(),
+  content: z.string().optional(),
 });
 
 type CategoryFormData = z.infer<typeof categorySchema>;
@@ -41,6 +43,7 @@ export function CategoryForm({ category, mode }: CategoryFormProps) {
       metaDescription: category?.metaDescription || "",
       image: category?.image || "",
       isVisible: category?.isVisible ?? true,
+      content: category?.content || "",
     },
   });
 
@@ -68,6 +71,7 @@ export function CategoryForm({ category, mode }: CategoryFormProps) {
         alert(result.error || "Failed to save category");
       }
     } catch (error) {
+      console.error("Error submitting category form:", error);
       alert("An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -133,6 +137,14 @@ export function CategoryForm({ category, mode }: CategoryFormProps) {
               disabled={isSubmitting}
               defaultValue="/service.png"
             />
+            {/* Add TextEditor for content */}
+            <TextEditor
+              name="content"
+              control={form.control}
+              label="Category Content"
+              placeholder="Write detailed information about this category..."
+              disabled={isSubmitting}
+            />
             <div className="flex items-center space-x-2">
               <Switch
                 id="isVisible"
@@ -161,8 +173,8 @@ export function CategoryForm({ category, mode }: CategoryFormProps) {
                 ? "Creating..."
                 : "Updating..."
               : mode === "create"
-              ? "Create Category"
-              : "Update Category"}
+                ? "Create Category"
+                : "Update Category"}
           </Button>
         </div>
       </form>

@@ -6,6 +6,7 @@ model Category{
     slug String @unique
     image String?
     isVisible Boolean @default(false)
+    content String?
     products Product[]
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
