@@ -28,7 +28,12 @@ export default function UpdateProduct() {
         fetchData();
     }, [id]);
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return (
+        <div className="text-center py-10">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
+            <p className="text-muted-foreground mt-2">Loading products...</p>
+        </div>
+    );
     if (!product) return <div>Product not found</div>;
 
     return (

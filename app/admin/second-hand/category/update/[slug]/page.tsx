@@ -19,7 +19,12 @@ export default function EditCategoryPage() {
       .finally(() => setLoading(false));
   }, [slug]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return (
+    <div className="text-center py-10">
+      <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
+      <p className="text-muted-foreground mt-2">Loading...</p>
+    </div>
+  );
   if (!category) return <div>Category not found</div>;
 
   return (
