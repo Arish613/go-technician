@@ -6,11 +6,12 @@ import { authOptions } from "@/lib/auth";
 // GET: Get category by slug
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } },
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
+    const { slug } = await params;
     const category = await prisma.category.findUnique({
-      where: { slug: params.slug },
+      where: { slug },
     });
     if (!category) {
       return NextResponse.json(
@@ -20,7 +21,7 @@ export async function GET(
     }
     return NextResponse.json({ data: category }, { status: 200 });
   } catch (error) {
-    console.error("Error in GET /api/category/[slug]:", error);
+    console.error("Error in GET /api/second-hand/category/[slug]:", error);
     return NextResponse.json(
       { error: "Failed to fetch category" },
       { status: 500 },
@@ -31,8 +32,9 @@ export async function GET(
 // PUT: Update category by slug
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { slug: string } },
+  { params }: { params: Promise<{ slug: string }> },
 ) {
+  const { slug } = await params;
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -40,7 +42,7 @@ export async function PUT(
   try {
     const data = await request.json();
     const category = await prisma.category.update({
-      where: { slug: params.slug },
+      where: { slug },
       data,
     });
     return NextResponse.json({ data: category }, { status: 200 });
@@ -56,15 +58,16 @@ export async function PUT(
 // DELETE: Delete category by slug
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { slug: string } },
+  { params }: { params: Promise<{ slug: string }> },
 ) {
+  const { slug } = await params;
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
     await prisma.category.delete({
-      where: { slug: params.slug },
+      where: { slug: slug },
     });
     return NextResponse.json({ message: "Category deleted" }, { status: 200 });
   } catch (error) {
