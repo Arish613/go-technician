@@ -1,0 +1,30 @@
+model Category{
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    name String
+    metaTitle String?
+    metaDescription String?
+    slug String @unique
+    image String?
+    isVisible Boolean @default(false)
+    products Product[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Product{
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    name String
+    categoryId String @db.ObjectId
+    category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+    condition String? // e.g. "New", "Used - Like New", "Used - Good", etc.
+    specifications String?
+    price Float
+    discountPrice Float?
+    isAvailable Boolean @default(false)
+    image String?
+    location String?
+    brand String?
+    label String? // e.g. "Best Seller", "New Arrival"
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

@@ -15,7 +15,6 @@ import {
   ArrowDownRight,
   Wrench,
   Package,
-  MapPin,
 } from "lucide-react";
 import { format, startOfMonth, subMonths } from "date-fns";
 import { prisma } from "@/lib/prisma";
@@ -212,6 +211,11 @@ export default async function AdminPage() {
             <Link href="/admin/service">
               <Button size="sm" variant="default">
                 Services
+              </Button>
+            </Link>
+            <Link href="/admin/second-hand">
+              <Button size="sm" variant="default">
+                Second Hand Products
               </Button>
             </Link>
             <Link href="/admin/review">
