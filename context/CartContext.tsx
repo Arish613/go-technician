@@ -1,17 +1,73 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { SubService } from "@prisma/client";
+import { SubService, Product } from "@prisma/client";
 
-export interface CartItem extends SubService {
+// Unified cart item base — fields required for display & checkout
+export interface CartItemBase {
+  id: string;
+  name: string;
+  price: number;
+  // SubService-specific (optional for Product)
+  discountedPrice?: number | null;
+  description?: string | null;
+  imageUrl?: string | null;
+  // Product-specific (optional for SubService)
+  discountPrice?: number | null;
+  image?: string | null;
+  brand?: string | null;
+  condition?: string | null;
+  // item type so we can differentiate if needed
+  itemType: "service" | "product";
+}
+
+export interface CartItem extends CartItemBase {
   quantity: number;
+}
+
+// Helper to map SubService → CartItemBase
+export function subServiceToCartItem(s: SubService): CartItemBase {
+  return {
+    id: s.id,
+    name: s.name,
+    price: s.price,
+    discountedPrice: s.discountedPrice,
+    description: s.description,
+    imageUrl: s.imageUrl,
+    itemType: "service",
+  };
+}
+
+// Helper to map Product → CartItemBase
+export function productToCartItem(p: Product): CartItemBase {
+  return {
+    id: p.id,
+    name: p.name,
+    price: p.price,
+    discountPrice: p.discountPrice,
+    image: p.image,
+    brand: p.brand,
+    condition: p.condition,
+    itemType: "product",
+  };
+}
+
+// Get effective price (handles both SubService discountedPrice and Product discountPrice)
+export function getEffectivePrice(item: CartItemBase): number {
+  if (item.itemType === "service" && item.discountedPrice) {
+    return item.discountedPrice;
+  }
+  if (item.itemType === "product" && item.discountPrice) {
+    return item.discountPrice;
+  }
+  return item.price;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (service: SubService) => void;
-  removeFromCart: (serviceId: string) => void;
-  updateQuantity: (serviceId: string, quantity: number) => void;
+  addToCart: (item: CartItemBase) => void;
+  removeFromCart: (itemId: string) => void;
+  updateQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
   getTotalPrice: () => number;
   itemCount: number;
@@ -22,30 +78,25 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  const addToCart = (service: SubService) => {
+  const addToCart = (item: CartItemBase) => {
     setItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.id === service.id);
-
+      const existingItem = prevItems.find((i) => i.id === item.id);
       if (existingItem) {
-        // If item already exists, increase quantity
         return prevItems;
-      } else {
-        // Add new item with quantity 1
-        return [...prevItems, { ...service, quantity: 1 }];
       }
+      return [...prevItems, { ...item, quantity: 1 }];
     });
   };
 
-  const removeFromCart = (serviceId: string) => {
-    setItems((prevItems) => prevItems.filter((item) => item.id !== serviceId));
+  const removeFromCart = (itemId: string) => {
+    setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
   };
 
-  const updateQuantity = (serviceId: string, quantity: number) => {
-    if (quantity < 1) return; // Prevent quantity less than 1
-    
+  const updateQuantity = (itemId: string, quantity: number) => {
+    if (quantity < 1) return;
     setItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === serviceId ? { ...item, quantity } : item
+        item.id === itemId ? { ...item, quantity } : item
       )
     );
   };
@@ -56,8 +107,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const getTotalPrice = () => {
     return items.reduce((total, item) => {
-      const price = item.discountedPrice || item.price;
-      return total + price * item.quantity;
+      return total + getEffectivePrice(item) * item.quantity;
     }, 0);
   };
 

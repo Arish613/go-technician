@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { SubService } from "@prisma/client";
-import { useCart } from "@/context/CartContext";
+import { useCart, subServiceToCartItem } from "@/context/CartContext";
 import { useState } from "react";
 import { SubServiceDialog } from "./Dialog";
 
@@ -24,7 +24,7 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
 
   const handleAddToCart = () => {
     if (!alreadyInCart) {
-      addToCart(subService);
+      addToCart(subServiceToCartItem(subService));
       setIsAdded(true);
       setTimeout(() => {
         setIsAdded(false);

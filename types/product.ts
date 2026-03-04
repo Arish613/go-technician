@@ -6,6 +6,7 @@ export interface Category {
   slug: string;
   image?: string;
   isVisible: boolean;
+  content?: string;
   createdAt: string;
   updatedAt: string;
 }
