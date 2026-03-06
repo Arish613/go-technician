@@ -7,11 +7,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import ImageUpload from "@/components/ImageUpload";
 import TextEditor from "@/components/TextEditor";
+import FormFields from "@/components/FormFields";
 
 const categorySchema = z.object({
   name: z.string().min(1, "Category name is required"),
@@ -24,6 +24,7 @@ const categorySchema = z.object({
 });
 
 type CategoryFormData = z.infer<typeof categorySchema>;
+
 
 interface CategoryFormProps {
   category?: Partial<CategoryFormData>;
@@ -86,49 +87,58 @@ export function CategoryForm({ category, mode }: CategoryFormProps) {
             <CardTitle>Category Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Label>Name</Label>
-            <Input
-              {...form.register("name")}
-              disabled={isSubmitting}
-              placeholder="e.g., AC"
-              onBlur={() => {
-                const name = form.getValues("name");
-                if (name && !form.getValues("slug")) {
-                  form.setValue("slug", generateSlug(name));
-                }
-              }}
-            />
-            <Label>Slug</Label>
-            <Input
-              {...form.register("slug")}
-              disabled={isSubmitting}
-              placeholder="ac"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                const name = form.getValues("name");
-                if (name) {
-                  form.setValue("slug", generateSlug(name));
-                }
-              }}
-              disabled={isSubmitting}
-            >
-              Generate Slug
-            </Button>
-            <Label>Meta Title</Label>
-            <Input
-              {...form.register("metaTitle")}
-              disabled={isSubmitting}
+            <div>
+              <label className="block mb-1 font-medium">Name*</label>
+              <input
+                {...form.register("name", {
+                  onBlur: (e) => {
+                    const name = e.target.value;
+                    if (name && !form.getValues("slug")) {
+                      form.setValue("slug", generateSlug(name));
+                    }
+                  },
+                })}
+                placeholder="e.g., AC"
+                disabled={isSubmitting}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+            <div className="flex gap-2 items-end">
+              <FormFields
+                name="slug"
+                control={form.control}
+                label="Slug*"
+                placeholder="ac"
+                disabled={isSubmitting}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const name = form.getValues("name");
+                  if (name) {
+                    form.setValue("slug", generateSlug(name));
+                  }
+                }}
+                disabled={isSubmitting}
+              >
+                Generate Slug
+              </Button>
+            </div>
+            <FormFields
+              name="metaTitle"
+              control={form.control}
+              label="Meta Title"
               placeholder="Meta title for SEO"
-            />
-            <Label>Meta Description</Label>
-            <Input
-              {...form.register("metaDescription")}
               disabled={isSubmitting}
+            />
+            <FormFields
+              name="metaDescription"
+              control={form.control}
+              label="Meta Description"
               placeholder="Meta description for SEO"
+              disabled={isSubmitting}
             />
             <ImageUpload
               name="image"
@@ -137,7 +147,6 @@ export function CategoryForm({ category, mode }: CategoryFormProps) {
               disabled={isSubmitting}
               defaultValue="/service.png"
             />
-            {/* Add TextEditor for content */}
             <TextEditor
               name="content"
               control={form.control}

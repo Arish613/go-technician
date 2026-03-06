@@ -7,10 +7,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import ImageUpload from "@/components/ImageUpload";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import FormFields from "@/components/FormFields";
 
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
@@ -76,6 +76,7 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
         alert(result.error || "Failed to save product");
       }
     } catch (error) {
+      console.log("Error submitting form:", error);
       alert("An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -90,52 +91,54 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
             <CardTitle>Product Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Label>Name</Label>
-            <Input
-              {...form.register("name")}
-              disabled={isSubmitting}
+            <FormFields
+              name="name"
+              control={form.control}
+              label="Name*"
               placeholder="e.g., Used LG Inverter AC"
+              disabled={isSubmitting}
             />
-            <Label>Category</Label>
-            <select
-              {...form.register("categoryId")}
+            <FormFields
+              name="categoryId"
+              control={form.control}
+              label="Category*"
+              type="select"
+              options={categories.map((cat) => ({
+                value: cat.id,
+                label: cat.name,
+              }))}
+              placeholder="Select category"
               disabled={isSubmitting}
-              className="w-full border rounded px-2 py-2"
-            >
-              <option value="">Select category</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-            <Label>Condition</Label>
-            <Input
-              {...form.register("condition")}
-              disabled={isSubmitting}
+            />
+            <FormFields
+              name="condition"
+              control={form.control}
+              label="Condition"
               placeholder="e.g., Used - Like New"
-            />
-            <Label>Specifications</Label>
-            <Input
-              {...form.register("specifications")}
               disabled={isSubmitting}
+            />
+            <FormFields
+              name="specifications"
+              control={form.control}
+              label="Specifications"
               placeholder="e.g., 1.5 Ton, 5 Star, Inverter"
-            />
-            <Label>Price</Label>
-            <Input
-              type="number"
-              step="0.01"
-              {...form.register("price", { valueAsNumber: true })}
               disabled={isSubmitting}
+            />
+            <FormFields
+              name="price"
+              control={form.control}
+              label="Price*"
+              type="number"
               placeholder="e.g., 15000"
-            />
-            <Label>Discount Price</Label>
-            <Input
-              type="number"
-              step="0.01"
-              {...form.register("discountPrice", { valueAsNumber: true })}
               disabled={isSubmitting}
+            />
+            <FormFields
+              name="discountPrice"
+              control={form.control}
+              label="Discount Price"
+              type="number"
               placeholder="e.g., 12000"
+              disabled={isSubmitting}
             />
             <ImageUpload
               name="image"
@@ -144,23 +147,26 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
               disabled={isSubmitting}
               defaultValue="/service.png"
             />
-            <Label>Location</Label>
-            <Input
-              {...form.register("location")}
-              disabled={isSubmitting}
+            <FormFields
+              name="location"
+              control={form.control}
+              label="Location"
               placeholder="e.g., Mumbai"
-            />
-            <Label>Brand</Label>
-            <Input
-              {...form.register("brand")}
               disabled={isSubmitting}
+            />
+            <FormFields
+              name="brand"
+              control={form.control}
+              label="Brand"
               placeholder="e.g., LG"
-            />
-            <Label>Label</Label>
-            <Input
-              {...form.register("label")}
               disabled={isSubmitting}
+            />
+            <FormFields
+              name="label"
+              control={form.control}
+              label="Label"
               placeholder="e.g., Best Seller"
+              disabled={isSubmitting}
             />
             <div className="flex items-center space-x-2">
               <Switch
