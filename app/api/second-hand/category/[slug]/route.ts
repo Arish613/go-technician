@@ -2,6 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import type { WhyChooseUsItem, Faq } from "@/types/product";
+
+interface UpdateCategoryRequest {
+  name?: string;
+  slug?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  image?: string;
+  isVisible?: boolean;
+  content?: string;
+  whyChooseUs?: WhyChooseUsItem[];
+  faqs?: Omit<Faq, "id" | "createdAt" | "updatedAt" | "categoryId">[];
+}
 
 // GET: Get category by slug
 export async function GET(
@@ -12,6 +25,10 @@ export async function GET(
     const { slug } = await params;
     const category = await prisma.category.findUnique({
       where: { slug },
+      include: {
+        products: true,
+        faqs: true,
+      },
     });
     if (!category) {
       return NextResponse.json(
@@ -40,10 +57,45 @@ export async function PUT(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
-    const data = await request.json();
+    const data = (await request.json()) as UpdateCategoryRequest;
+    const { whyChooseUs, faqs, ...rest } = data;
+
+    const updateData: Record<string, unknown> = {
+      ...rest,
+      whyChooseUs: whyChooseUs || [],
+    };
+
+    // If faqs are provided, replace them
+    if (faqs && Array.isArray(faqs)) {
+      // Get category ID first
+      const existingCategory = await prisma.category.findUnique({
+        where: { slug },
+      });
+
+      if (existingCategory) {
+        // Delete existing FAQs for this category
+        await prisma.faq.deleteMany({
+          where: { categoryId: existingCategory.id },
+        });
+        // Create new FAQs
+        if (faqs.length > 0) {
+          updateData.faqs = {
+            create: faqs.map((faq) => ({
+              question: faq.question,
+              answer: faq.answer,
+            })),
+          };
+        }
+      }
+    }
+
     const category = await prisma.category.update({
       where: { slug },
-      data,
+      data: updateData,
+      include: {
+        products: true,
+        faqs: true,
+      },
     });
     return NextResponse.json({ data: category }, { status: 200 });
   } catch (error) {
@@ -67,7 +119,7 @@ export async function DELETE(
   }
   try {
     await prisma.category.delete({
-      where: { slug: slug },
+      where: { slug },
     });
     return NextResponse.json({ message: "Category deleted" }, { status: 200 });
   } catch (error) {

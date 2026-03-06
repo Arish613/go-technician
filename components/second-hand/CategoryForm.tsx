@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
@@ -21,6 +21,23 @@ const categorySchema = z.object({
   image: z.string().optional(),
   isVisible: z.boolean(),
   content: z.string().optional(),
+  whyChooseUs: z
+    .array(
+      z.object({
+        icon: z.string().optional(),
+        title: z.string().min(1, "Title is required"),
+        description: z.string().min(1, "Description is required"),
+      })
+    )
+    .optional(),
+  faqs: z
+    .array(
+      z.object({
+        question: z.string().min(1, "Question is required"),
+        answer: z.string().min(1, "Answer is required"),
+      })
+    )
+    .optional(),
 });
 
 type CategoryFormData = z.infer<typeof categorySchema>;
@@ -45,9 +62,29 @@ export function CategoryForm({ category, mode }: CategoryFormProps) {
       image: category?.image || "",
       isVisible: category?.isVisible ?? true,
       content: category?.content || "",
+      whyChooseUs: category?.whyChooseUs || [],
+      faqs: category?.faqs || [],
     },
   });
+  // Why Choose Us field array
+  const {
+    fields: whyChooseUsFields,
+    append: appendWhyChooseUs,
+    remove: removeWhyChooseUs,
+  } = useFieldArray({
+    control: form.control,
+    name: "whyChooseUs",
+  });
 
+  // FAQ field array
+  const {
+    fields: faqFields,
+    append: appendFaq,
+    remove: removeFaq,
+  } = useFieldArray({
+    control: form.control,
+    name: "faqs",
+  });
   const generateSlug = (name: string) =>
     name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
@@ -140,6 +177,103 @@ export function CategoryForm({ category, mode }: CategoryFormProps) {
               placeholder="Meta description for SEO"
               disabled={isSubmitting}
             />
+
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <Label>Why Choose Us</Label>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => appendWhyChooseUs({ icon: "", title: "", description: "" })}
+                >
+                  Add
+                </Button>
+              </div>
+              {whyChooseUsFields.length === 0 && (
+                <div className="text-muted-foreground text-sm mb-2">No items yet.</div>
+              )}
+              {whyChooseUsFields.map((field, idx) => (
+                <div key={field.id} className="border rounded p-3 mb-3 space-y-2 relative">
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    className="absolute top-2 right-2"
+                    onClick={() => removeWhyChooseUs(idx)}
+                  >
+                    ✕
+                  </Button>
+                  <FormFields
+                    name={`whyChooseUs.${idx}.icon`}
+                    control={form.control}
+                    label="Icon (optional)"
+                    placeholder="e.g., star"
+                    disabled={isSubmitting}
+                  />
+                  <FormFields
+                    name={`whyChooseUs.${idx}.title`}
+                    control={form.control}
+                    label="Title"
+                    placeholder="e.g., Trusted Technicians"
+                    disabled={isSubmitting}
+                  />
+                  <FormFields
+                    name={`whyChooseUs.${idx}.description`}
+                    control={form.control}
+                    label="Description"
+                    placeholder="e.g., All our technicians are background checked."
+                    disabled={isSubmitting}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* FAQ Section */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <Label>FAQs</Label>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => appendFaq({ question: "", answer: "" })}
+                >
+                  Add
+                </Button>
+              </div>
+              {faqFields.length === 0 && (
+                <div className="text-muted-foreground text-sm mb-2">No FAQs yet.</div>
+              )}
+              {faqFields.map((field, idx) => (
+                <div key={field.id} className="border rounded p-3 mb-3 space-y-2 relative">
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    className="absolute top-2 right-2"
+                    onClick={() => removeFaq(idx)}
+                  >
+                    ✕
+                  </Button>
+                  <FormFields
+                    name={`faqs.${idx}.question`}
+                    control={form.control}
+                    label="Question"
+                    placeholder="e.g., What is the warranty period?"
+                    disabled={isSubmitting}
+                  />
+                  <FormFields
+                    name={`faqs.${idx}.answer`}
+                    control={form.control}
+                    label="Answer"
+                    placeholder="e.g., 6 months warranty on all products."
+                    disabled={isSubmitting}
+                  />
+                </div>
+              ))}
+            </div>
+
             <ImageUpload
               name="image"
               control={form.control}

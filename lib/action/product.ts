@@ -11,6 +11,7 @@ export async function getCategoryBySlug(slug: string) {
         products: {
           orderBy: { createdAt: "desc" },
         },
+        faqs: true,
       },
     });
 

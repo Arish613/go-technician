@@ -1,3 +1,18 @@
+export interface WhyChooseUsItem {
+  icon?: string;
+  title: string;
+  description: string;
+}
+
+export interface Faq {
+  id: string;
+  question: string;
+  answer: string;
+  categoryId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Category {
   id: string;
   name: string;
@@ -7,6 +22,9 @@ export interface Category {
   image?: string;
   isVisible: boolean;
   content?: string;
+  whyChooseUs?: WhyChooseUsItem[];
+  faqs?: Faq[];
+  products?: Product[];
   createdAt: string;
   updatedAt: string;
 }

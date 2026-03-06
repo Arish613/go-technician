@@ -20,83 +20,19 @@ interface SecondHandPageProps {
   };
 }
 
-// ---------------------------------------------------------------------------
-// Static hardcoded Why Buy from Us items
-// ---------------------------------------------------------------------------
-const WHY_BUY_FROM_US = [
-  {
-    icon: <ShieldCheck className="h-6 w-6 text-primary" />,
-    title: "Quality Checked",
-    description:
-      "Every product is thoroughly inspected and tested by our experts before listing to ensure it meets our quality standards.",
-  },
-  {
-    icon: <BadgeCheck className="h-6 w-6 text-primary" />,
-    title: "Genuine Products",
-    description:
-      "All second-hand items listed are authentic and sourced responsibly. No counterfeits, no surprises.",
-  },
-  {
-    icon: <Clock className="h-6 w-6 text-primary" />,
-    title: "Fast Delivery",
-    description:
-      "Get your purchased product delivered quickly to your doorstep across Mumbai, Thane & Navi Mumbai.",
-  },
-  {
-    icon: <RefreshCw className="h-6 w-6 text-primary" />,
-    title: "Easy Returns",
-    description:
-      "Not satisfied? We offer a hassle-free return process within the agreed window so you always buy with confidence.",
-  },
-  {
-    icon: <Headphones className="h-6 w-6 text-primary" />,
-    title: "Dedicated Support",
-    description:
-      "Our customer support team is available to assist you before and after your purchase.",
-  },
-  {
-    icon: <Award className="h-6 w-6 text-primary" />,
-    title: "Best Price Guarantee",
-    description:
-      "We price our second-hand products fairly. You get great value without compromising on quality.",
-  },
-];
+const ICONS: Record<string, React.ReactNode> = {
+  ShieldCheck: <ShieldCheck className="h-6 w-6 text-primary" />,
+  BadgeCheck: <BadgeCheck className="h-6 w-6 text-primary" />,
+  Clock: <Clock className="h-6 w-6 text-primary" />,
+  RefreshCw: <RefreshCw className="h-6 w-6 text-primary" />,
+  Headphones: <Headphones className="h-6 w-6 text-primary" />,
+  Award: <Award className="h-6 w-6 text-primary" />,
+};
 
-// ---------------------------------------------------------------------------
-// Static hardcoded FAQs
-// ---------------------------------------------------------------------------
-const FAQS = [
-  {
-    question: "Are the second-hand products tested before listing?",
-    answer:
-      "Yes, every product is tested and quality-checked by our technicians before it is listed for sale.",
-  },
-  {
-    question: "Can I return a product if I am not satisfied?",
-    answer:
-      "We offer returns within the agreed return window. Please contact our support team for assistance.",
-  },
-  {
-    question: "Do the products come with a warranty?",
-    answer:
-      "Select products may come with a limited warranty. Check the product listing or contact us for details.",
-  },
-  {
-    question: "How do I place an order?",
-    answer:
-      "Simply add the product to your cart, proceed to checkout, fill in your contact and address details, and confirm your order.",
-  },
-  {
-    question: "What payment methods are accepted?",
-    answer:
-      "We accept payments via UPI, net banking, debit/credit cards, and cash on delivery (select areas).",
-  },
-  {
-    question: "How long does delivery take?",
-    answer:
-      "Delivery typically takes 1–3 business days within Mumbai, Thane, and Navi Mumbai.",
-  },
-];
+function renderIcon(icon?: string) {
+  if (!icon) return ICONS.ShieldCheck;
+  return ICONS[icon] || ICONS.ShieldCheck;
+}
 
 // ---------------------------------------------------------------------------
 // Page
@@ -208,17 +144,7 @@ export default async function SecondHandCategoryPage({
       {/* ------------------------------------------------------------------ */}
       <section className="relative py-16 md:py-24 bg-slate-50 overflow-hidden">
         <div className="md:mx-20 px-4">
-          {/* Background pattern */}
-          <div
-            className="absolute inset-0 z-0 opacity-[0.4]"
-            style={{
-              backgroundImage:
-                "radial-gradient(#cbd5e1 1px, transparent 1px)",
-              backgroundSize: "32px 32px",
-            }}
-          />
-          <div className="absolute top-0 right-0 -mr-20 -mt-20 h-96 w-96 rounded-full bg-blue-100 blur-3xl opacity-50 pointer-events-none" />
-
+          {/* ...background pattern... */}
           <div className="container relative z-10 mx-auto px-4 md:px-8">
             <div className="text-center max-w-3xl mx-auto mb-5 md:mb-16">
               <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
@@ -232,14 +158,17 @@ export default async function SecondHandCategoryPage({
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {WHY_BUY_FROM_US.map((item, idx) => (
+              {(category.whyChooseUs && category.whyChooseUs.length > 0
+                ? category.whyChooseUs
+                : []
+              ).map((item, idx) => (
                 <Card
                   key={idx}
                   className="group relative h-full border-slate-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden py-4"
                 >
                   <CardHeader className="flex flex-col items-center text-center">
                     <div className="mb-4 inline-flex h-10 w-10 md:h-14 md:w-14 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors duration-300">
-                      {item.icon}
+                      {renderIcon(item.icon)}
                     </div>
                     <h3 className="text-xl font-bold text-slate-900 leading-tight">
                       {item.title}
@@ -252,6 +181,12 @@ export default async function SecondHandCategoryPage({
                   </CardContent>
                 </Card>
               ))}
+              {/* Optionally, fallback to a message if empty */}
+              {(!category.whyChooseUs || category.whyChooseUs.length === 0) && (
+                <div className="col-span-full text-center text-muted-foreground">
+                  No highlights available for this category.
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -273,8 +208,11 @@ export default async function SecondHandCategoryPage({
           </div>
 
           <Accordion type="single" collapsible className="space-y-3">
-            {FAQS.map((faq, idx) => (
-              <AccordionItem key={idx} value={`item-${idx}`}>
+            {(category.faqs && category.faqs.length > 0
+              ? category.faqs
+              : []
+            ).map((faq, idx) => (
+              <AccordionItem key={faq.id || idx} value={`item-${idx}`}>
                 <AccordionTrigger className="md:py-4 text-left text-xs md:text-base font-semibold text-slate-900 hover:no-underline cursor-pointer">
                   {faq.question}
                 </AccordionTrigger>
@@ -283,6 +221,12 @@ export default async function SecondHandCategoryPage({
                 </AccordionContent>
               </AccordionItem>
             ))}
+            {/* Optionally, fallback to a message if empty */}
+            {(!category.faqs || category.faqs.length === 0) && (
+              <div className="text-center text-muted-foreground py-8">
+                No FAQs available for this category.
+              </div>
+            )}
           </Accordion>
         </div>
       </section>
