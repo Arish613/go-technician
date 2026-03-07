@@ -28,6 +28,7 @@ model Product{
     location String?
     brand String?
     label String? // e.g. "Best Seller", "New Arrival"
+    order Int @default(0)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }

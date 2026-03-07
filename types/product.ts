@@ -43,6 +43,7 @@ export interface Product {
   location?: string;
   brand?: string;
   label?: string;
+  order?: number;
   createdAt: string;
   updatedAt: string;
 }

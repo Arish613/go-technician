@@ -12,7 +12,7 @@ export async function GET() {
   try {
     const products = await prisma.product.findMany({
       include: { category: true },
-      orderBy: { createdAt: "desc" },
+      orderBy: { order: "asc" },
     });
     return NextResponse.json({ data: products }, { status: 200 });
   } catch (error) {
@@ -41,6 +41,44 @@ export async function POST(request: NextRequest) {
     console.error("Error in POST /api/second-hand/product:", error);
     return NextResponse.json(
       { error: "Failed to create product" },
+      { status: 500 },
+    );
+  }
+}
+
+// PATCH: Update product orders (bulk)
+export async function PATCH(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  try {
+    const { orders } = await request.json();
+    
+    if (!Array.isArray(orders)) {
+      return NextResponse.json(
+        { error: "Invalid request: orders must be an array" },
+        { status: 400 },
+      );
+    }
+
+    await prisma.$transaction(
+      orders.map((item: { id: string; order: number }) =>
+        prisma.product.update({
+          where: { id: item.id },
+          data: { order: item.order },
+        })
+      )
+    );
+
+    return NextResponse.json(
+      { success: true, message: "Product order updated" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error in PATCH /api/second-hand/product:", error);
+    return NextResponse.json(
+      { error: "Failed to update product order" },
       { status: 500 },
     );
   }

@@ -30,7 +30,24 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Edit, MoreHorizontal, Trash2 } from "lucide-react";
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent,
+} from "@dnd-kit/core";
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    useSortable,
+    verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Edit, MoreHorizontal, Trash2, GripVertical, Save } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import type { Product } from "@/types/product";
@@ -40,10 +57,188 @@ interface ProductTableProps {
     onRefresh?: () => void;
 }
 
+interface SortableRowProps {
+    product: Product;
+    onDelete: (id: string) => void;
+}
+
+function SortableRow({ product, onDelete }: SortableRowProps) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: product.id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+        zIndex: isDragging ? 1 : 0,
+    };
+
+    const formatDate = (date: Date | string) => {
+        return new Date(date).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        });
+    };
+
+    return (
+        <TableRow ref={setNodeRef} style={style}>
+            <TableCell className="w-16">
+                <button
+                    className="cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded"
+                    {...attributes}
+                    {...listeners}
+                >
+                    <GripVertical className="w-4 h-4 text-muted-foreground" />
+                </button>
+            </TableCell>
+            <TableCell className="w-20">
+                {product.image ? (
+                    <Image
+                        src={product.image}
+                        alt={product.name}
+                        width={60}
+                        height={60}
+                        className="rounded object-cover"
+                    />
+                ) : (
+                    <div className="w-20 h-15 bg-muted rounded flex items-center justify-center text-xs text-muted-foreground">
+                        No Image
+                    </div>
+                )}
+            </TableCell>
+            <TableCell className="font-medium">
+                <div>
+                    <p className="font-semibold">{product.name}</p>
+                    {product.brand && (
+                        <p className="text-sm text-muted-foreground">{product.brand}</p>
+                    )}
+                </div>
+            </TableCell>
+            <TableCell>
+                {product.category?.name && (
+                    <Badge variant="outline">{product.category.name}</Badge>
+                )}
+            </TableCell>
+            <TableCell>
+                <div>
+                    <p className="font-semibold">₹{product.price}</p>
+                    {product.discountPrice && (
+                        <p className="text-sm text-green-600">₹{product.discountPrice}</p>
+                    )}
+                </div>
+            </TableCell>
+            <TableCell>
+                {product.location ? (
+                    <Badge variant="secondary">{product.location}</Badge>
+                ) : (
+                    <span className="text-muted-foreground text-sm">-</span>
+                )}
+            </TableCell>
+            <TableCell>
+                {product.isAvailable ? (
+                    <Badge variant="default">Available</Badge>
+                ) : (
+                    <Badge variant="secondary">Unavailable</Badge>
+                )}
+            </TableCell>
+            <TableCell className="text-sm text-muted-foreground">
+                {formatDate(product.createdAt)}
+            </TableCell>
+            <TableCell className="text-right">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="w-4 h-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                            <Link href={`/admin/second-hand/product/update/${product.id}`}>
+                                <Edit className="w-4 h-4 mr-2" />
+                                Edit
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={() => onDelete(product.id)}
+                        >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Delete
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </TableCell>
+        </TableRow>
+    );
+}
+
 export function ProductTable({ products, onRefresh }: ProductTableProps) {
     const router = useRouter();
+    const [items, setItems] = useState<Product[]>(products);
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [hasChanges, setHasChanges] = useState(false);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+
+        if (over && active.id !== over.id) {
+            setItems((items) => {
+                const oldIndex = items.findIndex((item) => item.id === active.id);
+                const newIndex = items.findIndex((item) => item.id === over.id);
+                const newItems = arrayMove(items, oldIndex, newIndex);
+                setHasChanges(true);
+                return newItems;
+            });
+        }
+    };
+
+    const handleSaveOrder = async () => {
+        setIsSaving(true);
+        try {
+            const orders = items.map((product, index) => ({
+                id: product.id,
+                order: index,
+            }));
+
+            const response = await fetch("/api/second-hand/product", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orders }),
+            });
+
+            if (response.ok) {
+                setHasChanges(false);
+                onRefresh?.();
+            } else {
+                const result = await response.json();
+                alert(result.error || "Failed to save order");
+            }
+        } catch (error) {
+            console.error("Save order error:", error);
+            alert("An error occurred while saving order");
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     const handleDelete = async () => {
         if (!deleteId) return;
@@ -69,128 +264,66 @@ export function ProductTable({ products, onRefresh }: ProductTableProps) {
         }
     };
 
-    const formatDate = (date: Date | string) => {
-        return new Date(date).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-        });
-    };
-
     return (
         <>
-            <div className="rounded-md border">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-20">Image</TableHead>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Category</TableHead>
-                            <TableHead>Price</TableHead>
-                            <TableHead>Location</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Created</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {products.length === 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={8} className="text-center py-10">
-                                    <p className="text-muted-foreground">
-                                        No products found. Create your first product to get started.
-                                    </p>
-                                </TableCell>
-                            </TableRow>
-                        ) : (
-                            products.map((product) => (
-                                <TableRow key={product.id}>
-                                    <TableCell>
-                                        {product.image ? (
-                                            <Image
-                                                src={product.image}
-                                                alt={product.name}
-                                                width={60}
-                                                height={60}
-                                                className="rounded object-cover"
-                                            />
-                                        ) : (
-                                            <div className="w-20 h-15 bg-muted rounded flex items-center justify-center text-xs text-muted-foreground">
-                                                No Image
-                                            </div>
-                                        )}
-                                    </TableCell>
-                                    <TableCell className="font-medium">
-                                        <div>
-                                            <p className="font-semibold">{product.name}</p>
-                                            {product.brand && (
-                                                <p className="text-sm text-muted-foreground">{product.brand}</p>
-                                            )}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        {product.category?.name && (
-                                            <Badge variant="outline">{product.category.name}</Badge>
-                                        )}
-                                    </TableCell>
-                                    <TableCell>
-                                        <div>
-                                            <p className="font-semibold">₹{product.price}</p>
-                                            {product.discountPrice && (
-                                                <p className="text-sm text-green-600">₹{product.discountPrice}</p>
-                                            )}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        {product.location ? (
-                                            <Badge variant="secondary">{product.location}</Badge>
-                                        ) : (
-                                            <span className="text-muted-foreground text-sm">-</span>
-                                        )}
-                                    </TableCell>
-                                    <TableCell>
-                                        {product.isAvailable ? (
-                                            <Badge variant="default">Available</Badge>
-                                        ) : (
-                                            <Badge variant="secondary">Unavailable</Badge>
-                                        )}
-                                    </TableCell>
-                                    <TableCell className="text-sm text-muted-foreground">
-                                        {formatDate(product.createdAt)}
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon">
-                                                    <MoreHorizontal className="w-4 h-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                <DropdownMenuSeparator />
-                                                <DropdownMenuItem asChild>
-                                                    <Link href={`/admin/second-hand/product/update/${product.id}`}>
-                                                        <Edit className="w-4 h-4 mr-2" />
-                                                        Edit
-                                                    </Link>
-                                                </DropdownMenuItem>
-                                                <DropdownMenuSeparator />
-                                                <DropdownMenuItem
-                                                    className="text-destructive focus:text-destructive"
-                                                    onClick={() => setDeleteId(product.id)}
-                                                >
-                                                    <Trash2 className="w-4 h-4 mr-2" />
-                                                    Delete
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        )}
-                    </TableBody>
-                </Table>
+            <div className="flex justify-end mb-4">
+                <Button
+                    onClick={handleSaveOrder}
+                    disabled={!hasChanges || isSaving}
+                    className={hasChanges ? "animate-pulse" : ""}
+                >
+                    <Save className="w-4 h-4 mr-2" />
+                    {isSaving ? "Saving..." : "Save Order"}
+                </Button>
             </div>
+
+            <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+            >
+                <SortableContext
+                    items={items.map((p) => p.id)}
+                    strategy={verticalListSortingStrategy}
+                >
+                    <div className="rounded-md border">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-16">Order</TableHead>
+                                    <TableHead className="w-20">Image</TableHead>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>Category</TableHead>
+                                    <TableHead>Price</TableHead>
+                                    <TableHead>Location</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead>Created</TableHead>
+                                    <TableHead className="text-right">Actions</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {items.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={9} className="text-center py-10">
+                                            <p className="text-muted-foreground">
+                                                No products found. Create your first product to get started.
+                                            </p>
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    items.map((product) => (
+                                        <SortableRow
+                                            key={product.id}
+                                            product={product}
+                                            onDelete={(id) => setDeleteId(id)}
+                                        />
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </SortableContext>
+            </DndContext>
 
             <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
                 <AlertDialogContent>

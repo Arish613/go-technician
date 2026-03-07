@@ -9,7 +9,7 @@ export async function getCategoryBySlug(slug: string) {
       where: { slug },
       include: {
         products: {
-          orderBy: { createdAt: "desc" },
+          orderBy: { order: "asc" },
         },
         faqs: true,
       },
