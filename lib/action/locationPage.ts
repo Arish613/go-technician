@@ -7,8 +7,28 @@ export async function getLocationPageBySlug(slug: string) {
   try {
     const locationPage = await prisma.locationPage.findFirst({
       where: { slug },
-      include: {
-        faqs: true,
+      select: {
+        id: true,
+        slug: true,
+        serviceSlug: true,
+        location: true,
+        title: true,
+        metaTitle: true,
+        description: true,
+        content: true,
+        isPublished: true,
+        createdAt: true,
+        updatedAt: true,
+        faqs: {
+          select: {
+            id: true,
+            question: true,
+            answer: true,
+            locationPageId: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
       },
     });
 

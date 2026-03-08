@@ -84,12 +84,54 @@ export async function getServiceBySlug(slug: string) {
   try {
     const service = await prisma.services.findFirst({
       where: { slug },
-      include: {
-        faqs: true,
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        metaTitle: true,
+        slug: true,
+        imageUrl: true,
+        content: true,
+        location: true,
+        type: true,
+        isPublished: true,
+        whyChooseUs: true,
+        benefits: true,
+        createdAt: true,
+        updatedAt: true,
+        faqs: {
+          select: {
+            id: true,
+            question: true,
+            answer: true,
+            blogId: true,
+            serviceId: true,
+            categoryId: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
         subServices: {
           where: { isActive: true },
-
           orderBy: { price: "asc" },
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            price: true,
+            discountedPrice: true,
+            type: true,
+            imageUrl: true,
+            whatIncluded: true,
+            whatExcluded: true,
+            duration: true,
+            isPopular: true,
+            isActive: true,
+            order: true,
+            serviceId: true,
+            createdAt: true,
+            updatedAt: true,
+          },
         },
       },
     });

@@ -37,6 +37,8 @@ model SubService {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   reviews         Review[]
+
+  @@index([serviceId])
 }
 
 model Review {
@@ -51,4 +53,6 @@ model Review {
   subService   SubService? @relation(fields: [subServiceId], references: [id], onDelete: Cascade)
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+
+  @@index([serviceId])
 }
