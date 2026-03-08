@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useMemo } from "react";
 import {
     Table,
     TableBody,
@@ -31,6 +30,12 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
     DndContext,
     closestCenter,
     KeyboardSensor,
@@ -40,7 +45,6 @@ import {
     DragEndEvent,
 } from "@dnd-kit/core";
 import {
-    arrayMove,
     SortableContext,
     sortableKeyboardCoordinates,
     useSortable,
@@ -122,11 +126,6 @@ function SortableRow({ product, onDelete }: SortableRowProps) {
                 </div>
             </TableCell>
             <TableCell>
-                {product.category?.name && (
-                    <Badge variant="outline">{product.category.name}</Badge>
-                )}
-            </TableCell>
-            <TableCell>
                 <div>
                     <p className="font-semibold">₹{product.price}</p>
                     {product.discountPrice && (
@@ -182,13 +181,17 @@ function SortableRow({ product, onDelete }: SortableRowProps) {
     );
 }
 
-export function ProductTable({ products, onRefresh }: ProductTableProps) {
-    const router = useRouter();
+interface CategoryTableProps {
+    products: Product[];
+    categoryName: string;
+    onDelete: (id: string) => void;
+    onSaveOrder: (items: Product[]) => void;
+}
+
+function CategoryTable({ products, categoryName, onDelete, onSaveOrder }: CategoryTableProps) {
     const [items, setItems] = useState<Product[]>(products);
-    const [deleteId, setDeleteId] = useState<string | null>(null);
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
     const [hasChanges, setHasChanges] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -227,7 +230,7 @@ export function ProductTable({ products, onRefresh }: ProductTableProps) {
 
             if (response.ok) {
                 setHasChanges(false);
-                onRefresh?.();
+                onSaveOrder(items);
             } else {
                 const result = await response.json();
                 alert(result.error || "Failed to save order");
@@ -239,6 +242,103 @@ export function ProductTable({ products, onRefresh }: ProductTableProps) {
             setIsSaving(false);
         }
     };
+
+    return (
+        <div>
+            <div className="flex justify-end mb-2">
+                <Button
+                    onClick={handleSaveOrder}
+                    disabled={!hasChanges || isSaving}
+                    size="sm"
+                    className={hasChanges ? "animate-pulse" : ""}
+                >
+                    <Save className="w-3 h-3 mr-1" />
+                    {isSaving ? "Saving..." : "Save Order"}
+                </Button>
+            </div>
+
+            <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+            >
+                <SortableContext
+                    items={items.map((p) => p.id)}
+                    strategy={verticalListSortingStrategy}
+                >
+                    <div className="rounded-md border">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-16">Order</TableHead>
+                                    <TableHead className="w-20">Image</TableHead>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>Price</TableHead>
+                                    <TableHead>Location</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead>Created</TableHead>
+                                    <TableHead className="text-right">Actions</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {items.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={8} className="text-center py-6">
+                                            <p className="text-muted-foreground text-sm">
+                                                No products in this category
+                                            </p>
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    items.map((product) => (
+                                        <SortableRow
+                                            key={product.id}
+                                            product={product}
+                                            onDelete={onDelete}
+                                        />
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </SortableContext>
+            </DndContext>
+        </div>
+    );
+}
+
+function arrayMove<T>(array: T[], fromIndex: number, toIndex: number): T[] {
+    const newArray = [...array];
+    const [removed] = newArray.splice(fromIndex, 1);
+    newArray.splice(toIndex, 0, removed);
+    return newArray;
+}
+
+export function ProductTable({ products, onRefresh }: ProductTableProps) {
+    const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const groupedProducts = useMemo(() => {
+        const groups: Record<string, Product[]> = {};
+
+        products.forEach((product) => {
+            const categoryName = product.category?.name || "Uncategorized";
+            if (!groups[categoryName]) {
+                groups[categoryName] = [];
+            }
+            groups[categoryName].push(product);
+        });
+
+        Object.keys(groups).forEach((category) => {
+            groups[category].sort((a, b) => (a.order || 0) - (b.order || 0));
+        });
+
+        return groups;
+    }, [products]);
+
+    const categories = useMemo(() => {
+        return Object.keys(groupedProducts).sort();
+    }, [groupedProducts]);
 
     const handleDelete = async () => {
         if (!deleteId) return;
@@ -264,66 +364,51 @@ export function ProductTable({ products, onRefresh }: ProductTableProps) {
         }
     };
 
+    const handleCategoryOrderSaved = () => {
+        onRefresh?.();
+    };
+
     return (
         <>
-            <div className="flex justify-end mb-4">
-                <Button
-                    onClick={handleSaveOrder}
-                    disabled={!hasChanges || isSaving}
-                    className={hasChanges ? "animate-pulse" : ""}
-                >
-                    <Save className="w-4 h-4 mr-2" />
-                    {isSaving ? "Saving..." : "Save Order"}
-                </Button>
-            </div>
-
-            <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
-            >
-                <SortableContext
-                    items={items.map((p) => p.id)}
-                    strategy={verticalListSortingStrategy}
-                >
-                    <div className="rounded-md border">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="w-16">Order</TableHead>
-                                    <TableHead className="w-20">Image</TableHead>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Category</TableHead>
-                                    <TableHead>Price</TableHead>
-                                    <TableHead>Location</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Created</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {items.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell colSpan={9} className="text-center py-10">
-                                            <p className="text-muted-foreground">
-                                                No products found. Create your first product to get started.
-                                            </p>
-                                        </TableCell>
-                                    </TableRow>
-                                ) : (
-                                    items.map((product) => (
-                                        <SortableRow
-                                            key={product.id}
-                                            product={product}
-                                            onDelete={(id) => setDeleteId(id)}
-                                        />
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                    </div>
-                </SortableContext>
-            </DndContext>
+            {products.length === 0 ? (
+                <div className="rounded-md border">
+                    <Table>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell colSpan={8} className="text-center py-10">
+                                    <p className="text-muted-foreground">
+                                        No products found. Create your first product to get started.
+                                    </p>
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </div>
+            ) : (
+                <Accordion type="multiple" className="w-full" defaultValue={categories}>
+                    {categories.map((category) => (
+                        <AccordionItem key={category} value={category}>
+                            <AccordionTrigger className="hover:no-underline px-4 bg-muted/50 rounded-t-lg">
+                                <div className="flex items-center gap-3">
+                                    <span className="text-base font-semibold">{category}</span>
+                                    <Badge variant="outline" className="ml-2">
+                                        {groupedProducts[category].length} product
+                                        {groupedProducts[category].length !== 1 ? "s" : ""}
+                                    </Badge>
+                                </div>
+                            </AccordionTrigger>
+                            <AccordionContent className="pt-4 px-0">
+                                <CategoryTable
+                                    products={groupedProducts[category]}
+                                    categoryName={category}
+                                    onDelete={(id) => setDeleteId(id)}
+                                    onSaveOrder={handleCategoryOrderSaved}
+                                />
+                            </AccordionContent>
+                        </AccordionItem>
+                    ))}
+                </Accordion>
+            )}
 
             <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
                 <AlertDialogContent>

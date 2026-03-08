@@ -142,94 +142,83 @@ export default async function SecondHandCategoryPage({
       {/* ------------------------------------------------------------------ */}
       {/* Why Buy from Us                                                      */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative py-16 md:py-24 bg-slate-50 overflow-hidden">
-        <div className="md:mx-20 px-4">
-          {/* ...background pattern... */}
-          <div className="container relative z-10 mx-auto px-4 md:px-8">
-            <div className="text-center max-w-3xl mx-auto mb-5 md:mb-16">
-              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-                Why Buy{" "}
-                <span className="text-primary">{category.name}</span> from Us?
+      {category.whyChooseUs && category.whyChooseUs.length > 0 && (
+        <section className="relative py-16 md:py-24 bg-slate-50 overflow-hidden">
+          <div className="md:mx-20 px-4">
+            {/* ...background pattern... */}
+            <div className="container relative z-10 mx-auto px-4 md:px-8">
+              <div className="text-center max-w-3xl mx-auto mb-5 md:mb-16">
+                <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+                  Why Buy{" "}
+                  <span className="text-primary">{category.name}</span> from Us?
+                </h2>
+                <p className="text-sm md:text-lg text-slate-600">
+                  Experience reliability, transparency, and value with every
+                  second-hand purchase.
+                </p>
+              </div>
+
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {category.whyChooseUs.map((item, idx) => (
+                  <Card
+                    key={idx}
+                    className="group relative h-full border-slate-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden py-4"
+                  >
+                    <CardHeader className="flex flex-col items-center text-center">
+                      <div className="mb-4 inline-flex h-10 w-10 md:h-14 md:w-14 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors duration-300">
+                        {renderIcon(item.icon)}
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-900 leading-tight">
+                        {item.title}
+                      </h3>
+                    </CardHeader>
+                    <CardContent className="text-center md:px-6">
+                      <p className="text-sm md:text-base text-slate-500 leading-relaxed">
+                        {item.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* FAQs                                                                 */}
+      {category.faqs && category.faqs.length > 0 && (
+        <section id="faqs" className="py-12 md:py-16 md:mx-20 px-4">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-5 md:mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-2 md:mb-4">
+                Frequently Asked Questions
               </h2>
-              <p className="text-sm md:text-lg text-slate-600">
-                Experience reliability, transparency, and value with every
-                second-hand purchase.
+              <p className="text-sm md:text-lg text-muted-foreground">
+                Common questions about buying second-hand{" "}
+                {category.name.toLowerCase()} from Go Technicians
               </p>
             </div>
 
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {(category.whyChooseUs && category.whyChooseUs.length > 0
-                ? category.whyChooseUs
+            <Accordion type="single" collapsible className="space-y-3">
+              {(category.faqs && category.faqs.length > 0
+                ? category.faqs
                 : []
-              ).map((item, idx) => (
-                <Card
-                  key={idx}
-                  className="group relative h-full border-slate-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden py-4"
-                >
-                  <CardHeader className="flex flex-col items-center text-center">
-                    <div className="mb-4 inline-flex h-10 w-10 md:h-14 md:w-14 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors duration-300">
-                      {renderIcon(item.icon)}
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-900 leading-tight">
-                      {item.title}
-                    </h3>
-                  </CardHeader>
-                  <CardContent className="text-center md:px-6">
-                    <p className="text-sm md:text-base text-slate-500 leading-relaxed">
-                      {item.description}
-                    </p>
-                  </CardContent>
-                </Card>
+              ).map((faq, idx) => (
+                <AccordionItem key={faq.id || idx} value={`item-${idx}`}>
+                  <AccordionTrigger className="md:py-4 text-left text-xs md:text-base font-semibold text-slate-900 hover:no-underline cursor-pointer">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="md:pb-4 text-xs md:text-sm leading-relaxed text-slate-600">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-              {/* Optionally, fallback to a message if empty */}
-              {(!category.whyChooseUs || category.whyChooseUs.length === 0) && (
-                <div className="col-span-full text-center text-muted-foreground">
-                  No highlights available for this category.
-                </div>
-              )}
-            </div>
+            </Accordion>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* ------------------------------------------------------------------ */}
-      {/* FAQs                                                                 */}
-      {/* ------------------------------------------------------------------ */}
-      <section id="faqs" className="py-12 md:py-16 md:mx-20 px-4">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-5 md:mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-2 md:mb-4">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-sm md:text-lg text-muted-foreground">
-              Common questions about buying second-hand{" "}
-              {category.name.toLowerCase()} from Go Technicians
-            </p>
-          </div>
-
-          <Accordion type="single" collapsible className="space-y-3">
-            {(category.faqs && category.faqs.length > 0
-              ? category.faqs
-              : []
-            ).map((faq, idx) => (
-              <AccordionItem key={faq.id || idx} value={`item-${idx}`}>
-                <AccordionTrigger className="md:py-4 text-left text-xs md:text-base font-semibold text-slate-900 hover:no-underline cursor-pointer">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="md:pb-4 text-xs md:text-sm leading-relaxed text-slate-600">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-            {/* Optionally, fallback to a message if empty */}
-            {(!category.faqs || category.faqs.length === 0) && (
-              <div className="text-center text-muted-foreground py-8">
-                No FAQs available for this category.
-              </div>
-            )}
-          </Accordion>
-        </div>
-      </section>
 
       {/* ------------------------------------------------------------------ */}
       {/* CTA                                                                  */}
