@@ -149,8 +149,9 @@ export default async function SecondHandCategoryPage({
             <div className="container relative z-10 mx-auto px-4 md:px-8">
               <div className="text-center max-w-3xl mx-auto mb-5 md:mb-16">
                 <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-                  Why Buy{" "}
-                  <span className="text-primary">{category.name}</span> from Us?
+                  Why Buy Second Hand{" "}
+                  <span className="text-primary capitalize">{category.name.replace(/^Buy\s+Second Hand\s+/i, "")}</span>{" "}
+                  from Us?
                 </h2>
                 <p className="text-sm md:text-lg text-slate-600">
                   Experience reliability, transparency, and value with every
