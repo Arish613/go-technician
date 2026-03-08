@@ -30,10 +30,8 @@ export function ACServices() {
   return (
     <section
       id="ac-services"
-      className="bg-slate-50 py-20 relative overflow-hidden"
+      className=" py-20 relative overflow-hidden"
     >
-      {/* Decorative Background Blob */}
-      <div className="absolute top-0 right-0 -mr-20 -mt-20 h-96 w-96 rounded-full bg-blue-100 blur-3xl opacity-50 pointer-events-none" />
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Header */}

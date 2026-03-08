@@ -59,7 +59,7 @@ export default async function SecondHandCategoryPage({
 
       <div className="lg:grid md:grid-cols-2">
         {/* LEFT — sticky hero image + info */}
-        <section className="lg:sticky lg:top-10 lg:h-screen lg:mt-10">
+        <section className="lg:sticky lg:top-10 lg:mt-10">
           <div className="md:mx-20">
             {category.image && (
               <div className="w-full max-h-56 md:max-h-125 lg:max-h-175 overflow-hidden">
