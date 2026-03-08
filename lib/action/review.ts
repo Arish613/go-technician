@@ -45,9 +45,49 @@ export async function getReviewsByService(serviceId: string) {
     return prisma.review.findMany({
       where: { serviceId },
       orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        rating: true,
+        comment: true,
+        imageUrl: true,
+        reviewer: true,
+        serviceId: true,
+        subServiceId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   } catch (error) {
     console.log("Error fetching reviews:", error);
+    return [];
+  }
+}
+
+export async function getReviewsByServiceSlug(serviceSlug: string) {
+  try {
+    return prisma.review.findMany({
+      where: {
+        service: {
+          is: {
+            slug: serviceSlug,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        rating: true,
+        comment: true,
+        imageUrl: true,
+        reviewer: true,
+        serviceId: true,
+        subServiceId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  } catch (error) {
+    console.log("Error fetching reviews by service slug:", error);
     return [];
   }
 }

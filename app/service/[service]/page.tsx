@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SubServiceCard } from "@/components/service/subservice/SubServiceCard";
 import Link from "next/link";
 import { ServiceContent } from "@/components/service/Content";
-import { getReviewsByService } from "@/lib/action/review";
+import { getReviewsByServiceSlug } from "@/lib/action/review";
 import { ServiceReviews } from "@/components/service/subservice/Reviews";
 import { WhyChooseUs } from "@/components/service/subservice/WhyChooseUs";
 import { StickyCart } from "@/components/cart/StickyCart";
@@ -63,14 +63,16 @@ export default async function ServicePage({ params }: ServicePageProps) {
       const locationPage = locationResult.data;
 
       // Fetch the parent service data using the serviceSlug
-      const serviceResult = await getServiceBySlug(locationPage.serviceSlug);
+      const [serviceResult, reviews] = await Promise.all([
+        getServiceBySlug(locationPage.serviceSlug),
+        getReviewsByServiceSlug(locationPage.serviceSlug),
+      ]);
 
       if (!serviceResult.success || !serviceResult.data) {
         notFound();
       }
 
       const service = serviceResult.data;
-      const reviews = await getReviewsByService(service.id);
 
       return (
         <LocationPageContent
@@ -86,7 +88,10 @@ export default async function ServicePage({ params }: ServicePageProps) {
   }
 
   // Regular service page logic
-  const result = await getServiceBySlug(slug);
+  const resultPromise = getServiceBySlug(slug);
+  const reviewsPromise = getReviewsByServiceSlug(slug);
+
+  const result = await resultPromise;
 
   if (!result.success || !result.data) {
     notFound();
@@ -95,7 +100,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
   const service = result.data;
   const hasTypes = service.type.length > 0;
 
-  const reviews = await getReviewsByService(service.id);
+  const reviews = await reviewsPromise;
 
   const averageRating = reviews && reviews.length > 0
     ? (reviews.reduce((acc, review) => acc + Number(review.rating), 0) / reviews.length).toFixed(2)
@@ -364,8 +369,6 @@ export async function generateMetadata({ params }: ServicePageProps) {
   }
 
   const service = result.data;
-
-  console.log("Generating metadata for service:", service.name);
 
   return {
     title: service.metaTitle || `${service.name} | Professional Services`,
