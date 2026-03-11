@@ -10,6 +10,7 @@ import { CustomerReviews } from "@/components/homepage/Reviews";
 import { SecondHandProducts } from "@/components/homepage/SecondHandProducts";
 import { Services } from "@/components/homepage/Services";
 import { WhyChooseUs } from "@/components/homepage/WhyChooseUs";
+import { QuickLinks } from "@/components/homepage/QuickLinks";
 
 export default function Page() {
   return (
@@ -27,6 +28,7 @@ export default function Page() {
         <RecentBlogs />
         <JoinProNetwork />
         <FAQ />
+        <QuickLinks />
       </div>
     </div>
   );
