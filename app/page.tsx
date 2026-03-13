@@ -18,7 +18,7 @@ export default function Page() {
       <HeroSSR />
       <div className="md:mx-20">
         <Services />
-        <SecondHandProducts />
+        {/* <SecondHandProducts /> */}
         <ACServices />
         <QuickRepairs />
         <AboutUs />

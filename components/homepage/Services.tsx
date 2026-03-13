@@ -37,6 +37,21 @@ const categories = [
   },
 ];
 
+const secondHandProducts = [
+  {
+    name: "Second Hand AC",
+    icon: "/icons/ac-repair.png",
+    badge: "Best Deals",
+    link: "/buy-second-hand-air-conditioner",
+  },
+  {
+    name: "Second Hand Laptop",
+    icon: "/icons/laptop-service.png",
+    badge: "Starting ₹8,000",
+    link: "/buy-second-hand-laptop",
+  },
+];
+
 export function Services() {
   return (
     <section id="services" className="border-t border-slate-200 bg-white py-16">
@@ -56,6 +71,7 @@ export function Services() {
           </p>
         </div>
 
+        {/* Main Services Grid */}
         <div className="grid grid-cols-3 gap-y-10 sm:gap-x-6 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3">
           {categories.map((category) => {
             const cardContent = (
@@ -105,6 +121,54 @@ export function Services() {
           })}
         </div>
 
+        {/* Compact Second Hand Section */}
+        <div className="mt-16 pt-10 border-t border-slate-100">
+          <div className="mb-8 text-center">
+            <h3 className="text-xl font-bold text-slate-900 sm:text-2xl">
+              Buy Verified Second Hand Products
+            </h3>
+            <p className="mx-auto mt-2 text-sm text-slate-600 max-w-lg">
+              Genuine pre-owned appliances, quality checked by our technicians.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-8 md:gap-16">
+            {secondHandProducts.map((product) => {
+              const cardContent = (
+                <div className="group flex cursor-pointer flex-col items-center gap-3">
+                  <div className="relative flex h-24 w-24 md:h-28 md:w-28 items-center justify-center rounded-full bg-white shadow-sm border border-blue-100 transition-transform duration-300 group-hover:scale-105">
+                    {product.badge && (
+                      <span className="absolute -right-2 -top-1 rounded bg-blue-600 px-2 py-0.5 text-[10px] font-bold text-white shadow-sm whitespace-nowrap border border-white">
+                        {product.badge}
+                      </span>
+                    )}
+                    <div className="relative h-16 w-16 md:h-20 md:w-20">
+                      <Image
+                        src={product.icon}
+                        alt={product.name}
+                        fill
+                        sizes="33vw"
+                        className="object-contain"
+                      />
+                    </div>
+                  </div>
+                  <p className="max-w-32 text-center text-sm font-medium text-slate-900 group-hover:text-blue-600">
+                    {product.name}
+                  </p>
+                </div>
+              );
+
+              return product.link ? (
+                <Link key={product.name} href={product.link} prefetch={true}>
+                  {cardContent}
+                </Link>
+              ) : (
+                <div key={product.name}>{cardContent}</div>
+              );
+            })}
+          </div>
+        </div>
+
         {/* CTA */}
         <div className="mt-12 text-center">
           <p className="text-sm text-slate-600">
@@ -112,7 +176,7 @@ export function Services() {
             <Link
               href="/service"
               prefetch={true}
-              className="font-semibold text-blue-600 hover:text-blue-700"
+              className="font-semibold text-blue-600 hover:text-blue-700 underline underline-offset-2"
             >
               View All Services
             </Link>

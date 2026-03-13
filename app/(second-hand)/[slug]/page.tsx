@@ -140,6 +140,57 @@ export default async function SecondHandCategoryPage({
       </div>
 
       {/* ------------------------------------------------------------------ */}
+      {/* Our Promises                                                         */}
+      {/* ------------------------------------------------------------------ */}
+      <section className="py-12 md:py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {[
+              {
+                icon: <ShieldCheck className="h-4 w-4 md:h-6 md:w-6 text-teal-600" />,
+                bgColor: "bg-teal-100",
+                title: "Quality Verified",
+                description: "Every item tested & certified by our experts before delivery.",
+              },
+              {
+                icon: <Clock className="h-4 w-4 md:h-6 md:w-6 text-blue-600" />,
+                bgColor: "bg-blue-100",
+                title: "Swift Delivery",
+                description: "Fast shipping across Mumbai & Thane with safe handling.",
+              },
+              {
+                icon: <BadgeCheck className="h-4 w-4 md:h-6 md:w-6 text-green-600" />,
+                bgColor: "bg-green-100",
+                title: "Flexible Payment",
+                description: "COD, advance payment, or installment options available.",
+              },
+              {
+                icon: <RefreshCw className="h-4 w-4 md:h-6 md:w-6 text-amber-600" />,
+                bgColor: "bg-amber-100",
+                title: "Hassle-Free Returns",
+                description: "Extended return window with no questions asked policy.",
+              },
+            ].map((promise, idx) => (
+              <div
+                key={idx}
+                className="flex flex-col items-start gap-3 p-3 md:p-6 rounded-lg border border-slate-200 bg-linear-to-br from-slate-50 to-white hover:shadow-md transition-shadow"
+              >
+                <div className={`inline-flex h-8 w-8 md:h-12 md:w-12 items-center justify-center rounded-full ${promise.bgColor}`}>
+                  {promise.icon}
+                </div>
+                <h3 className="text-sm md:text-lg font-semibold text-slate-900">
+                  {promise.title}
+                </h3>
+                <p className="text-xs md:text-sm text-slate-600 leading-relaxed">
+                  {promise.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------------------ */}
       {/* Why Buy from Us                                                      */}
       {/* ------------------------------------------------------------------ */}
       {category.whyChooseUs && category.whyChooseUs.length > 0 && (
