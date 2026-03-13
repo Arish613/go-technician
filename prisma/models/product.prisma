@@ -25,7 +25,10 @@ model Product{
     discountPrice Float?
     isAvailable Boolean @default(false)
     image String?
-    location String?
+    cityId String? @db.ObjectId
+    localityId String? @db.ObjectId
+    city City? @relation(fields: [cityId], references: [id])
+    locality Locality? @relation(fields: [localityId], references: [id])
     brand String?
     label String? // e.g. "Best Seller", "New Arrival"
     order Int @default(0)

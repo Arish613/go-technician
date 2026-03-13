@@ -134,8 +134,10 @@ function SortableRow({ product, onDelete }: SortableRowProps) {
                 </div>
             </TableCell>
             <TableCell>
-                {product.location ? (
-                    <Badge variant="secondary">{product.location}</Badge>
+                {product.locality ? (
+                    <Badge variant="secondary">{product.locality.name}, {product.locality.city?.name}</Badge>
+                ) : product.city ? (
+                    <Badge variant="secondary">{product.city.name}</Badge>
                 ) : (
                     <span className="text-muted-foreground text-sm">-</span>
                 )}
@@ -188,7 +190,7 @@ interface CategoryTableProps {
     onSaveOrder: (items: Product[]) => void;
 }
 
-function CategoryTable({ products, categoryName, onDelete, onSaveOrder }: CategoryTableProps) {
+function CategoryTable({ products, onDelete, onSaveOrder }: CategoryTableProps) {
     const [items, setItems] = useState<Product[]>(products);
     const [hasChanges, setHasChanges] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
