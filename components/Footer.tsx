@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Instagram, Facebook, Linkedin } from "lucide-react";
 import Image from "next/image";
+import { getAllLocationPages } from "@/lib/action/locationPage";
 
 const navigationLinks = [
   { name: "Home", href: "/" },
@@ -39,7 +40,9 @@ const socialLinks = [
   },
 ];
 
-export function Footer() {
+
+export async function Footer() {
+
   return (
     <footer className="border-t border-slate-200 bg-white">
       <div className="px-4 py-12 md:mx-20">
@@ -151,7 +154,7 @@ export function Footer() {
       <div className="border-t border-slate-200">
         <div className="flex flex-col items-center justify-between gap-4 px-4 py-6 sm:flex-row md:mx-20">
           <p className="text-sm text-slate-600">All Rights Reserved © gotechnicians.com</p>
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" prefetch={true} className="flex items-center gap-2">
             <Image
               src={"/logo.png"}
               alt="Logo"

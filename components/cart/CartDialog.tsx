@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useCart } from "@/context/CartContext";
+import { useCart, getEffectivePrice } from "@/context/CartContext";
 import {
   Dialog,
   DialogContent,
@@ -151,7 +151,7 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
         items: items.map((item) => ({
           id: item.id,
           name: item.name,
-          price: item.discountedPrice || item.price,
+          price: getEffectivePrice(item),
           quantity: item.quantity,
         })),
         contact: contactData,
@@ -260,7 +260,7 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
                         </p>
                         <div className="flex items-center gap-4 mt-3">
                           <p className="text-sm font-medium">
-                            ₹{item.discountedPrice || item.price}
+                            ₹{getEffectivePrice(item)}
                           </p>
                           <div className="flex items-center gap-2">
                             <Button

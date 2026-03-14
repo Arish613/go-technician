@@ -213,9 +213,19 @@ export default async function AdminPage() {
                 Services
               </Button>
             </Link>
+            <Link href="/admin/second-hand">
+              <Button size="sm" variant="default">
+                Second Hand Products
+              </Button>
+            </Link>
             <Link href="/admin/review">
               <Button size="sm" variant="default">
                 Reviews
+              </Button>
+            </Link>
+            <Link href="/admin/location-pages">
+              <Button size="sm" variant="default">
+                Location Pages
               </Button>
             </Link>
           </div>

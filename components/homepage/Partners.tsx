@@ -68,7 +68,7 @@ export function Partners() {
               Trusted By The Best
             </span>
           </div>
-          <h2 className="text-4xl font-bold text-slate-900 sm:text-5xl bg-linear-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text">
+          <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
             Brands We Repair & Service
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm md:text-lg text-slate-600 leading-relaxed">

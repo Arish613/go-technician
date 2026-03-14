@@ -1,5 +1,6 @@
 import { getBlogs } from "@/lib/action/blog";
 import { getServices } from "@/lib/action/service";
+import { getAllLocationPages } from "@/lib/action/locationPage";
 import { NextResponse } from "next/server";
 import type { BlogListItem } from "@/types/blog";
 import type { ServiceType } from "@/types/service";
@@ -43,6 +44,22 @@ export async function GET() {
         )
       : [];
 
+  // Fetch all published location page slugs
+  const locationPagesRes = await getAllLocationPages(true);
+  const locationPageUrls =
+    locationPagesRes.success && locationPagesRes.data
+      ? locationPagesRes.data.map(
+          (lp) =>
+            `<url><loc>${BASE_URL}/service/${lp.slug}</loc><lastmod>${
+              lp.updatedAt
+                ? new Date(lp.updatedAt).toISOString().split("T")[0]
+                : lp.createdAt
+                  ? new Date(lp.createdAt).toISOString().split("T")[0]
+                  : ""
+            }</lastmod></url>`,
+        )
+      : [];
+
   // Static routes
   const staticLastMod = "2026-02-07";
   const staticUrls = [
@@ -66,6 +83,7 @@ export async function GET() {
     `${staticUrls.join("\n")}` +
     `${blogUrls.join("\n")}` +
     `${serviceUrls.join("\n")}` +
+    `${locationPageUrls.join("\n")}` +
     `\n</urlset>`;
 
   return new NextResponse(body, {

@@ -1,4 +1,5 @@
 import { getServiceBySlug } from "@/lib/action/service";
+import { getLocationPageBySlug } from "@/lib/action/locationPage";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SubServiceCard } from "@/components/service/subservice/SubServiceCard";
 import Link from "next/link";
 import { ServiceContent } from "@/components/service/Content";
-import { getReviewsByService } from "@/lib/action/review";
+import { getReviewsByServiceSlug } from "@/lib/action/review";
 import { ServiceReviews } from "@/components/service/subservice/Reviews";
 import { WhyChooseUs } from "@/components/service/subservice/WhyChooseUs";
 import { StickyCart } from "@/components/cart/StickyCart";
@@ -21,6 +22,7 @@ import { AMCComparisonTable } from "@/components/service/AMCTable";
 import { Star } from "lucide-react";
 import { Benefit } from "@/components/service/subservice/Benefit";
 import { RecentBlogs } from "@/components/blog/RecentBlogs";
+import { LocationPageContent } from "@/components/location/LocationPageContent";
 
 interface ServicePageProps {
   params: {
@@ -28,9 +30,68 @@ interface ServicePageProps {
   };
 }
 
+// Known location suffixes for matching location-based pages
+const LOCATION_PATTERNS = [
+  "in-mumbai",
+  "in-thane",
+  "in-navi-mumbai",
+];
+
+function isLocationSlug(slug: string): boolean {
+  return LOCATION_PATTERNS.some((pattern) => slug.endsWith(pattern));
+}
+
+function extractServiceSlugFromLocation(slug: string): string | null {
+  for (const pattern of LOCATION_PATTERNS) {
+    if (slug.endsWith(pattern)) {
+      // Remove "-in-{location}" from end to get the service slug
+      return slug.slice(0, slug.length - pattern.length - 1); // -1 for the extra hyphen
+    }
+  }
+  return null;
+}
+
 export default async function ServicePage({ params }: ServicePageProps) {
   const resolvedParams = await params;
-  const result = await getServiceBySlug(resolvedParams.service);
+  const slug = resolvedParams.service;
+
+  // Check if this is a location-based page (e.g., "ac-repair-service-in-mumbai")
+  if (isLocationSlug(slug)) {
+    const locationResult = await getLocationPageBySlug(slug);
+
+    if (locationResult.success && locationResult.data) {
+      const locationPage = locationResult.data;
+
+      // Fetch the parent service data using the serviceSlug
+      const [serviceResult, reviews] = await Promise.all([
+        getServiceBySlug(locationPage.serviceSlug),
+        getReviewsByServiceSlug(locationPage.serviceSlug),
+      ]);
+
+      if (!serviceResult.success || !serviceResult.data) {
+        notFound();
+      }
+
+      const service = serviceResult.data;
+
+      return (
+        <LocationPageContent
+          locationPage={locationPage}
+          service={service}
+          reviews={reviews}
+        />
+      );
+    }
+
+    // If no location page found in DB, try to fall through to regular service
+    // (in case it's a regular service slug that happens to end with a location pattern)
+  }
+
+  // Regular service page logic
+  const resultPromise = getServiceBySlug(slug);
+  const reviewsPromise = getReviewsByServiceSlug(slug);
+
+  const result = await resultPromise;
 
   if (!result.success || !result.data) {
     notFound();
@@ -39,13 +100,13 @@ export default async function ServicePage({ params }: ServicePageProps) {
   const service = result.data;
   const hasTypes = service.type.length > 0;
 
-  const reviews = await getReviewsByService(service.id);
+  const reviews = await reviewsPromise;
 
   const averageRating = reviews && reviews.length > 0
     ? (reviews.reduce((acc, review) => acc + Number(review.rating), 0) / reviews.length).toFixed(2)
     : "0.00";
 
-  const showAMCTable = resolvedParams.service.toLowerCase().includes("ac-repair");
+  const showAMCTable = slug.toLowerCase().includes("ac-repair");
 
   return (
     <div className="min-h-screen">
@@ -96,7 +157,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
               </p>
 
               <div className="flex flex-wrap items-center gap-4 pt-0">
-                <Link href={`/service/${resolvedParams.service}/reviews`} className="flex items-center gap-2 group">
+                <Link href={`/service/${slug}/reviews`} className="flex items-center gap-2 group">
                   <Star className="w-5 h-5 text-blue-600 fill-blue-600" />
                   <span className="font-bold text-base">{averageRating}/5</span>
                   <span className="text-xs text-muted-foreground group-hover:text-blue-600 transition-colors">
@@ -204,7 +265,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
         <WhyChooseUs service={{ name: service.name, whyChooseUs: service.whyChooseUs }} />
       )}
 
-      {reviews && reviews.length > 0 && <ServiceReviews reviews={reviews} serviceSlug={resolvedParams.service} />}
+      {reviews && reviews.length > 0 && <ServiceReviews reviews={reviews} serviceSlug={slug} />}
 
       {/* Service Content */}
       <section className="pb-10 pt-0 md:py-12 md:px-10 bg-muted/30">
@@ -274,7 +335,32 @@ export default async function ServicePage({ params }: ServicePageProps) {
 // Generate metadata for SEO
 export async function generateMetadata({ params }: ServicePageProps) {
   const resolvedParams = await params;
-  const result = await getServiceBySlug(resolvedParams.service);
+  const slug = resolvedParams.service;
+
+  // Check if this is a location page
+  if (isLocationSlug(slug)) {
+    const locationResult = await getLocationPageBySlug(slug);
+
+    if (locationResult.success && locationResult.data) {
+      const locationPage = locationResult.data;
+      return {
+        title:
+          locationPage.metaTitle ||
+          `${locationPage.title} | Go Technicians`,
+        description: locationPage.description,
+        openGraph: {
+          title: locationPage.title,
+          description: locationPage.description,
+        },
+        alternates: {
+          canonical: `/service/${locationPage.slug}`,
+        },
+      };
+    }
+  }
+
+  // Regular service metadata
+  const result = await getServiceBySlug(slug);
 
   if (!result.success || !result.data) {
     return {
@@ -283,8 +369,6 @@ export async function generateMetadata({ params }: ServicePageProps) {
   }
 
   const service = result.data;
-
-  console.log("Generating metadata for service:", service.name);
 
   return {
     title: service.metaTitle || `${service.name} | Professional Services`,

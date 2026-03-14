@@ -118,6 +118,7 @@ export function BlogForm({ blog, mode = "create" }: BlogFormProps) {
         updatedAt: new Date(),
         blogId: null,
         serviceId: null,
+        categoryId: null,
       },
     ]);
   };
