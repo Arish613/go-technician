@@ -24,10 +24,17 @@ type LocationPageWithFaqs = LocationPage & {
   faqs: LocationPageFaq[];
 };
 
+interface RelatedLocation {
+  slug: string;
+  location: string;
+  title: string;
+}
+
 interface LocationPageContentProps {
   locationPage: LocationPageWithFaqs;
   service: ServiceWithRelations;
   reviews: Review[] | null;
+  relatedLocations?: RelatedLocation[];
 }
 
 function formatLocationName(location: string): string {
@@ -41,6 +48,7 @@ export function LocationPageContent({
   locationPage,
   service,
   reviews,
+  relatedLocations = [],
 }: LocationPageContentProps) {
   const hasTypes = service.type.length > 0;
 
@@ -259,6 +267,29 @@ export function LocationPageContent({
           </Link>
         </div>
       </section>
+
+      {/* Other Localities We Serve */}
+      {relatedLocations.length > 0 && (
+        <section className="py-12 md:py-16 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">
+              Other Localities We Serve in {locationName}
+            </h2>
+            <p className="text-center text-muted-foreground mb-8">
+              We also provide {service.name.toLowerCase()} services in these areas
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              {relatedLocations.map((loc) => (
+                <Link key={loc.slug} href={`/service/${loc.slug}`}>
+                  <Button variant="outline" className="hover:bg-primary hover:text-primary-foreground transition-colors">
+                    {loc.title.replace(service.name, "").replace("in ", "").replace("In ", "").trim() || formatLocationName(loc.location)}
+                  </Button>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

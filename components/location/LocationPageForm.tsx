@@ -13,15 +13,15 @@ import { Loader2, Plus, Trash2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
-const LOCATIONS = [
-  { label: "Mumbai", value: "mumbai" },
-  { label: "Thane", value: "thane" },
-  { label: "Navi Mumbai", value: "navi-mumbai" },
-];
-
 interface ServiceOption {
   label: string;
   value: string;
+}
+
+interface CityOption {
+  label: string;
+  value: string;
+  localities?: { label: string; value: string }[];
 }
 
 const locationPageSchema = z.object({
@@ -65,6 +65,7 @@ export function LocationPageForm({ mode, locationPage }: LocationPageFormProps) 
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serviceOptions, setServiceOptions] = useState<ServiceOption[]>([]);
+  const [cityOptions, setCityOptions] = useState<CityOption[]>([]);
   const [isLoadingServices, setIsLoadingServices] = useState(true);
 
   const form = useForm<LocationPageFormData>({
@@ -91,25 +92,40 @@ export function LocationPageForm({ mode, locationPage }: LocationPageFormProps) 
   });
 
   useEffect(() => {
-    async function fetchServices() {
+    async function fetchData() {
       try {
-        const response = await fetch("/api/service");
-        const result = await response.json();
-        if (response.ok && result.data) {
+        const [servicesRes, citiesRes] = await Promise.all([
+          fetch("/api/service"),
+          fetch("/api/cities"),
+        ]);
+        
+        const servicesResult = await servicesRes.json();
+        const citiesResult = await citiesRes.json();
+        
+        if (servicesRes.ok && servicesResult.data) {
           setServiceOptions(
-            result.data.map((s: { name: string; slug: string }) => ({
+            servicesResult.data.map((s: { name: string; slug: string }) => ({
               label: s.name,
               value: s.slug,
             }))
           );
         }
+        
+        if (citiesRes.ok && citiesResult.data) {
+          setCityOptions(
+            citiesResult.data.map((c: { name: string; slug: string }) => ({
+              label: c.name,
+              value: c.slug,
+            }))
+          );
+        }
       } catch (err) {
-        console.error("Failed to load services:", err);
+        console.error("Failed to load data:", err);
       } finally {
         setIsLoadingServices(false);
       }
     }
-    fetchServices();
+    fetchData();
   }, []);
 
   const generateSlug = () => {
@@ -214,10 +230,10 @@ export function LocationPageForm({ mode, locationPage }: LocationPageFormProps) 
             <FormFields
               name="location"
               control={form.control}
-              label="Location"
+              label="City"
               type="select"
-              options={LOCATIONS}
-              placeholder="Select location"
+              options={cityOptions}
+              placeholder={isLoadingServices ? "Loading..." : "Select city"}
               disabled={isSubmitting || mode === "update"}
             />
 

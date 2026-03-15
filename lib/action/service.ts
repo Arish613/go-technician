@@ -97,6 +97,8 @@ export async function getServiceBySlug(slug: string) {
         isPublished: true,
         whyChooseUs: true,
         benefits: true,
+        cityId: true,
+        localityId: true,
         createdAt: true,
         updatedAt: true,
         faqs: {

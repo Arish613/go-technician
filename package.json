@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "user:register": "tsx script/register.ts",
+    "user:register": "tsx scripts/register.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
