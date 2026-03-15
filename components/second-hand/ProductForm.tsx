@@ -4,13 +4,14 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ImageUpload from "@/components/ImageUpload";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import FormFields from "@/components/FormFields";
+import type { City, Locality } from "@/types/location";
 
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
@@ -21,7 +22,8 @@ const productSchema = z.object({
   discountPrice: z.number().min(0).optional(),
   isAvailable: z.boolean(),
   image: z.string().optional(),
-  location: z.string().optional(),
+  cityId: z.string().optional(),
+  localityId: z.string().optional(),
   brand: z.string().optional(),
   label: z.string().optional(),
 });
@@ -37,6 +39,38 @@ interface ProductFormProps {
 export function ProductForm({ product, mode, categories }: ProductFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [cities, setCities] = useState<City[]>([]);
+  const [localities, setLocalities] = useState<Locality[]>([]);
+  const [selectedCityId, setSelectedCityId] = useState<string>(product?.cityId || "");
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [citiesRes, locsRes] = await Promise.all([
+          fetch("/api/cities"),
+          fetch("/api/localities"),
+        ]);
+        const citiesData = await citiesRes.json();
+        const locsData = await locsRes.json();
+        if (citiesData.data) setCities(citiesData.data);
+        if (locsData.data) setLocalities(locsData.data);
+      } catch (err) {
+        console.error("Error fetching locations:", err);
+      }
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (product?.localityId && localities.length > 0) {
+      const loc = localities.find((l) => l.id === product.localityId);
+      if (loc) setSelectedCityId(loc.cityId);
+    }
+  }, [localities, product?.localityId]);
+
+  const filteredLocalities = selectedCityId
+    ? localities.filter((l) => l.cityId === selectedCityId)
+    : [];
 
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
@@ -49,11 +83,23 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
       discountPrice: product?.discountPrice || undefined,
       isAvailable: product?.isAvailable ?? true,
       image: product?.image || "",
-      location: product?.location || "",
+      cityId: product?.cityId || "",
+      localityId: product?.localityId || "",
       brand: product?.brand || "",
       label: product?.label || "",
     },
   });
+
+  // Watch for cityId changes and update selectedCityId and localityId accordingly
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === "cityId") {
+        setSelectedCityId(value.cityId || "");
+        form.setValue("localityId", "");
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   const onSubmit = async (data: ProductFormData) => {
     setIsSubmitting(true);
@@ -148,11 +194,28 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
               defaultValue="/service.png"
             />
             <FormFields
-              name="location"
+              name="cityId"
               control={form.control}
-              label="Location"
-              placeholder="e.g., Mumbai"
+              label="City"
+              type="select"
+              options={cities.filter((c) => c.isActive).map((city) => ({
+                value: city.id,
+                label: city.name,
+              }))}
+              placeholder="Select city"
               disabled={isSubmitting}
+            />
+            <FormFields
+              name="localityId"
+              control={form.control}
+              label="Locality"
+              type="select"
+              options={filteredLocalities.filter((l) => l.isActive).map((loc) => ({
+                value: loc.id,
+                label: loc.name,
+              }))}
+              placeholder="Select locality"
+              disabled={isSubmitting || !selectedCityId}
             />
             <FormFields
               name="brand"
@@ -196,8 +259,8 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
                 ? "Creating..."
                 : "Updating..."
               : mode === "create"
-              ? "Create Product"
-              : "Update Product"}
+                ? "Create Product"
+                : "Update Product"}
           </Button>
         </div>
       </form>
