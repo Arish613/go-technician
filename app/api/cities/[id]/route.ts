@@ -3,62 +3,43 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get("id");
-
-  if (id) {
-    try {
-      const city = await prisma.city.findUnique({
-        where: { id },
-        include: {
-          localities: {
-            where: { isActive: true },
-            orderBy: { name: "asc" },
-          },
-        },
-      });
-      if (!city) {
-        return NextResponse.json({ error: "City not found" }, { status: 404 });
-      }
-      return NextResponse.json({ data: city }, { status: 200 });
-    } catch (error) {
-      console.error("Error in GET /api/cities/[id]:", error);
-      return NextResponse.json({ error: "Failed to fetch city" }, { status: 500 });
-    }
-  }
-
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  
   try {
-    const cities = await prisma.city.findMany({
-      orderBy: { name: "asc" },
+    const city = await prisma.city.findUnique({
+      where: { id },
       include: {
-        localities: true,
-        _count: {
-          select: { products: true, localities: true },
+        localities: {
+          where: { isActive: true },
+          orderBy: { name: "asc" },
         },
       },
     });
-    return NextResponse.json({ data: cities }, { status: 200 });
+    if (!city) {
+      return NextResponse.json({ error: "City not found" }, { status: 404 });
+    }
+    return NextResponse.json({ data: city }, { status: 200 });
   } catch (error) {
-    console.error("Error in GET /api/cities:", error);
-    return NextResponse.json({ error: "Failed to fetch cities" }, { status: 500 });
+    console.error("Error in GET /api/cities/[id]:", error);
+    return NextResponse.json({ error: "Failed to fetch city" }, { status: 500 });
   }
 }
 
-export async function PATCH(request: NextRequest) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
-
-    if (!id) {
-      return NextResponse.json({ error: "City ID required" }, { status: 400 });
-    }
-
+    const { id } = await params;
     const data = await request.json();
     const city = await prisma.city.update({
       where: { id },
@@ -75,20 +56,17 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
-
-    if (!id) {
-      return NextResponse.json({ error: "City ID required" }, { status: 400 });
-    }
-
+    const { id } = await params;
     await prisma.city.delete({
       where: { id },
     });

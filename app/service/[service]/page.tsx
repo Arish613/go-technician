@@ -31,23 +31,15 @@ interface ServicePageProps {
   };
 }
 
-// Known location suffixes for matching location-based pages
-const LOCATION_PATTERNS = [
-  "in-mumbai",
-  "in-thane",
-  "in-navi-mumbai",
-];
-
 function isLocationSlug(slug: string): boolean {
-  return LOCATION_PATTERNS.some((pattern) => slug.endsWith(pattern));
+  return slug.includes("-in-");
 }
 
 function extractServiceSlugFromLocation(slug: string): string | null {
-  for (const pattern of LOCATION_PATTERNS) {
-    if (slug.endsWith(pattern)) {
-      // Remove "-in-{location}" from end to get the service slug
-      return slug.slice(0, slug.length - pattern.length - 1); // -1 for the extra hyphen
-    }
+  const pattern = "-in-";
+  const index = slug.lastIndexOf(pattern);
+  if (index !== -1) {
+    return slug.slice(0, index);
   }
   return null;
 }

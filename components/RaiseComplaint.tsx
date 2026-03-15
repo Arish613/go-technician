@@ -63,8 +63,6 @@ export function ComplaintForm() {
   const onSubmit = async (data: ComplaintFormData) => {
     setIsLoading(true);
     try {
-      // Simulate API call
-      setIsSubmitted(true);
       console.log("Complaint submitted:", data);
       await sendEmailForComplaint({
         name: data.name,
@@ -73,9 +71,9 @@ export function ComplaintForm() {
         complaintType: data.complaintType,
         bookingId: data.bookingId,
         description: data.description,
+      });
 
-      })
-
+      setIsSubmitted(true);
       reset();
     } catch (error) {
       console.error("Error submitting complaint:", error);

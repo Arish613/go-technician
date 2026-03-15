@@ -101,7 +101,7 @@ export default function AdminLocationsPage() {
     try {
       const city = cities.find((c) => c.id === id);
       if (!city) return;
-      await fetch(`/api/cities?id=${id}`, {
+      await fetch(`/api/cities/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...city, isActive }),
@@ -115,7 +115,7 @@ export default function AdminLocationsPage() {
   const handleDeleteCity = async (id: string) => {
     if (!confirm("Are you sure you want to delete this city?")) return;
     try {
-      await fetch(`/api/cities?id=${id}`, { method: "DELETE" });
+      await fetch(`/api/cities/${id}`, { method: "DELETE" });
       fetchCities();
     } catch (err) {
       console.error("Error deleting city:", err);
@@ -143,7 +143,7 @@ export default function AdminLocationsPage() {
     try {
       const locality = localities.find((l) => l.id === id);
       if (!locality) return;
-      await fetch(`/api/localities?id=${id}`, {
+      await fetch(`/api/localities/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...locality, isActive }),
@@ -157,7 +157,7 @@ export default function AdminLocationsPage() {
   const handleDeleteLocality = async (id: string) => {
     if (!confirm("Are you sure you want to delete this locality?")) return;
     try {
-      await fetch(`/api/localities?id=${id}`, { method: "DELETE" });
+      await fetch(`/api/localities/${id}`, { method: "DELETE" });
       fetchLocalities();
     } catch (err) {
       console.error("Error deleting locality:", err);
