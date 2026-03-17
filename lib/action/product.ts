@@ -10,6 +10,7 @@ export async function getCategoryBySlug(slug: string) {
       include: {
         products: {
           orderBy: { order: "asc" },
+          include: { city: true, locality: true },
         },
         faqs: true,
       },

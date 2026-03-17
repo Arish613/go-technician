@@ -1,5 +1,6 @@
 import { getServiceBySlug } from "@/lib/action/service";
 import { getLocationPageBySlug } from "@/lib/action/locationPage";
+import { getLocationPagesByServiceSlug } from "@/lib/action/locationPage";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -30,23 +31,15 @@ interface ServicePageProps {
   };
 }
 
-// Known location suffixes for matching location-based pages
-const LOCATION_PATTERNS = [
-  "in-mumbai",
-  "in-thane",
-  "in-navi-mumbai",
-];
-
 function isLocationSlug(slug: string): boolean {
-  return LOCATION_PATTERNS.some((pattern) => slug.endsWith(pattern));
+  return slug.includes("-in-");
 }
 
 function extractServiceSlugFromLocation(slug: string): string | null {
-  for (const pattern of LOCATION_PATTERNS) {
-    if (slug.endsWith(pattern)) {
-      // Remove "-in-{location}" from end to get the service slug
-      return slug.slice(0, slug.length - pattern.length - 1); // -1 for the extra hyphen
-    }
+  const pattern = "-in-";
+  const index = slug.lastIndexOf(pattern);
+  if (index !== -1) {
+    return slug.slice(0, index);
   }
   return null;
 }
@@ -56,16 +49,17 @@ export default async function ServicePage({ params }: ServicePageProps) {
   const slug = resolvedParams.service;
 
   // Check if this is a location-based page (e.g., "ac-repair-service-in-mumbai")
-  if (isLocationSlug(slug)) {
+    if (isLocationSlug(slug)) {
     const locationResult = await getLocationPageBySlug(slug);
 
     if (locationResult.success && locationResult.data) {
       const locationPage = locationResult.data;
 
       // Fetch the parent service data using the serviceSlug
-      const [serviceResult, reviews] = await Promise.all([
+      const [serviceResult, reviews, relatedLocationsResult] = await Promise.all([
         getServiceBySlug(locationPage.serviceSlug),
         getReviewsByServiceSlug(locationPage.serviceSlug),
+        getLocationPagesByServiceSlug(locationPage.serviceSlug, locationPage.location),
       ]);
 
       if (!serviceResult.success || !serviceResult.data) {
@@ -79,6 +73,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
           locationPage={locationPage}
           service={service}
           reviews={reviews}
+          relatedLocations={relatedLocationsResult.success ? relatedLocationsResult.data : []}
         />
       );
     }

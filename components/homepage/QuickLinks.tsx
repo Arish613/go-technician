@@ -30,7 +30,7 @@ export async function QuickLinks() {
               <h4 className="mb-4 text-lg font-semibold text-slate-800 text-center capitalize">{location}</h4>
               <ul className="space-y-2">
                 {quickLinksByLocation[location].map((page) => (
-                  <li key={page.slug} className="text-center">
+                  <li key={page.slug} >
                     <Link
                       href={`/service/${page.slug}`}
                       prefetch={true}

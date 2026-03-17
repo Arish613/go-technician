@@ -94,6 +94,29 @@ export async function getLocationPagesByLocation(location: string) {
   }
 }
 
+export async function getLocationPagesByServiceSlug(serviceSlug: string, excludeLocation?: string) {
+  try {
+    const locationPages = await prisma.locationPage.findMany({
+      where: {
+        serviceSlug,
+        isPublished: true,
+        ...(excludeLocation && { location: { not: excludeLocation } }),
+      },
+      orderBy: { title: "asc" },
+      select: {
+        slug: true,
+        location: true,
+        title: true,
+      },
+    });
+
+    return { success: true, data: locationPages };
+  } catch (error) {
+    console.error("Error fetching location pages by service slug:", error);
+    return { success: false, error: "Failed to fetch location pages" };
+  }
+}
+
 export async function deleteLocationPage(id: string) {
   try {
     const page = await prisma.locationPage.delete({

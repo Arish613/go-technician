@@ -1,3 +1,5 @@
+import { City, Locality } from "./location";
+
 export interface WhyChooseUsItem {
   icon?: string;
   title: string;
@@ -12,6 +14,7 @@ export interface Faq {
   createdAt?: string;
   updatedAt?: string;
 }
+
 
 export interface Category {
   id: string;
@@ -40,7 +43,10 @@ export interface Product {
   discountPrice?: number;
   isAvailable: boolean;
   image?: string;
-  location?: string;
+  cityId?: string;
+  localityId?: string;
+  city?: City;
+  locality?: Locality;
   brand?: string;
   label?: string;
   order?: number;

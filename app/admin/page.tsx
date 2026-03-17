@@ -228,6 +228,11 @@ export default async function AdminPage() {
                 Location Pages
               </Button>
             </Link>
+            <Link href="/admin/locations">
+              <Button size="sm" variant="default">
+                Cities & Localities
+              </Button>
+            </Link>
           </div>
         </div>
       </header>

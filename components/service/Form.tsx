@@ -4,7 +4,7 @@ import { useForm, useFieldArray, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import FormFields from "@/components/FormFields";
 import RichTextEditor from "@/components/TextEditor";
@@ -25,6 +25,8 @@ const serviceSchema = z.object({
   slug: z.string().min(1, "Slug is required"),
   content: z.string().min(1, "Content is required"),
   location: z.string().optional(),
+  cityId: z.string().optional(),
+  localityId: z.string().optional(),
   imageUrl: z.string().optional(),
   type: z.array(z.string()),
   isPublished: z.boolean(),
@@ -78,6 +80,43 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
     [key: number]: string;
   }>({});
   const [newBenefit, setNewBenefit] = useState("");
+  const [cities, setCities] = useState<{ id: string; name: string; slug: string }[]>([]);
+  const [localities, setLocalities] = useState<{ id: string; name: string; slug: string; cityId: string }[]>([]);
+  const [selectedCityId, setSelectedCityId] = useState<string>("");
+
+  useEffect(() => {
+    async function fetchCities() {
+      try {
+        const response = await fetch("/api/cities");
+        const result = await response.json();
+        if (response.ok && result.data) {
+          setCities(result.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch cities:", err);
+      }
+    }
+    fetchCities();
+  }, []);
+
+  useEffect(() => {
+    async function fetchLocalities() {
+      if (!selectedCityId) {
+        setLocalities([]);
+        return;
+      }
+      try {
+        const response = await fetch(`/api/localities?cityId=${selectedCityId}`);
+        const result = await response.json();
+        if (response.ok && result.data) {
+          setLocalities(result.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch localities:", err);
+      }
+    }
+    fetchLocalities();
+  }, [selectedCityId]);
 
   const form = useForm<ServiceFormData>({
     resolver: zodResolver(serviceSchema),
@@ -88,6 +127,8 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
       slug: service?.slug || "",
       content: service?.content || "",
       location: service?.location || "",
+      cityId: service?.cityId || "",
+      localityId: service?.localityId || "",
       imageUrl: service?.imageUrl || "",
       type: service?.type || [],
       isPublished: service?.isPublished || false,
@@ -116,6 +157,16 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
         })) || [],
     },
   });
+
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === "cityId") {
+        setSelectedCityId(value.cityId || "");
+        form.setValue("localityId", "");
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   const {
     fields: faqFields,
@@ -328,6 +379,26 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
               label="Location (Optional)"
               placeholder="e.g., Jaipur, Mumbai"
               disabled={isSubmitting}
+            />
+
+            <FormFields
+              name="cityId"
+              control={form.control}
+              label="City (Optional)"
+              type="select"
+              options={cities.map((c) => ({ label: c.name, value: c.id }))}
+              placeholder={cities.length === 0 ? "No cities available" : "Select a city"}
+              disabled={isSubmitting || cities.length === 0}
+            />
+
+            <FormFields
+              name="localityId"
+              control={form.control}
+              label="Locality (Optional)"
+              type="select"
+              options={localities.map((l) => ({ label: l.name, value: l.id }))}
+              placeholder={selectedCityId ? "Select a locality" : "Select a city first"}
+              disabled={isSubmitting || !selectedCityId || localities.length === 0}
             />
 
             <ImageUpload
