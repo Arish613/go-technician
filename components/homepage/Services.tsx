@@ -40,15 +40,25 @@ const categories = [
 const secondHandProducts = [
   {
     name: "Second Hand AC",
-    icon: "/icons/ac-repair.png",
+    icon: "/icons/second-hand/ac.png",
     badge: "Best Deals",
     link: "/buy-second-hand-air-conditioner",
   },
   {
     name: "Second Hand Laptop",
-    icon: "/icons/laptop-service.png",
+    icon: "/icons/second-hand/laptop.png",
     badge: "Starting ₹8,000",
     link: "/buy-second-hand-laptop",
+  },
+  {
+    name: "Second Hand Refrigerator",
+    icon: "/icons/second-hand/refrigerator.png",
+    link: "/buy-second-hand-refrigerator",
+  },
+  {
+    name: "Second Hand Washing Machine",
+    icon: "/icons/second-hand/washing-machine.png",
+    link: "/buy-second-hand-washing-machine",
   },
 ];
 
@@ -142,7 +152,7 @@ export function Services() {
                         {product.badge}
                       </span>
                     )}
-                    <div className="relative h-16 w-16 md:h-20 md:w-20">
+                    <div className="relative h-16 w-16 md:h-30 md:w-30">
                       <Image
                         src={product.icon}
                         alt={product.name}
