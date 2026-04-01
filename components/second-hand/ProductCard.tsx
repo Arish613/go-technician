@@ -2,22 +2,32 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Product } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { useCart, productToCartItem } from "@/context/CartContext";
 import Image from "next/image";
-import { Tag } from "lucide-react";
+import { Check, ShoppingCart, Star, Trash } from "lucide-react";
+
+type Product = Prisma.ProductGetPayload<{
+  include: { city: true; locality: true };
+}>;
 
 interface ProductCardProps {
   product: Product;
+  compact?: boolean;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+function extractCapacity(condition: string | null): string | null {
+  if (!condition) return null;
+  const match = condition.match(/(\d+\.?\d*)\s*ton/i);
+  if (match) return `${match[1]} Ton`;
+  return null;
+}
+
+export function ProductCard({ product, compact = false }: ProductCardProps) {
   const { addToCart, removeFromCart, items } = useCart();
-
   const alreadyInCart = items.some((item) => item.id === product.id);
-
-  const hasDiscount =
-    product.discountPrice != null && product.discountPrice < product.price;
+  const hasDiscount = product.discountPrice != null && product.discountPrice < product.price;
+  const discountPercent = hasDiscount ? Math.round(((product.price - product.discountPrice!) / product.price) * 100) : 0;
 
   const handleAddToCart = () => {
     if (!alreadyInCart && product.isAvailable) {
@@ -29,113 +39,132 @@ export function ProductCard({ product }: ProductCardProps) {
     removeFromCart(product.id);
   };
 
-  return (
-    <div
-      id={`product-${product.id}`}
-      className="relative bg-card rounded-lg overflow-hidden scroll-mt-24 px-4"
-    >
-      <div className="flex flex-row md:items-center gap-4">
-        {/* Left: Content */}
-        <div className="flex-1 space-y-3">
-          {/* Title & label */}
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-sm md:text-lg font-semibold line-clamp-2">
-                {product.name}
-              </h3>
-              {product.label && (
-                <Badge variant="secondary" className="max-sm:text-[10px] flex items-center gap-1">
-                  <Tag className="w-3 h-3" />
-                  {product.label}
-                </Badge>
-              )}
-            </div>
+  const capacity = extractCapacity(product.condition);
 
-            {/* Brand & condition */}
-            <div className="flex items-center gap-2 flex-wrap">
-              {product.brand && (
-                <span className="text-[11px] md:text-sm text-muted-foreground">
-                  Brand: <span className="font-medium text-foreground">{product.brand}</span>
-                </span>
-              )}
-              {product.brand && product.condition && (
-                <span className="text-muted-foreground text-xs">·</span>
-              )}
-              {product.condition && (
-                <Badge
-                  variant="outline"
-                  className="text-[10px] md:text-xs font-normal"
-                >
-                  {product.condition}
-                </Badge>
-              )}
-            </div>
-
-            {/* Specifications */}
-            {product.specifications && (
-              <p className="text-[11px] md:text-sm text-muted-foreground line-clamp-2">
-                {product.specifications}
-              </p>
-            )}
-          </div>
-
-          {/* Pricing */}
-          <div className="flex items-center gap-3 flex-wrap">
-            <div className="flex items-baseline gap-2">
-              <span className="text-lg md:text-2xl font-bold text-primary">
-                ₹{hasDiscount ? product.discountPrice : product.price}
-              </span>
-              {hasDiscount && (
-                <>
-                  <span className="text-sm text-muted-foreground line-through">
-                    ₹{product.price}
-                  </span>
-                  <Badge variant="secondary" className="max-sm:text-[10px]">
-                    Save ₹{(product.price - (product.discountPrice ?? 0)).toFixed(0)}
-                  </Badge>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Right: Image & Button */}
-        <div className="flex flex-col items-center gap-2 max-sm:max-w-25 md:min-w-50">
+  if (compact) {
+    return (
+      <div className="bg-card rounded-xl overflow-hidden flex flex-col shadow-[0_12px_32px_rgba(11,28,48,0.06)] group">
+        <div className="relative aspect-[4/3] bg-muted">
           {product.image ? (
             <Image
               src={product.image}
               alt={product.name}
-              width={200}
-              height={200}
-              className="max-sm:w-32 rounded-md object-cover"
+              fill
+              className="object-cover p-2 group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
-            <div className="w-32 h-24 md:w-48 md:h-36 bg-muted rounded-md flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center">
               <span className="text-xs text-muted-foreground">No image</span>
             </div>
           )}
-
-          {!product.isAvailable ? (
-            <Badge variant="destructive" className="w-full text-center justify-center py-1">
-              Sold Out
-            </Badge>
-          ) : alreadyInCart ? (
-            <div className="flex gap-2 w-full md:w-[80%]">
-              <Button
-                variant="destructive"
-                className="flex-1 cursor-pointer text-xs"
-                onClick={handleRemoveFromCart}
-              >
-                Remove
-              </Button>
+          <div className="absolute top-2 left-2 bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+            Certified
+          </div>
+        </div>
+        <div className="p-3 flex flex-col flex-grow subservice">
+          <span className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">
+            {product.brand} {capacity && `• ${capacity}`}
+          </span>
+          <h3 className="text-sm font-semibold leading-tight mb-2 line-clamp-1">
+            {product.name}
+          </h3>
+          <div className="flex items-center gap-1 mb-3">
+            <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
+            <span className="text-xs text-muted-foreground">4.8 (12)</span>
+          </div>
+          <div className="mt-auto flex items-center justify-between">
+            <div className="flex items-baseline gap-1">
+              <span className="text-base font-black">
+                ₹{(product.discountPrice && product.discountPrice < product.price ? product.discountPrice : product.price).toLocaleString()}
+              </span>
+              {hasDiscount && (
+                <span className="text-[10px] text-muted-foreground line-through">
+                  ₹{product.price.toLocaleString()}
+                </span>
+              )}
             </div>
+            {!product.isAvailable ? (
+              <Badge variant="destructive" className="text-[10px]">Sold Out</Badge>
+            ) : alreadyInCart ? (
+              <Button variant="destructive" size="sm" onClick={handleRemoveFromCart} className="h-8">
+                <Trash className="h-3 w-3 mr-1" /> 
+              </Button>
+            ) : (
+              <Button size="sm" onClick={handleAddToCart} className="h-8 bg-primary hover:bg-primary/90">
+                <ShoppingCart className="h-3 w-3" />
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-card rounded-xl overflow-hidden shadow-[0_12px_32px_rgba(11,28,48,0.06)] group flex flex-col">
+      <div className="relative h-48 bg-muted overflow-hidden">
+        {product.image ? (
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="text-sm text-muted-foreground">No image</span>
+          </div>
+        )}
+        {product.condition && <div className="absolute top-3 left-3 flex gap-2">
+          <span className="bg-green-600 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full shadow-sm">
+            {product.condition}
+          </span>
+        </div>}
+
+      </div>
+      <div className="p-5 flex flex-col flex-1">
+        
+        <h3 className="font-bold mb-2 leading-tight line-clamp-2">
+          {product.name}
+        </h3>
+        <div className="flex justify-between">
+          {product.brand && (
+            <Badge className="text-[10px] mb-2 bg-accent text-black">
+              {product.brand} {capacity && `• ${capacity}`}
+            </Badge>
+          )}
+          {product.specifications && (
+            <p className="text-xs text-muted-foreground line-clamp-2 mb-4">
+              {product.specifications}
+            </p>
+          )}
+        </div>
+
+        <div className="mt-auto">
+          <div className="flex items-baseline gap-2 mb-4">
+            <span className="text-xl font-bold text-primary">
+              ₹{(product.discountPrice && product.discountPrice < product.price ? product.discountPrice : product.price).toLocaleString()}
+            </span>
+            {hasDiscount && (
+              <>
+                <span className="text-xs text-muted-foreground line-through">
+                  ₹{product.price.toLocaleString()}
+                </span>
+                <span className="text-xs font-bold text-green-600">{discountPercent}% OFF</span>
+              </>
+            )}
+          </div>
+          {!product.isAvailable ? (
+            <Badge variant="destructive" className="w-full justify-center py-2">Sold Out</Badge>
+          ) : alreadyInCart ? (
+            <Button variant="outline" onClick={handleRemoveFromCart} className="w-full">
+              <Check className="h-4 w-4 mr-2" />
+              Added to Cart
+            </Button>
           ) : (
-            <Button
-              variant="outline"
-              className="text-xs md:text-[0.8rem] w-full md:w-auto px-8 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 shadow-md font-semibold hover:text-white"
-              onClick={handleAddToCart}
-            >
-              Add To Cart
+            <Button onClick={handleAddToCart} className="w-full bg-primary hover:bg-primary/90 shadow-md">
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              Add to Cart
             </Button>
           )}
         </div>
