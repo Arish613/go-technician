@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { Prisma } from "@prisma/client";
 import { FilterSidebar, SortOption } from "@/components/second-hand/FilterSidebar";
 import { ProductCard } from "@/components/second-hand/ProductCard";
-import { ShieldCheck, Clock, BadgeCheck, RefreshCw, Phone, Wrench, Sparkles, Award } from "lucide-react";
+import { ShieldCheck, Clock, BadgeCheck, RefreshCw, Phone, Wrench, Sparkles, Award, MapPin, Truck } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Accordion,
@@ -76,16 +76,16 @@ const WHY_US_ITEMS = [
     description: "Rigorous check by our expert technicians.",
   },
   {
-    icon: <Sparkles className="h-5 w-5 text-purple-600" />,
-    bgColor: "bg-purple-100",
-    title: "Eco-Friendly Cleaned",
-    description: "Deep chemical wash and sanitization using green tech.",
+    icon: <Truck className="h-5 w-5 text-yellow-600" />,
+    bgColor: "bg-yellow-100",
+    title: "Cash on Delivery (COD)",
+    description: "Pay for your order conveniently at the time of delivery.",
   },
   {
-    icon: <Wrench className="h-5 w-5 text-amber-600" />,
-    bgColor: "bg-amber-100",
-    title: "Free Installation",
-    description: "Professional setup by certified engineers.",
+    icon: <MapPin className="h-5 w-5 text-pink-600" />,
+    bgColor: "bg-pink-100",
+    title: "All Over Mumbai",
+    description: "Service and delivery available across all areas of Mumbai.",
   },
 ];
 
