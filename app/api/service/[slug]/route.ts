@@ -15,26 +15,14 @@ export async function PUT(
   try {
     const { slug } = await params;
     const data = await request.json();
-    const { faqs, subServices, whyChooseUs, benefits, ...serviceData } = data;
-
-    // Check if new slug already exists (only if slug is being changed)
-    if (data.slug && data.slug !== slug) {
-      const existingService = await prisma.services.findUnique({
-        where: { slug: data.slug },
-      });
-
-      if (existingService && existingService.id !== data.id) {
-        return NextResponse.json(
-          { error: "Slug already in use" },
-          { status: 400 },
-        );
-      }
-    }
+    const { faqs, subServices, whyChooseUs, benefits, cityId, localityId, ...serviceData } = data;
 
     const service = await prisma.services.update({
       where: { slug },
       data: {
         ...serviceData,
+        cityId: cityId === "" ? null : cityId,
+        localityId: localityId === "" ? null : localityId,
         whyChooseUs: whyChooseUs ?? [],
         benefits: benefits ?? [],
         faqs: faqs
