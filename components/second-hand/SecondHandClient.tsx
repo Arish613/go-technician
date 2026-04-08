@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { ServiceContent } from "../service/Content";
 
 type ProductWithRelations = Prisma.ProductGetPayload<{
   include: { city: true; locality: true };
@@ -117,7 +118,6 @@ export function SecondHandClient({ category, initialProducts }: SecondHandClient
   }, [filteredProducts, sort]);
 
   const availableCount = filteredProducts.filter((p) => p.isAvailable).length;
-
   return (
     <div className="min-h-screen">
 
@@ -257,6 +257,11 @@ export function SecondHandClient({ category, initialProducts }: SecondHandClient
               ))}
             </div>
           </div>
+        </section>
+      )}
+      {category.content && category.content.replace(/<[^>]*>/g, '').trim().length > 0 && (
+        <section className="py-16 px-4 flex justify-center">
+          <ServiceContent html={category.content} maxHeight={400} />
         </section>
       )}
 

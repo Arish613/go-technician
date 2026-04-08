@@ -49,7 +49,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
   const slug = resolvedParams.service;
 
   // Check if this is a location-based page (e.g., "ac-repair-service-in-mumbai")
-    if (isLocationSlug(slug)) {
+  if (isLocationSlug(slug)) {
     const locationResult = await getLocationPageBySlug(slug);
 
     if (locationResult.success && locationResult.data) {
