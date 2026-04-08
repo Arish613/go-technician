@@ -1,21 +1,50 @@
 import Link from "next/link";
 import { getAllLocationPages } from "@/lib/action/locationPage";
 
-const LOCATION_ORDER = ["Mumbai", "Thane", "Navi Mumbai"];
+const LOCATION_ORDER = ["Mumbai", "Navi Mumbai", "Thane"];
+
+function normalizeLocation(loc: string) {
+  return loc.trim().toLowerCase().replace(/-/g, " ");
+}
 
 export async function QuickLinks() {
   const locationPagesRes = await getAllLocationPages(true);
   const locationPages = locationPagesRes.success && locationPagesRes.data ? locationPagesRes.data : [];
 
   const quickLinksByLocation: Record<string, { title: string; slug: string }[]> = {};
+  const locationKeyMap: Record<string, string> = {}; // normalized -> actual
+
   for (const page of locationPages) {
-    if (!quickLinksByLocation[page.location]) quickLinksByLocation[page.location] = [];
-    quickLinksByLocation[page.location].push({ title: page.title, slug: page.slug });
+    const normalizedLoc = page.location.trim();
+    quickLinksByLocation[normalizedLoc] = quickLinksByLocation[normalizedLoc] || [];
+    quickLinksByLocation[normalizedLoc].push({ title: page.title, slug: page.slug });
+    locationKeyMap[normalizeLocation(normalizedLoc)] = normalizedLoc;
   }
 
+  // Sort links for each location so "AC Service" comes first
+  Object.keys(quickLinksByLocation).forEach((location) => {
+    quickLinksByLocation[location].sort((a, b) => {
+      const aIsAC = /ac/i.test(a.title);
+      const bIsAC = /ac/i.test(b.title);
+      if (aIsAC && !bIsAC) return -1;
+      if (!aIsAC && bIsAC) return 1;
+      return a.title.localeCompare(b.title);
+    });
+  });
+
+  // Build sortedLocations as actual keys
   const sortedLocations = [
-    ...LOCATION_ORDER.filter((loc) => quickLinksByLocation[loc]),
-    ...Object.keys(quickLinksByLocation).filter((loc) => !LOCATION_ORDER.includes(loc)).sort(),
+    ...LOCATION_ORDER
+      .map((loc) => locationKeyMap[normalizeLocation(loc)])
+      .filter(Boolean),
+    ...Object.keys(quickLinksByLocation)
+      .filter(
+        (loc) =>
+          !LOCATION_ORDER.some(
+            (orderLoc) => normalizeLocation(orderLoc) === normalizeLocation(loc)
+          )
+      )
+      .sort(),
   ];
 
   if (sortedLocations.length === 0) return null;
@@ -29,7 +58,7 @@ export async function QuickLinks() {
             <div key={location} className="w-full">
               <h4 className="mb-4 text-lg font-semibold text-slate-800 text-center capitalize">{location}</h4>
               <ul className="space-y-2">
-                {quickLinksByLocation[location].map((page) => (
+                {quickLinksByLocation[location]?.map((page) => (
                   <li key={page.slug} >
                     <Link
                       href={`/service/${page.slug}`}
