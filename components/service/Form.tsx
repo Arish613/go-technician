@@ -58,11 +58,24 @@ const serviceSchema = z.object({
       isPopular: z.boolean(),
       isActive: z.boolean(),
       order: z.number().min(0).optional(),
+      pricings: z.array(
+        z.object({
+          cityId: z.string().min(1, "City is required"),
+          price: z.number().min(0, "Price must be positive"),
+          discountedPrice: z.number().min(0).optional(),
+        })
+      ),
     })
   ),
 });
 
 type ServiceFormData = z.infer<typeof serviceSchema>;
+
+type CityPricingForm = {
+  cityId: string;
+  price: number;
+  discountedPrice?: number;
+};
 
 interface ServiceFormProps {
   service?: ServiceWithRelations;
@@ -83,6 +96,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
   const [cities, setCities] = useState<{ id: string; name: string; slug: string }[]>([]);
   const [localities, setLocalities] = useState<{ id: string; name: string; slug: string; cityId: string }[]>([]);
   const [selectedCityId, setSelectedCityId] = useState<string>("");
+  const [selectedPricingCity, setSelectedPricingCity] = useState<string>("");
 
   useEffect(() => {
     async function fetchCities() {
@@ -154,6 +168,12 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
           isPopular: sub.isPopular,
           isActive: sub.isActive,
           order: sub?.order ?? undefined,
+          pricings:
+            sub.pricings?.map((p) => ({
+              cityId: p.cityId,
+              price: p.price,
+              discountedPrice: p.discountedPrice || undefined,
+            })) || [],
         })) || [],
     },
   });
@@ -688,6 +708,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
                     duration: undefined,
                     isPopular: false,
                     isActive: true,
+                    pricings: [],
                   })
                 }
                 disabled={isSubmitting}
@@ -789,6 +810,136 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
                       placeholder="Enter order number"
                       disabled={isSubmitting}
                     />
+                  </div>
+
+                  {/* City-specific Pricing */}
+                  <div className="space-y-3">
+                    <div>
+                      <Label>City-specific Pricing (Optional)</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Add different prices for specific cities (overrides base price)
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      {form
+                        .watch(`subServices.${index}.pricings`)
+                        ?.map((pricing: CityPricingForm, priceIndex: number) => {
+                          const city = cities.find((c) => c.id === pricing.cityId);
+                          return (
+                            <div
+                              key={priceIndex}
+                              className="flex items-center gap-2 p-2 border rounded"
+                            >
+                              <span className="font-medium w-24">
+                                {city?.name || "Unknown"}
+                              </span>
+                              <FormFields
+                                name={`subServices.${index}.pricings.${priceIndex}.price`}
+                                control={form.control}
+                                label="Price"
+                                type="number"
+                                placeholder="Price"
+                                disabled={isSubmitting}
+                              />
+                              <FormFields
+                                name={`subServices.${index}.pricings.${priceIndex}.discountedPrice`}
+                                control={form.control}
+                                label="Discounted"
+                                type="number"
+                                placeholder="Discounted"
+                                disabled={isSubmitting}
+                              />
+                              <Button
+                                type="button"
+                                onClick={() => {
+                                  const currentPricings = form.getValues(
+                                    `subServices.${index}.pricings`
+                                  );
+                                  form.setValue(
+                                    `subServices.${index}.pricings`,
+                                    currentPricings.filter(
+                                      (_: CityPricingForm, i: number) => i !== priceIndex
+                                    )
+                                  );
+                                }}
+                                variant="ghost"
+                                size="sm"
+                                disabled={isSubmitting}
+                              >
+                                <X className="w-4 h-4 text-destructive" />
+                              </Button>
+                            </div>
+                          );
+                        })}
+                    </div>
+                    <div className="flex gap-2 items-end">
+                      <div className="flex-1">
+                        <label className="text-sm font-medium">
+                          Select City
+                        </label>
+                        <select
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          value={selectedPricingCity}
+                          onChange={(e) => setSelectedPricingCity(e.target.value)}
+                          disabled={
+                            isSubmitting ||
+                            cities.length === 0 ||
+                            (form.watch(`subServices.${index}.pricings`)?.length ?? 0) >=
+                              cities.length
+                          }
+                        >
+                          <option value="">Select a city</option>
+                          {cities
+                            .filter(
+                              (c) =>
+                                !form
+                                  .watch(`subServices.${index}.pricings`)
+                                  ?.some((p) => p.cityId === c.id)
+                            )
+                            .map((city) => (
+                              <option key={city.id} value={city.id}>
+                                {city.name}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          if (selectedPricingCity) {
+                            const alreadyAdded = form
+                              .watch(`subServices.${index}.pricings`)
+                              ?.some((p) => p.cityId === selectedPricingCity);
+                            if (!alreadyAdded) {
+                              const currentPricings = form.getValues(
+                                `subServices.${index}.pricings`
+                              ) || [];
+                              form.setValue(`subServices.${index}.pricings`, [
+                                ...currentPricings,
+                                {
+                                  cityId: selectedPricingCity,
+                                  price: 0,
+                                  discountedPrice: undefined,
+                                },
+                              ]);
+                              setSelectedPricingCity("");
+                            }
+                          }
+                        }}
+                        variant="outline"
+                        size="sm"
+                        disabled={
+                          isSubmitting ||
+                          !selectedPricingCity ||
+                          (form
+                            .watch(`subServices.${index}.pricings`)
+                            ?.length ?? 0) >= cities.length
+                        }
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add
+                      </Button>
+                    </div>
                   </div>
 
                   <ImageUpload
@@ -954,6 +1105,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
                   duration: undefined,
                   isPopular: false,
                   isActive: true,
+                  pricings: [],
                 })
               }
               disabled={isSubmitting}

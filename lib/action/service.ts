@@ -6,33 +6,6 @@ import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { authOptions } from "../auth";
 
-// export async function createService(data: CreateServiceInput) {
-//   try {
-//     const { faqs, subServices, whyChooseUs, ...serviceData } = data;
-
-//     const service = await prisma.services.create({
-//       data: {
-//         ...serviceData,
-//         whyChooseUs: whyChooseUs ?? [],
-//         faqs: faqs ? { create: faqs } : undefined,
-//         subServices: subServices ? { create: subServices } : undefined,
-//       },
-//       include: {
-//         faqs: true,
-//         subServices: true,
-//       },
-//     });
-
-//     revalidatePath("/service", "page");
-//     revalidatePath("/admin/service", "page");
-//     revalidatePath(`/service/${service.slug}`, "page");
-//     return { success: true, data: service };
-//   } catch (error) {
-//     console.error("Error creating service:", error);
-//     return { success: false, error: "Failed to create service" };
-//   }
-// }
-
 export async function getServices(location?: string, isPublished?: boolean) {
   try {
     const services = await prisma.services.findMany({
@@ -133,6 +106,21 @@ export async function getServiceBySlug(slug: string) {
             serviceId: true,
             createdAt: true,
             updatedAt: true,
+            pricings: {
+              select: {
+                id: true,
+                cityId: true,
+                price: true,
+                discountedPrice: true,
+                city: {
+                  select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -148,44 +136,6 @@ export async function getServiceBySlug(slug: string) {
     return { success: false, error: "Failed to fetch service" };
   }
 }
-
-// export async function updateService(data: UpdateServiceInput) {
-//   try {
-//     const { id, faqs, subServices, whyChooseUs, ...serviceData } = data;
-
-//     const service = await prisma.services.update({
-//       where: { id },
-//       data: {
-//         ...serviceData,
-//         whyChooseUs: whyChooseUs ?? [],
-//         faqs: faqs
-//           ? {
-//               deleteMany: {},
-//               create: faqs,
-//             }
-//           : undefined,
-//         subServices: subServices
-//           ? {
-//               deleteMany: {},
-//               create: subServices,
-//             }
-//           : undefined,
-//       },
-//       include: {
-//         faqs: true,
-//         subServices: true,
-//       },
-//     });
-
-//     revalidatePath("/service", "page");
-//     revalidatePath("/admin/service", "page");
-//     revalidatePath(`/service/${service.slug}`, "page");
-//     return { success: true, data: service };
-//   } catch (error) {
-//     console.error("Error updating service:", error);
-//     return { success: false, error: "Failed to update service" };
-//   }
-// }
 
 export async function deleteService(id: string) {
   const session = await getServerSession(authOptions);

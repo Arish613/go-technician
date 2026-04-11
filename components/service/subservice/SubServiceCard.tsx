@@ -9,18 +9,41 @@ import { useCart, subServiceToCartItem } from "@/context/CartContext";
 import { useState } from "react";
 import { SubServiceDialog } from "./Dialog";
 
+type SubServiceWithPricing = SubService & {
+  pricings?: {
+    id: string;
+    cityId: string;
+    price: number;
+    discountedPrice: number | null;
+    city: {
+      id: string;
+      name: string;
+      slug: string;
+    };
+  }[];
+};
+
 interface SubServiceCardProps {
-  subService: SubService;
+  subService: SubServiceWithPricing;
+  cityId?: string;
 }
 
-export function SubServiceCard({ subService }: SubServiceCardProps) {
+export function SubServiceCard({ subService, cityId }: SubServiceCardProps) {
   const { addToCart, removeFromCart, items } = useCart();
   const [isAdded, setIsAdded] = useState(false);
 
   const alreadyInCart = items.some((item) => item.id === subService.id);
 
+  const cityPricing = cityId
+    ? subService.pricings?.find((p) => p.cityId === cityId)
+    : null;
+
+  const effectivePrice = cityPricing?.price ?? subService.price;
+  const effectiveDiscountedPrice =
+    cityPricing?.discountedPrice ?? subService.discountedPrice;
+
   const hasDiscount =
-    subService.discountedPrice && subService.discountedPrice < subService.price;
+    effectiveDiscountedPrice && effectiveDiscountedPrice < effectivePrice;
 
   const handleAddToCart = () => {
     if (!alreadyInCart) {
@@ -66,15 +89,15 @@ export function SubServiceCard({ subService }: SubServiceCardProps) {
           <div className="flex items-center gap-3 flex-wrap">
             <div className="flex items-baseline gap-2">
               <span className="text-lg md:text-2xl font-bold text-primary">
-                ₹{hasDiscount ? subService.discountedPrice : subService.price}
+                ₹{hasDiscount ? effectiveDiscountedPrice : effectivePrice}
               </span>
               {hasDiscount && (
                 <>
                   <span className="text-sm text-muted-foreground line-through">
-                    ₹{subService.price}
+                    ₹{effectivePrice}
                   </span>
                   <Badge variant="secondary" className="max-sm:text-[10px]">
-                    Save ₹{subService.price - (subService.discountedPrice || 0)}
+                    Save ₹{effectivePrice - (effectiveDiscountedPrice || 0)}
                   </Badge>
                 </>
               )}

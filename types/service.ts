@@ -1,10 +1,40 @@
-import { Services, Faq, SubService } from "@prisma/client";
+import { Services, Faq, SubService, SubServicePricing, City } from "@prisma/client";
 
 export type ServiceType = Services;
 
+export type SubServicePricingType = SubServicePricing;
+
+type PricingWithCity = {
+  id: string;
+  subServiceId?: string;
+  cityId: string;
+  price: number;
+  discountedPrice: number | null;
+  city: {
+    id: string;
+    name: string;
+    slug: string;
+    isActive?: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
+  };
+};
+
+export type SubServiceWithPricing = SubService & {
+  pricings?: PricingWithCity[];
+};
+
+export type CityPricing = {
+  cityId: string;
+  cityName: string;
+  citySlug: string;
+  price: number;
+  discountedPrice?: number;
+};
+
 export type ServiceWithRelations = Services & {
   faqs: Faq[];
-  subServices: SubService[];
+  subServices: SubServiceWithPricing[];
 };
 
 export type WhyChooseUsItem = {
@@ -40,6 +70,11 @@ export type CreateServiceInput = {
     duration?: string;
     isPopular?: boolean;
     isActive?: boolean;
+    pricings?: {
+      cityId: string;
+      price: number;
+      discountedPrice?: number;
+    }[];
   }[];
 };
 
