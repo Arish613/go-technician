@@ -81,3 +81,25 @@ export type CreateServiceInput = {
 export type UpdateServiceInput = Partial<CreateServiceInput> & {
   id: string;
 };
+
+export type SubServicePricingInput = {
+  cityId: string;
+  price: number;
+  discountedPrice?: number;
+};
+
+export type SubServiceInput = {
+  name: string;
+  description: string;
+  price: number;
+  discountedPrice?: number;
+  type?: string;
+  imageUrl?: string;
+  whatIncluded?: string[];
+  whatExcluded?: string[];
+  duration?: string;
+  isPopular?: boolean;
+  isActive?: boolean;
+  order?: number;
+  pricings?: SubServicePricingInput[];
+};

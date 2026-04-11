@@ -47,7 +47,7 @@ export function SubServiceCard({ subService, cityId }: SubServiceCardProps) {
 
   const handleAddToCart = () => {
     if (!alreadyInCart) {
-      addToCart(subServiceToCartItem(subService));
+      addToCart(subServiceToCartItem(subService, effectivePrice, effectiveDiscountedPrice));
       setIsAdded(true);
       setTimeout(() => {
         setIsAdded(false);

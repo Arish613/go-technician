@@ -26,12 +26,17 @@ export interface CartItem extends CartItemBase {
 }
 
 // Helper to map SubService → CartItemBase
-export function subServiceToCartItem(s: SubService): CartItemBase {
+// Accepts optional city-specific price overrides so the cart reflects the correct price
+export function subServiceToCartItem(
+  s: SubService,
+  effectivePrice?: number,
+  effectiveDiscountedPrice?: number | null
+): CartItemBase {
   return {
     id: s.id,
     name: s.name,
-    price: s.price,
-    discountedPrice: s.discountedPrice,
+    price: effectivePrice ?? s.price,
+    discountedPrice: effectiveDiscountedPrice !== undefined ? effectiveDiscountedPrice : s.discountedPrice,
     description: s.description,
     imageUrl: s.imageUrl,
     itemType: "service",

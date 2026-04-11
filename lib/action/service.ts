@@ -18,6 +18,15 @@ export async function getServices(location?: string, isPublished?: boolean) {
         subServices: {
           where: { isActive: true },
           orderBy: { isPopular: "desc" },
+          include: {
+            pricings: {
+              include: {
+                city: {
+                  select: { id: true, name: true, slug: true },
+                },
+              },
+            },
+          },
         },
       },
       orderBy: { createdAt: "asc" },

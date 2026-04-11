@@ -96,7 +96,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
   const [cities, setCities] = useState<{ id: string; name: string; slug: string }[]>([]);
   const [localities, setLocalities] = useState<{ id: string; name: string; slug: string; cityId: string }[]>([]);
   const [selectedCityId, setSelectedCityId] = useState<string>("");
-  const [selectedPricingCity, setSelectedPricingCity] = useState<string>("");
+  const [selectedPricingCity, setSelectedPricingCity] = useState<Record<number, string>>({});
 
   useEffect(() => {
     async function fetchCities() {
@@ -879,8 +879,13 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
                         </label>
                         <select
                           className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                          value={selectedPricingCity}
-                          onChange={(e) => setSelectedPricingCity(e.target.value)}
+                          value={selectedPricingCity[index] ?? ""}
+                          onChange={(e) =>
+                            setSelectedPricingCity((prev) => ({
+                              ...prev,
+                              [index]: e.target.value,
+                            }))
+                          }
                           disabled={
                             isSubmitting ||
                             cities.length === 0 ||
@@ -906,10 +911,11 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
                       <Button
                         type="button"
                         onClick={() => {
-                          if (selectedPricingCity) {
+                          const cityVal = selectedPricingCity[index];
+                          if (cityVal) {
                             const alreadyAdded = form
                               .watch(`subServices.${index}.pricings`)
-                              ?.some((p) => p.cityId === selectedPricingCity);
+                              ?.some((p) => p.cityId === cityVal);
                             if (!alreadyAdded) {
                               const currentPricings = form.getValues(
                                 `subServices.${index}.pricings`
@@ -917,12 +923,15 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
                               form.setValue(`subServices.${index}.pricings`, [
                                 ...currentPricings,
                                 {
-                                  cityId: selectedPricingCity,
+                                  cityId: cityVal,
                                   price: 0,
                                   discountedPrice: undefined,
                                 },
                               ]);
-                              setSelectedPricingCity("");
+                              setSelectedPricingCity((prev) => ({
+                                ...prev,
+                                [index]: "",
+                              }));
                             }
                           }
                         }}
@@ -930,7 +939,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
                         size="sm"
                         disabled={
                           isSubmitting ||
-                          !selectedPricingCity ||
+                          !selectedPricingCity[index] ||
                           (form
                             .watch(`subServices.${index}.pricings`)
                             ?.length ?? 0) >= cities.length

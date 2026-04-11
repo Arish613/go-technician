@@ -7,23 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Faq {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  question  String
-  answer    String
-  blogId    String?   @db.ObjectId
-  blog      Blog?     @relation(fields: [blogId], references: [id], onDelete: Cascade)
-  serviceId String?   @db.ObjectId
-  service   Services? @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  categoryId String?   @db.ObjectId
-  category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
-
-
 type WhyChooseUsItem {
   icon        String?
   title       String
   description String
+}
+
+model Faq {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  question   String
+  answer     String
+  blogId     String?   @db.ObjectId
+  blog       Blog?     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  serviceId  String?   @db.ObjectId
+  service    Services? @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  categoryId String?   @db.ObjectId
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }

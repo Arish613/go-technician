@@ -35,6 +35,7 @@ interface LocationPageContentProps {
   service: ServiceWithRelations;
   reviews: Review[] | null;
   relatedLocations?: RelatedLocation[];
+  cityId?: string;
 }
 
 function formatLocationName(location: string): string {
@@ -49,6 +50,7 @@ export function LocationPageContent({
   service,
   reviews,
   relatedLocations = [],
+  cityId,
 }: LocationPageContentProps) {
   const hasTypes = service.type.length > 0;
 
@@ -168,6 +170,7 @@ export function LocationPageContent({
                             <SubServiceCard
                               key={subService.id}
                               subService={subService}
+                              cityId={cityId}
                             />
                           ))}
                         </div>
@@ -188,6 +191,7 @@ export function LocationPageContent({
                   <SubServiceCard
                     key={subService.id}
                     subService={subService}
+                    cityId={cityId}
                   />
                 ))}
               </div>

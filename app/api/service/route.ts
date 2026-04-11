@@ -3,28 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-
-type SubServicePricingInput = {
-  cityId: string;
-  price: number;
-  discountedPrice?: number;
-};
-
-type SubServiceInput = {
-  name: string;
-  description: string;
-  price: number;
-  discountedPrice?: number;
-  type?: string;
-  imageUrl?: string;
-  whatIncluded?: string[];
-  whatExcluded?: string[];
-  duration?: string;
-  isPopular?: boolean;
-  isActive?: boolean;
-  order?: number;
-  pricings?: SubServicePricingInput[];
-};
+import type { SubServiceInput } from "@/types/service";
 
 export async function GET(request: NextRequest) {
   try {
