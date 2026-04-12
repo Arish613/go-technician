@@ -14,13 +14,15 @@ import { ProductReviewForm } from "./ProductReviewForm";
 import { Plus } from "lucide-react";
 
 interface ProductReviewFormDialogProps {
-  productId: string;
+  productId: string | null;
+  categoryId: string | null;
   productName: string;
   triggerButton?: React.ReactNode;
 }
 
 export function ProductReviewFormDialog({
   productId,
+  categoryId,
   productName,
   triggerButton,
 }: ProductReviewFormDialogProps) {
@@ -45,6 +47,7 @@ export function ProductReviewFormDialog({
         </DialogHeader>
         <ProductReviewForm
           productId={productId}
+          categoryId={categoryId}
           onSuccess={() => setOpen(false)}
         />
       </DialogContent>

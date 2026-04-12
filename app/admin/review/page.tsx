@@ -49,7 +49,8 @@ export default function GetAllReviews() {
   const [services, setServices] = useState<Service[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [serviceError, setServiceError] = useState<string | null>(null);
+  const [productError, setProductError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -57,23 +58,38 @@ export default function GetAllReviews() {
   }, []);
 
   async function fetchReviews() {
-    try {
-      const [serviceRes, productRes] = await Promise.all([
-        fetch("/api/service/review"),
-        fetch("/api/product/review"),
-      ]);
-      if (!serviceRes.ok) throw new Error("Failed to fetch service reviews");
-      const serviceData = await serviceRes.json();
-      setServices(serviceData);
-      if (productRes.ok) {
-        const productData = await productRes.json();
-        setProducts(productData);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setLoading(false);
+    setLoading(true);
+    setServiceError(null);
+    setProductError(null);
+
+    const [serviceResult, productResult] = await Promise.allSettled([
+      fetch("/api/service/review"),
+      fetch("/api/product/review"),
+    ]);
+
+    if (serviceResult.status === "fulfilled" && serviceResult.value.ok) {
+      const data = await serviceResult.value.json();
+      setServices(data);
+    } else {
+      const msg =
+        serviceResult.status === "rejected"
+          ? serviceResult.reason?.message ?? "Failed to fetch service reviews"
+          : "Failed to fetch service reviews";
+      setServiceError(msg);
     }
+
+    if (productResult.status === "fulfilled" && productResult.value.ok) {
+      const data = await productResult.value.json();
+      setProducts(data);
+    } else {
+      const msg =
+        productResult.status === "rejected"
+          ? productResult.reason?.message ?? "Failed to fetch product reviews"
+          : "Failed to fetch product reviews";
+      setProductError(msg);
+    }
+
+    setLoading(false);
   }
 
   const handleDelete = async (reviewId: string) => {
@@ -103,18 +119,6 @@ export default function GetAllReviews() {
     return (
       <div className="md:mx-20 py-8 px-4 flex items-center justify-center min-h-100">
         <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="md:mx-20 py-8 px-4">
-        <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-destructive">{error}</p>
-          </CardContent>
-        </Card>
       </div>
     );
   }
@@ -207,7 +211,13 @@ export default function GetAllReviews() {
         </TabsList>
 
         <TabsContent value="services">
-          {services.length === 0 ? (
+          {serviceError ? (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <p className="text-destructive">{serviceError}</p>
+              </CardContent>
+            </Card>
+          ) : services.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
                 <p className="text-muted-foreground">No service reviews found.</p>
@@ -257,7 +267,13 @@ export default function GetAllReviews() {
         </TabsContent>
 
         <TabsContent value="products">
-          {products.length === 0 ? (
+          {productError ? (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <p className="text-destructive">{productError}</p>
+              </CardContent>
+            </Card>
+          ) : products.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
                 <p className="text-muted-foreground">No product reviews found.</p>

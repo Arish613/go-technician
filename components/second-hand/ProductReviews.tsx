@@ -22,7 +22,8 @@ interface ProductReview {
 
 interface ProductReviewsProps {
   reviews: ProductReview[];
-  productId: string;
+  productId: string | null;
+  categoryId: string | null;
   productName: string;
   categorySlug: string;
 }
@@ -52,6 +53,7 @@ function StarRatingDisplay({ rating }: { rating: number }) {
 export function ProductReviews({
   reviews,
   productId,
+  categoryId,
   productName,
   categorySlug,
 }: ProductReviewsProps) {
@@ -84,7 +86,7 @@ export function ProductReviews({
             )}
           </div>
           <div className="flex gap-3">
-            {reviews.length > 0 && (
+            {reviews.length > 0 && productId && (
               <Link href={`/${categorySlug}/${productId}/reviews`}>
                 <Button variant="outline" className="gap-2">
                   View all reviews
@@ -94,6 +96,7 @@ export function ProductReviews({
             )}
             <ProductReviewFormDialog
               productId={productId}
+              categoryId={categoryId}
               productName={productName}
             />
           </div>
@@ -156,6 +159,7 @@ export function ProductReviews({
             </p>
             <ProductReviewFormDialog
               productId={productId}
+              categoryId={categoryId}
               productName={productName}
               triggerButton={
                 <Button className="bg-primary hover:bg-primary/90">

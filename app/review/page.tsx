@@ -82,6 +82,7 @@ export default function ReviewPage() {
         rating: data.rating.toString(),
         subServiceId: null, // Only service reviews
         productId: null,
+        categoryId: null,
       });
 
       setIsSuccess(true);

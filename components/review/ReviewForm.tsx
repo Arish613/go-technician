@@ -52,6 +52,7 @@ export function ReviewForm({ serviceId, onSuccess }: ReviewFormProps) {
         serviceId,
         subServiceId: null,
         productId: null,
+        categoryId: null,
       });
 
       form.reset();

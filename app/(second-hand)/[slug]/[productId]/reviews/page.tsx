@@ -107,6 +107,7 @@ export default async function ProductReviewsPage({
             </Link>
             <ProductReviewFormDialog
               productId={productId}
+              categoryId={null}
               productName={product.name}
             />
           </div>
@@ -175,6 +176,7 @@ export default async function ProductReviewsPage({
           </p>
           <ProductReviewFormDialog
             productId={productId}
+            categoryId={null}
             productName={product.name}
             triggerButton={
               <Button

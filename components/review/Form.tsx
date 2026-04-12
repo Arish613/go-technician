@@ -35,7 +35,7 @@ const reviewSchema = z.object({
     productId: z.string().optional(),
 }).refine(
     (data) => data.serviceId || data.productId,
-    { message: "Please select either a Service or a Product", path: ["serviceId"] }
+    { message: "Please select either a Service or a Product", path: ["root"] }
 );
 
 type ReviewFormData = z.infer<typeof reviewSchema>;
@@ -139,7 +139,7 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
             form.setValue("subServiceId", "");
             setSubServiceOptions([]);
         }
-    }, [selectedProductId, form]);
+    }, [selectedProductId, selectedServiceId, form]);
 
     const onSubmit = async (data: ReviewFormData) => {
         setIsSubmitting(true);
@@ -152,6 +152,7 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
                 serviceId: data.serviceId || null,
                 subServiceId: data.subServiceId || null,
                 productId: data.productId || null,
+                categoryId: null,
             };
 
             if (mode === "create") {
@@ -265,9 +266,6 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    {form.formState.errors.serviceId && (
-                                        <FieldError>{form.formState.errors.serviceId.message}</FieldError>
-                                    )}
                                 </FieldGroup>
                             )}
                         </div>
@@ -304,6 +302,9 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
                     />
                 </CardContent>
             </Card>
+            {form.formState.errors.root && (
+                <p className="text-sm text-destructive">{form.formState.errors.root.message}</p>
+            )}
             <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Submitting..." : mode === "create" ? "Add Review" : "Update Review"}
             </Button>

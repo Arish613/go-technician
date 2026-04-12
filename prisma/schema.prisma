@@ -25,11 +25,14 @@ model Review {
   subService   SubService? @relation(fields: [subServiceId], references: [id], onDelete: Cascade)
   productId    String?     @db.ObjectId
   product      Product?    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  categoryId   String?     @db.ObjectId
+  category     Category?   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 
   @@index([serviceId])
   @@index([productId])
+  @@index([categoryId])
 }
 
 model Faq {

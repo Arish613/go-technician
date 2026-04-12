@@ -4,12 +4,22 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const products = await prisma.product.findMany({
-      include: {
-        reviews: {
-          orderBy: { createdAt: "desc" },
-        },
+      select: {
+        id: true,
+        name: true,
         category: {
           select: { id: true, name: true, slug: true },
+        },
+        reviews: {
+          orderBy: { createdAt: "desc" },
+          select: {
+            id: true,
+            rating: true,
+            comment: true,
+            reviewer: true,
+            imageUrl: true,
+            createdAt: true,
+          },
         },
       },
     });

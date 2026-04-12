@@ -87,6 +87,7 @@ export default function UpdateReviewPage({
                     imageUrl: review.imageUrl === null ? undefined : review.imageUrl,
                     subServiceId: review.subServiceId,
                     productId: review.productId,
+                    categoryId: null,
                 }}
             />
         </div>

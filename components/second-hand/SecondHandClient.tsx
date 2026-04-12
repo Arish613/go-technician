@@ -53,6 +53,14 @@ interface SecondHandClientProps {
       question: string;
       answer: string;
     }>;
+    reviews?: Array<{
+      id: string;
+      rating: string;
+      comment: string;
+      reviewer: string;
+      imageUrl: string | null;
+      createdAt: Date;
+    }>;
     createdAt: Date;
     updatedAt: Date;
   };
@@ -109,13 +117,10 @@ export function SecondHandClient({ category, initialProducts }: SecondHandClient
     [initialProducts, category.slug]
   );
 
-  const [filteredIds, setFilteredIds] = useState<Set<string> | null>(null);
+  const [filteredIds, setFilteredIds] = useState<Set<string>>(
+    () => new Set(initialProducts.map((p) => p.id))
+  );
   const [sort, setSort] = useState<SortOption>("popularity");
-
-  // Initialize filteredIds on first render only
-  if (filteredIds === null) {
-    setFilteredIds(new Set(initialProducts.map((p) => p.id)));
-  }
 
   // When FilterSidebar changes, capture the IDs of filtered products.
   // Must be stable (useCallback) so FilterSidebar's useEffect doesn't loop.
@@ -124,7 +129,7 @@ export function SecondHandClient({ category, initialProducts }: SecondHandClient
   }, []);
 
   const filteredProducts = useMemo(
-    () => (filteredIds ? productsWithCategory.filter((p) => filteredIds.has(p.id)) : productsWithCategory),
+    () => productsWithCategory.filter((p) => filteredIds.has(p.id)),
     [productsWithCategory, filteredIds]
   );
 
@@ -301,8 +306,8 @@ export function SecondHandClient({ category, initialProducts }: SecondHandClient
 
       {/* Customer Reviews Section */}
       {(() => {
-        // Flatten all reviews across all products in the category
-        const allReviews = initialProducts.flatMap((p) =>
+        // Flatten product-level reviews across all products in the category
+        const productReviews = initialProducts.flatMap((p) =>
           (p.reviews ?? []).map((r) => ({
             ...r,
             productId: p.id,
@@ -310,18 +315,27 @@ export function SecondHandClient({ category, initialProducts }: SecondHandClient
           }))
         );
 
-        // if (allReviews.length === 0) return null;
+        // Category-level reviews (submitted directly against the category)
+        const categoryReviews = (category.reviews ?? []).map((r) => ({
+          ...r,
+          productId: null as string | null,
+          productName: category.name,
+        }));
+
+        const allReviews = [...productReviews, ...categoryReviews];
+
+        if (initialProducts.length === 0 && allReviews.length === 0) return null;
+
         // Pick the most recent 6 for the carousel
         const latestReviews = allReviews
           .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
           .slice(0, 6);
-        // Use the first available product for the "Write a Review" dialog; default to the first product
-        const firstProduct = initialProducts[0];
-        if (!firstProduct) return null;
+
         return (
           <ProductReviews
             reviews={latestReviews}
-            productId={firstProduct.id}
+            productId={null}
+            categoryId={category.id}
             productName={category.name}
             categorySlug={category.slug}
           />

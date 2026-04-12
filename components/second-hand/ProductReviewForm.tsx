@@ -27,11 +27,12 @@ const reviewSchema = z.object({
 type ReviewFormData = z.infer<typeof reviewSchema>;
 
 interface ProductReviewFormProps {
-  productId: string;
+  productId: string | null;
+  categoryId: string | null;
   onSuccess?: () => void;
 }
 
-export function ProductReviewForm({ productId, onSuccess }: ProductReviewFormProps) {
+export function ProductReviewForm({ productId, categoryId, onSuccess }: ProductReviewFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hoverRating, setHoverRating] = useState(0);
   const router = useRouter();
@@ -54,6 +55,7 @@ export function ProductReviewForm({ productId, onSuccess }: ProductReviewFormPro
         ...data,
         rating: data.rating.toString(),
         productId,
+        categoryId,
       });
 
       form.reset();
@@ -61,6 +63,7 @@ export function ProductReviewForm({ productId, onSuccess }: ProductReviewFormPro
       onSuccess?.();
     } catch (error) {
       console.error("Error submitting review:", error);
+      alert("Failed to submit review. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

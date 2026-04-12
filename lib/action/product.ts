@@ -27,6 +27,17 @@ export async function getCategoryBySlug(slug: string) {
           },
         },
         faqs: true,
+        reviews: {
+          orderBy: { createdAt: "desc" },
+          select: {
+            id: true,
+            rating: true,
+            comment: true,
+            reviewer: true,
+            imageUrl: true,
+            createdAt: true,
+          },
+        },
       },
     });
 

@@ -10,44 +10,39 @@ import { authOptions } from "../auth";
 export async function createReview(
   data: Omit<Review, "id" | "createdAt" | "updatedAt">,
 ) {
-  try {
-    const review = await prisma.review.create({
-      data,
-      include: {
-        service: {
-          select: { slug: true },
-        },
-        subService: {
-          select: {
-            service: {
-              select: { slug: true },
-            },
-          },
-        },
-        product: {
-          select: {
-            id: true,
-            category: { select: { slug: true } },
+  const review = await prisma.review.create({
+    data,
+    include: {
+      service: {
+        select: { slug: true },
+      },
+      subService: {
+        select: {
+          service: {
+            select: { slug: true },
           },
         },
       },
-    });
+      product: {
+        select: {
+          id: true,
+          category: { select: { slug: true } },
+        },
+      },
+    },
+  });
 
-    const slug = review.service?.slug || review.subService?.service?.slug;
-    if (slug) {
-      revalidatePath(`/service/${slug}`);
-    }
-
-    if (review.product) {
-      revalidatePath(`/${review.product.category.slug}`);
-      revalidatePath(`/${review.product.category.slug}/${review.product.id}/reviews`);
-    }
-
-    return review;
-  } catch (error) {
-    console.log("Error creating review:", error);
-    return null;
+  const slug = review.service?.slug || review.subService?.service?.slug;
+  if (slug) {
+    revalidatePath(`/service/${slug}`);
   }
+
+  if (review.product) {
+    revalidatePath(`/${review.product.category.slug}`);
+    revalidatePath(`/${review.product.category.slug}/${review.product.id}/reviews`);
+  }
+
+  return review;
 }
 
 // Create a product review (no auth required)
@@ -56,35 +51,66 @@ export async function createProductReview(data: {
   comment: string;
   reviewer: string;
   imageUrl?: string;
-  productId: string;
+  productId: string | null;
+  categoryId: string | null;
 }) {
-  try {
-    const review = await prisma.review.create({
-      data: {
-        ...data,
-        imageUrl: data.imageUrl || null,
-        serviceId: null,
-        subServiceId: null,
-      },
-      include: {
-        product: {
-          select: {
-            id: true,
-            category: { select: { slug: true } },
-          },
+  const review = await prisma.review.create({
+    data: {
+      rating: data.rating,
+      comment: data.comment,
+      reviewer: data.reviewer,
+      imageUrl: data.imageUrl || null,
+      productId: data.productId || null,
+      categoryId: data.categoryId || null,
+      serviceId: null,
+      subServiceId: null,
+    },
+    include: {
+      product: {
+        select: {
+          id: true,
+          category: { select: { slug: true } },
         },
       },
+      category: {
+        select: { slug: true },
+      },
+    },
+  });
+
+  if (review.product) {
+    revalidatePath(`/${review.product.category.slug}`);
+    revalidatePath(`/${review.product.category.slug}/${review.product.id}/reviews`);
+  } else if (review.category) {
+    revalidatePath(`/${review.category.slug}`);
+  }
+
+  return review;
+}
+
+// Get all reviews for a category (submitted directly against the category, not a product)
+export async function getReviewsByCategory(categoryId: string) {
+  try {
+    return prisma.review.findMany({
+      where: { categoryId },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        rating: true,
+        comment: true,
+        imageUrl: true,
+        reviewer: true,
+        productId: true,
+        serviceId: true,
+        subServiceId: true,
+        categoryId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
-
-    if (review.product) {
-      revalidatePath(`/${review.product.category.slug}`);
-      revalidatePath(`/${review.product.category.slug}/${review.product.id}/reviews`);
-    }
-
-    return review;
   } catch (error) {
-    console.log("Error creating product review:", error);
-    return null;
+    console.log("Error fetching category reviews:", error);
+    return [];
   }
 }
 
@@ -103,6 +129,7 @@ export async function getReviewsByProduct(productId: string) {
         productId: true,
         serviceId: true,
         subServiceId: true,
+        categoryId: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -128,6 +155,7 @@ export async function getReviewsByService(serviceId: string) {
         serviceId: true,
         subServiceId: true,
         productId: true,
+        categoryId: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -158,6 +186,7 @@ export async function getReviewsByServiceSlug(serviceSlug: string) {
         serviceId: true,
         subServiceId: true,
         productId: true,
+        categoryId: true,
         createdAt: true,
         updatedAt: true,
       },
