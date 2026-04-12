@@ -5,11 +5,20 @@ import { Button } from "@/components/ui/button";
 import { Prisma } from "@prisma/client";
 import { useCart, productToCartItem } from "@/context/CartContext";
 import Image from "next/image";
+import Link from "next/link";
 import { Check, ShoppingCart, Star, Trash } from "lucide-react";
+
+type ProductReview = {
+  id: string;
+  rating: string;
+};
 
 type Product = Prisma.ProductGetPayload<{
   include: { city: true; locality: true };
-}>;
+}> & {
+  reviews?: ProductReview[];
+  category?: { slug: string };
+};
 
 interface ProductCardProps {
   product: Product;
@@ -41,6 +50,15 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
 
   const capacity = extractCapacity(product.condition);
 
+  // Compute rating from reviews if available
+  const reviews = product.reviews ?? [];
+  const reviewCount = reviews.length;
+  const avgRating =
+    reviewCount > 0
+      ? reviews.reduce((acc, r) => acc + Number(r.rating), 0) / reviewCount
+      : null;
+  const categorySlug = product.category?.slug;
+
   if (compact) {
     return (
       <div className="bg-card rounded-xl overflow-hidden flex flex-col shadow-[0_12px_32px_rgba(11,28,48,0.06)] group">
@@ -70,7 +88,22 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           </h3>
           <div className="flex items-center gap-1 mb-3">
             <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
-            <span className="text-xs text-muted-foreground">4.8 (12)</span>
+            {avgRating !== null ? (
+              categorySlug ? (
+                <Link
+                  href={`/${categorySlug}/${product.id}/reviews`}
+                  className="text-xs text-muted-foreground hover:underline"
+                >
+                  {avgRating.toFixed(1)} ({reviewCount})
+                </Link>
+              ) : (
+                <span className="text-xs text-muted-foreground">
+                  {avgRating.toFixed(1)} ({reviewCount})
+                </span>
+              )
+            ) : (
+              <span className="text-xs text-muted-foreground">No reviews</span>
+            )}
           </div>
           <div className="mt-auto flex items-center justify-between">
             <div className="flex items-baseline gap-1">
@@ -127,7 +160,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         <h3 className="font-bold mb-2 leading-tight line-clamp-2">
           {product.name}
         </h3>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-start">
           {product.brand && (
             <Badge className="text-[10px] mb-2 bg-accent text-black">
               {product.brand} {capacity && `• ${capacity}`}
@@ -137,6 +170,36 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
             <p className="text-xs text-muted-foreground line-clamp-2 mb-4">
               {product.specifications}
             </p>
+          )}
+        </div>
+
+        {/* Rating */}
+        <div className="flex items-center gap-1 mb-3">
+          <Star className="h-3.5 w-3.5 fill-yellow-500 text-yellow-500" />
+          {avgRating !== null ? (
+            categorySlug ? (
+              <Link
+                href={`/${categorySlug}/${product.id}/reviews`}
+                className="text-xs text-muted-foreground hover:underline"
+              >
+                {avgRating.toFixed(1)} ({reviewCount} {reviewCount === 1 ? "review" : "reviews"})
+              </Link>
+            ) : (
+              <span className="text-xs text-muted-foreground">
+                {avgRating.toFixed(1)} ({reviewCount} {reviewCount === 1 ? "review" : "reviews"})
+              </span>
+            )
+          ) : (
+            categorySlug ? (
+              <Link
+                href={`/${categorySlug}/${product.id}/reviews`}
+                className="text-xs text-muted-foreground hover:underline"
+              >
+                No reviews yet
+              </Link>
+            ) : (
+              <span className="text-xs text-muted-foreground">No reviews yet</span>
+            )
           )}
         </div>
 

@@ -14,6 +14,7 @@ interface Review {
     imageUrl?: string | null;
     serviceId: string;
     subServiceId: string | null;
+    productId: string | null;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -85,6 +86,7 @@ export default function UpdateReviewPage({
                     rating: String(review.rating),
                     imageUrl: review.imageUrl === null ? undefined : review.imageUrl,
                     subServiceId: review.subServiceId,
+                    productId: review.productId,
                 }}
             />
         </div>

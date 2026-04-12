@@ -2,7 +2,14 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Star, Edit, Trash2, Plus, Loader2 } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -31,8 +38,16 @@ interface Service {
   subServices: SubService[];
 }
 
+interface Product {
+  id: string;
+  name: string;
+  reviews: Review[];
+  category: { name: string };
+}
+
 export default function GetAllReviews() {
   const [services, setServices] = useState<Service[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -43,10 +58,17 @@ export default function GetAllReviews() {
 
   async function fetchReviews() {
     try {
-      const response = await fetch("/api/service/review");
-      if (!response.ok) throw new Error("Failed to fetch reviews");
-      const data = await response.json();
-      setServices(data);
+      const [serviceRes, productRes] = await Promise.all([
+        fetch("/api/service/review"),
+        fetch("/api/product/review"),
+      ]);
+      if (!serviceRes.ok) throw new Error("Failed to fetch service reviews");
+      const serviceData = await serviceRes.json();
+      setServices(serviceData);
+      if (productRes.ok) {
+        const productData = await productRes.json();
+        setProducts(productData);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -107,11 +129,10 @@ export default function GetAllReviews() {
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star
                     key={i}
-                    className={`h-4 w-4 ${
-                      i < Number(review.rating)
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "text-gray-300"
-                    }`}
+                    className={`h-4 w-4 ${i < Number(review.rating)
+                      ? "fill-yellow-400 text-yellow-400"
+                      : "text-gray-300"
+                      }`}
                   />
                 ))}
               </div>
@@ -139,9 +160,9 @@ export default function GetAllReviews() {
                 <Edit className="h-4 w-4" />
               </Button>
             </Link>
-            <Button 
-              size="icon" 
-              variant="outline" 
+            <Button
+              size="icon"
+              variant="outline"
               className="text-destructive"
               onClick={() => handleDelete(review.id)}
               disabled={deletingId === review.id}
@@ -164,7 +185,7 @@ export default function GetAllReviews() {
         <div>
           <h1 className="text-3xl font-bold">All Reviews</h1>
           <p className="text-muted-foreground">
-            Manage customer reviews grouped by services
+            Manage customer reviews
           </p>
         </div>
         <Link href="/admin/review/add">
@@ -175,56 +196,100 @@ export default function GetAllReviews() {
         </Link>
       </div>
 
-      {services.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">No reviews found.</p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-8">
-          {services.map((service) => (
-            <Card key={service.id}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  {service.name}
-                  <span className="text-sm font-normal text-muted-foreground">
-                    ({service.reviews.length} review
-                    {service.reviews.length !== 1 ? "s" : ""})
-                  </span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  {/* Service-level reviews */}
-                  {service.reviews.length > 0 && (
-                    <div className="space-y-4">
-                      <h3 className="font-semibold text-sm text-muted-foreground">
-                        Service Reviews
-                      </h3>
-                      {service.reviews.map(renderReviewCard)}
-                    </div>
-                  )}
+      <Tabs defaultValue="services" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="services">
+            Services ({services.reduce((acc, s) => acc + s.reviews.length + s.subServices.reduce((a, ss) => a + ss.reviews.length, 0), 0)})
+          </TabsTrigger>
+          <TabsTrigger value="products">
+            Products ({products.reduce((acc, p) => acc + p.reviews.length, 0)})
+          </TabsTrigger>
+        </TabsList>
 
-                  {/* SubService reviews */}
-                  {service.subServices.map((subService) => (
-                    <div key={subService.id} className="space-y-4">
-                      <h3 className="font-semibold text-sm text-muted-foreground flex items-center gap-2">
-                        {subService.name}
-                        <span className="text-xs font-normal">
-                          ({subService.reviews.length} review
-                          {subService.reviews.length !== 1 ? "s" : ""})
-                        </span>
-                      </h3>
-                      {subService.reviews.map(renderReviewCard)}
-                    </div>
-                  ))}
-                </div>
+        <TabsContent value="services">
+          {services.length === 0 ? (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <p className="text-muted-foreground">No service reviews found.</p>
               </CardContent>
             </Card>
-          ))}
-        </div>
-      )}
+          ) : (
+            <Accordion type="multiple" className="space-y-4">
+              {services.map((service) => (
+                <AccordionItem key={service.id} value={service.id} className="border rounded-lg px-4">
+                  <AccordionTrigger className="hover:no-underline">
+                    <div className="flex items-center gap-3">
+                      <span className="font-semibold">{service.name}</span>
+                      <span className="text-sm font-normal text-muted-foreground">
+                        ({service.reviews.length + service.subServices.reduce((acc, ss) => acc + ss.reviews.length, 0)} reviews)
+                      </span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-6 pt-2">
+                      {service.reviews.length > 0 && (
+                        <div className="space-y-4">
+                          <h3 className="font-semibold text-sm text-muted-foreground">
+                            Service Reviews
+                          </h3>
+                          {service.reviews.map(renderReviewCard)}
+                        </div>
+                      )}
+
+                      {service.subServices.map((subService) => (
+                        <div key={subService.id} className="space-y-4">
+                          <h3 className="font-semibold text-sm text-muted-foreground flex items-center gap-2">
+                            {subService.name}
+                            <span className="text-xs font-normal">
+                              ({subService.reviews.length} review
+                              {subService.reviews.length !== 1 ? "s" : ""})
+                            </span>
+                          </h3>
+                          {subService.reviews.map(renderReviewCard)}
+                        </div>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          )}
+        </TabsContent>
+
+        <TabsContent value="products">
+          {products.length === 0 ? (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <p className="text-muted-foreground">No product reviews found.</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <Accordion type="multiple" className="space-y-4">
+              {products.map((product) => (
+                <AccordionItem key={product.id} value={product.id} className="border rounded-lg px-4">
+                  <AccordionTrigger>
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      {product.name}
+                      <span className="text-sm font-normal text-muted-foreground">
+                        ({product.category?.name}) - {product.reviews.length} review{product.reviews.length !== 1 ? "s" : ""}
+                      </span>
+                    </CardTitle>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    {product.reviews.length > 0 ? (
+                      <div className="space-y-4">
+                        {product.reviews.map(renderReviewCard)}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No reviews yet</p>
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Prisma } from "@prisma/client";
 import { FilterSidebar, SortOption } from "@/components/second-hand/FilterSidebar";
 import { ProductCard } from "@/components/second-hand/ProductCard";
+import { ProductReviews } from "@/components/second-hand/ProductReviews";
 import { ShieldCheck, Clock, BadgeCheck, RefreshCw, Phone, Wrench, Sparkles, Award, MapPin, Truck } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -17,9 +18,20 @@ import Link from "next/link";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { ServiceContent } from "../service/Content";
 
+type ProductReview = {
+  id: string;
+  rating: string;
+  comment: string;
+  reviewer: string;
+  imageUrl: string | null;
+  createdAt: Date;
+};
+
 type ProductWithRelations = Prisma.ProductGetPayload<{
   include: { city: true; locality: true };
-}>;
+}> & {
+  reviews?: ProductReview[];
+};
 
 interface SecondHandClientProps {
   category: {
@@ -91,8 +103,30 @@ const WHY_US_ITEMS = [
 ];
 
 export function SecondHandClient({ category, initialProducts }: SecondHandClientProps) {
-  const [filteredProducts, setFilteredProducts] = useState<ProductWithRelations[]>(initialProducts);
+  // Inject category slug into each product so ProductCard can build review URLs
+  const productsWithCategory = useMemo(
+    () => initialProducts.map((p) => ({ ...p, category: { slug: category.slug } })),
+    [initialProducts, category.slug]
+  );
+
+  const [filteredIds, setFilteredIds] = useState<Set<string> | null>(null);
   const [sort, setSort] = useState<SortOption>("popularity");
+
+  // Initialize filteredIds on first render only
+  if (filteredIds === null) {
+    setFilteredIds(new Set(initialProducts.map((p) => p.id)));
+  }
+
+  // When FilterSidebar changes, capture the IDs of filtered products.
+  // Must be stable (useCallback) so FilterSidebar's useEffect doesn't loop.
+  const handleFilterChange = useCallback((filtered: ProductWithRelations[]) => {
+    setFilteredIds(new Set(filtered.map((p) => p.id)));
+  }, []);
+
+  const filteredProducts = useMemo(
+    () => (filteredIds ? productsWithCategory.filter((p) => filteredIds.has(p.id)) : productsWithCategory),
+    [productsWithCategory, filteredIds]
+  );
 
   const sortedProducts = useMemo(() => {
     const copy = [...filteredProducts];
@@ -129,7 +163,7 @@ export function SecondHandClient({ category, initialProducts }: SecondHandClient
             {/* Filter Sidebar */}
             <FilterSidebar
               products={initialProducts}
-              onFilterChange={setFilteredProducts}
+              onFilterChange={handleFilterChange}
               sort={sort}
               onSortChange={setSort}
             />
@@ -264,6 +298,35 @@ export function SecondHandClient({ category, initialProducts }: SecondHandClient
           <ServiceContent html={category.content} maxHeight={400} />
         </section>
       )}
+
+      {/* Customer Reviews Section */}
+      {(() => {
+        // Flatten all reviews across all products in the category
+        const allReviews = initialProducts.flatMap((p) =>
+          (p.reviews ?? []).map((r) => ({
+            ...r,
+            productId: p.id,
+            productName: p.name,
+          }))
+        );
+
+        // if (allReviews.length === 0) return null;
+        // Pick the most recent 6 for the carousel
+        const latestReviews = allReviews
+          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+          .slice(0, 6);
+        // Use the first available product for the "Write a Review" dialog; default to the first product
+        const firstProduct = initialProducts[0];
+        if (!firstProduct) return null;
+        return (
+          <ProductReviews
+            reviews={latestReviews}
+            productId={firstProduct.id}
+            productName={category.name}
+            categorySlug={category.slug}
+          />
+        );
+      })()}
 
       {/* FAQs Section */}
       {category.faqs && category.faqs.length > 0 && (

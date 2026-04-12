@@ -24,6 +24,12 @@ export async function createReview(
             },
           },
         },
+        product: {
+          select: {
+            id: true,
+            category: { select: { slug: true } },
+          },
+        },
       },
     });
 
@@ -32,10 +38,78 @@ export async function createReview(
       revalidatePath(`/service/${slug}`);
     }
 
+    if (review.product) {
+      revalidatePath(`/${review.product.category.slug}`);
+      revalidatePath(`/${review.product.category.slug}/${review.product.id}/reviews`);
+    }
+
     return review;
   } catch (error) {
     console.log("Error creating review:", error);
     return null;
+  }
+}
+
+// Create a product review (no auth required)
+export async function createProductReview(data: {
+  rating: string;
+  comment: string;
+  reviewer: string;
+  imageUrl?: string;
+  productId: string;
+}) {
+  try {
+    const review = await prisma.review.create({
+      data: {
+        ...data,
+        imageUrl: data.imageUrl || null,
+        serviceId: null,
+        subServiceId: null,
+      },
+      include: {
+        product: {
+          select: {
+            id: true,
+            category: { select: { slug: true } },
+          },
+        },
+      },
+    });
+
+    if (review.product) {
+      revalidatePath(`/${review.product.category.slug}`);
+      revalidatePath(`/${review.product.category.slug}/${review.product.id}/reviews`);
+    }
+
+    return review;
+  } catch (error) {
+    console.log("Error creating product review:", error);
+    return null;
+  }
+}
+
+// Get all reviews for a product
+export async function getReviewsByProduct(productId: string) {
+  try {
+    return prisma.review.findMany({
+      where: { productId },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        rating: true,
+        comment: true,
+        imageUrl: true,
+        reviewer: true,
+        productId: true,
+        serviceId: true,
+        subServiceId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  } catch (error) {
+    console.log("Error fetching product reviews:", error);
+    return [];
   }
 }
 
@@ -53,6 +127,7 @@ export async function getReviewsByService(serviceId: string) {
         reviewer: true,
         serviceId: true,
         subServiceId: true,
+        productId: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -82,6 +157,7 @@ export async function getReviewsByServiceSlug(serviceSlug: string) {
         reviewer: true,
         serviceId: true,
         subServiceId: true,
+        productId: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -129,11 +205,20 @@ export async function updateReview(
             },
           },
         },
+        product: {
+          select: {
+            id: true,
+            category: { select: { slug: true } },
+          },
+        },
       },
     });
     const slug = review.service?.slug || review.subService?.service?.slug;
     if (slug) {
       revalidatePath(`/service/${slug}`);
+    }
+    if (review.product) {
+      revalidatePath(`/${review.product.category.slug}`);
     }
 
     return review;
@@ -163,6 +248,12 @@ export async function deleteReview(id: string) {
             },
           },
         },
+        product: {
+          select: {
+            id: true,
+            category: { select: { slug: true } },
+          },
+        },
       },
     });
 
@@ -175,6 +266,9 @@ export async function deleteReview(id: string) {
     const slug = review.service?.slug || review.subService?.service?.slug;
     if (slug) {
       revalidatePath(`/service/${slug}`);
+    }
+    if (review.product) {
+      revalidatePath(`/${review.product.category.slug}`);
     }
 
     return review;

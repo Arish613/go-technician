@@ -10,6 +10,7 @@ import { createReview, updateReview } from "@/lib/action/review";
 import type { Review } from "@/types/review";
 import FormFields from "@/components/FormFields";
 import { getServices, getSubServiceForGivenService } from "@/lib/action/service";
+import { getProducts } from "@/lib/action/product";
 import {
     FieldGroup,
     FieldLabel,
@@ -29,9 +30,13 @@ const reviewSchema = z.object({
     comment: z.string().min(1, "Comment is required"),
     imageUrl: z.string().optional(),
     reviewer: z.string().min(1, "Reviewer name is required"),
-    serviceId: z.string().min(1, "Service is required"),
+    serviceId: z.string().optional(),
     subServiceId: z.string().optional(),
-});
+    productId: z.string().optional(),
+}).refine(
+    (data) => data.serviceId || data.productId,
+    { message: "Please select either a Service or a Product", path: ["serviceId"] }
+);
 
 type ReviewFormData = z.infer<typeof reviewSchema>;
 
@@ -45,6 +50,7 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [serviceOptions, setServiceOptions] = useState<{ label: string; value: string }[]>([]);
     const [subServiceOptions, setSubServiceOptions] = useState<{ label: string; value: string }[]>([]);
+    const [productOptions, setProductOptions] = useState<{ label: string; value: string }[]>([]);
     const [loadingSubServices, setLoadingSubServices] = useState(false);
     const router = useRouter();
 
@@ -57,23 +63,35 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
             reviewer: review?.reviewer || "",
             serviceId: review?.serviceId || "",
             subServiceId: review?.subServiceId ?? "",
+            productId: review?.productId || "",
         },
     });
 
     const selectedServiceId = form.watch("serviceId");
+    const selectedProductId = form.watch("productId");
 
-    // Fetch services for dropdown
+    // Fetch services and products for dropdowns
     useEffect(() => {
         (async () => {
-            const res = await getServices();
-            if (res.success && Array.isArray(res.data)) {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const options = res.data.map((s: any) => ({
+            const [servicesRes, productsRes] = await Promise.all([
+                getServices(),
+                getProducts(),
+            ]);
+
+            if (servicesRes.success && Array.isArray(servicesRes.data)) {
+                const options = servicesRes.data.map((s: { name: string; id: string }) => ({
                     label: s.name,
                     value: s.id,
                 }));
-
                 setServiceOptions(options);
+            }
+
+            if (productsRes.success && Array.isArray(productsRes.data)) {
+                const options = productsRes.data.map((p: { name: string; id: string; category: { name: string } }) => ({
+                    label: `${p.name} (${p.category?.name || "Uncategorized"})`,
+                    value: p.id,
+                }));
+                setProductOptions(options);
             }
         })();
     }, []);
@@ -108,13 +126,32 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
         })();
     }, [selectedServiceId, form]);
 
+    // Clear product when service is selected, and vice versa (mutual exclusivity)
+    useEffect(() => {
+        if (selectedServiceId && selectedProductId) {
+            form.setValue("productId", "");
+        }
+    }, [selectedServiceId, selectedProductId, form]);
+
+    useEffect(() => {
+        if (selectedProductId && selectedServiceId) {
+            form.setValue("serviceId", "");
+            form.setValue("subServiceId", "");
+            setSubServiceOptions([]);
+        }
+    }, [selectedProductId, form]);
+
     const onSubmit = async (data: ReviewFormData) => {
         setIsSubmitting(true);
         try {
-            // Prepare review data - include subServiceId only if selected
             const reviewData = {
-                ...data,
+                rating: data.rating,
+                comment: data.comment,
+                imageUrl: data.imageUrl || null,
+                reviewer: data.reviewer,
+                serviceId: data.serviceId || null,
                 subServiceId: data.subServiceId || null,
+                productId: data.productId || null,
             };
 
             if (mode === "create") {
@@ -139,70 +176,102 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
     return (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <Card>
-                <CardHeader>
+                <CardHeader >
                     <CardTitle>{mode === "create" ? "Add Review" : "Edit Review"}</CardTitle>
+                    <span className="text-muted-foreground text-xs">Can&apos;t select both service and product</span>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {/* Service Select */}
-                    <FieldGroup>
-                        <FieldLabel>Service</FieldLabel>
-                        <Select
-                            value={form.watch("serviceId")}
-                            onValueChange={(value) => {
-                                form.setValue("serviceId", value);
-                                form.setValue("subServiceId", "");
-                            }}
-                            disabled={isSubmitting}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select a service" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {serviceOptions.map((option) => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        {form.formState.errors.serviceId && (
-                            <FieldError>{form.formState.errors.serviceId.message}</FieldError>
-                        )}
-                    </FieldGroup>
+                    <div className="grid grid-cols-2">
+                        <div className="space-y-4">
+                            {/* Service Select */}
+                            <FieldGroup>
+                                <FieldLabel>Service</FieldLabel>
+                                <Select
+                                    value={form.watch("serviceId")}
+                                    onValueChange={(value) => {
+                                        form.setValue("serviceId", value);
+                                        form.setValue("subServiceId", "");
+                                    }}
+                                    disabled={isSubmitting}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a service" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {serviceOptions.map((option) => (
+                                            <SelectItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {form.formState.errors.serviceId && (
+                                    <FieldError>{form.formState.errors.serviceId.message}</FieldError>
+                                )}
+                            </FieldGroup>
 
-                    {/* SubService Select - Only show if service is selected */}
-                    {selectedServiceId && (
-                        <FieldGroup>
-                            <FieldLabel>Sub Service (Optional)</FieldLabel>
-                            <Select
-                                value={form.watch("subServiceId") || "none"}
-                                onValueChange={(value) => form.setValue("subServiceId", value === "none" ? "" : value)}
-                                disabled={isSubmitting || loadingSubServices}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder={
-                                        loadingSubServices
-                                            ? "Loading..."
-                                            : subServiceOptions.length === 0
-                                                ? "No sub-services available"
-                                                : "Select a sub-service (optional)"
-                                    } />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="none">None (Service-level review)</SelectItem>
-                                    {subServiceOptions.map((option) => (
-                                        <SelectItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {form.formState.errors.subServiceId && (
-                                <FieldError>{form.formState.errors.subServiceId.message}</FieldError>
+                            {/* SubService Select - Only show if service is selected */}
+                            {selectedServiceId && (
+                                <FieldGroup>
+                                    <FieldLabel>Sub Service (Optional)</FieldLabel>
+                                    <Select
+                                        value={form.watch("subServiceId") || "none"}
+                                        onValueChange={(value) => form.setValue("subServiceId", value === "none" ? "" : value)}
+                                        disabled={isSubmitting || loadingSubServices}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder={
+                                                loadingSubServices
+                                                    ? "Loading..."
+                                                    : subServiceOptions.length === 0
+                                                        ? "No sub-services available"
+                                                        : "Select a sub-service (optional)"
+                                            } />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="none">None (Service-level review)</SelectItem>
+                                            {subServiceOptions.map((option) => (
+                                                <SelectItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    {form.formState.errors.subServiceId && (
+                                        <FieldError>{form.formState.errors.subServiceId.message}</FieldError>
+                                    )}
+                                </FieldGroup>
                             )}
-                        </FieldGroup>
-                    )}
+                        </div>
+                        <div>
 
+                            {/* Product Select - mutually exclusive with Service */}
+                            {productOptions.length > 0 && (
+                                <FieldGroup>
+                                    <FieldLabel>Product (Optional)</FieldLabel>
+                                    <Select
+                                        value={form.watch("productId")}
+                                        onValueChange={(value) => form.setValue("productId", value)}
+                                        disabled={isSubmitting}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a product" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {productOptions.map((option) => (
+                                                <SelectItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    {form.formState.errors.serviceId && (
+                                        <FieldError>{form.formState.errors.serviceId.message}</FieldError>
+                                    )}
+                                </FieldGroup>
+                            )}
+                        </div>
+                    </div>
                     <FormFields
                         name="rating"
                         control={form.control}
