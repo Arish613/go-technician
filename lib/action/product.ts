@@ -75,6 +75,25 @@ export async function getProductById(id: string) {
   }
 }
 
+// GET: all categories for dropdown
+export async function getCategories() {
+  try {
+    const categories = await prisma.category.findMany({
+      orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+      },
+    });
+
+    return { success: true, data: categories };
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return { success: false, error: "Failed to fetch categories" };
+  }
+}
+
 // GET: all products for dropdown
 export async function getProducts() {
   try {

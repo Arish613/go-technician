@@ -10,7 +10,7 @@ import { createReview, updateReview } from "@/lib/action/review";
 import type { Review } from "@/types/review";
 import FormFields from "@/components/FormFields";
 import { getServices, getSubServiceForGivenService } from "@/lib/action/service";
-import { getProducts } from "@/lib/action/product";
+import { getCategories } from "@/lib/action/product";
 import {
     FieldGroup,
     FieldLabel,
@@ -32,10 +32,10 @@ const reviewSchema = z.object({
     reviewer: z.string().min(1, "Reviewer name is required"),
     serviceId: z.string().optional(),
     subServiceId: z.string().optional(),
-    productId: z.string().optional(),
+    categoryId: z.string().optional(),
 }).refine(
-    (data) => data.serviceId || data.productId,
-    { message: "Please select either a Service or a Product", path: ["root"] }
+    (data) => data.serviceId || data.categoryId,
+    { message: "Please select either a Service or a Category", path: ["root"] }
 );
 
 type ReviewFormData = z.infer<typeof reviewSchema>;
@@ -50,8 +50,10 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [serviceOptions, setServiceOptions] = useState<{ label: string; value: string }[]>([]);
     const [subServiceOptions, setSubServiceOptions] = useState<{ label: string; value: string }[]>([]);
-    const [productOptions, setProductOptions] = useState<{ label: string; value: string }[]>([]);
+    const [categoryOptions, setCategoryOptions] = useState<{ label: string; value: string }[]>([]);
     const [loadingSubServices, setLoadingSubServices] = useState(false);
+    const [loadingCategories, setLoadingCategories] = useState(true);
+    const [categoryFetchError, setCategoryFetchError] = useState(false);
     const router = useRouter();
 
     const form = useForm<ReviewFormData>({
@@ -63,19 +65,19 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
             reviewer: review?.reviewer || "",
             serviceId: review?.serviceId || "",
             subServiceId: review?.subServiceId ?? "",
-            productId: review?.productId || "",
+            categoryId: review?.categoryId || "",
         },
     });
 
     const selectedServiceId = form.watch("serviceId");
-    const selectedProductId = form.watch("productId");
+    const selectedCategoryId = form.watch("categoryId");
 
-    // Fetch services and products for dropdowns
+    // Fetch services and categories for dropdowns
     useEffect(() => {
         (async () => {
-            const [servicesRes, productsRes] = await Promise.all([
+            const [servicesRes, categoriesRes] = await Promise.all([
                 getServices(),
-                getProducts(),
+                getCategories(),
             ]);
 
             if (servicesRes.success && Array.isArray(servicesRes.data)) {
@@ -86,13 +88,17 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
                 setServiceOptions(options);
             }
 
-            if (productsRes.success && Array.isArray(productsRes.data)) {
-                const options = productsRes.data.map((p: { name: string; id: string; category: { name: string } }) => ({
-                    label: `${p.name} (${p.category?.name || "Uncategorized"})`,
-                    value: p.id,
+            if (categoriesRes.success && Array.isArray(categoriesRes.data)) {
+                const options = categoriesRes.data.map((c: { name: string; id: string }) => ({
+                    label: c.name,
+                    value: c.id,
                 }));
-                setProductOptions(options);
+                setCategoryOptions(options);
+            } else {
+                setCategoryFetchError(true);
             }
+
+            setLoadingCategories(false);
         })();
     }, []);
 
@@ -126,20 +132,21 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
         })();
     }, [selectedServiceId, form]);
 
-    // Clear product when service is selected, and vice versa (mutual exclusivity)
+    // Mutual exclusivity: clear category when service is selected
     useEffect(() => {
-        if (selectedServiceId && selectedProductId) {
-            form.setValue("productId", "");
+        if (selectedServiceId && selectedCategoryId) {
+            form.setValue("categoryId", "");
         }
-    }, [selectedServiceId, selectedProductId, form]);
+    }, [selectedServiceId, selectedCategoryId, form]);
 
+    // Mutual exclusivity: clear service when category is selected
     useEffect(() => {
-        if (selectedProductId && selectedServiceId) {
+        if (selectedCategoryId && selectedServiceId) {
             form.setValue("serviceId", "");
             form.setValue("subServiceId", "");
             setSubServiceOptions([]);
         }
-    }, [selectedProductId, selectedServiceId, form]);
+    }, [selectedCategoryId, selectedServiceId, form]);
 
     const onSubmit = async (data: ReviewFormData) => {
         setIsSubmitting(true);
@@ -151,8 +158,8 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
                 reviewer: data.reviewer,
                 serviceId: data.serviceId || null,
                 subServiceId: data.subServiceId || null,
-                productId: data.productId || null,
-                categoryId: null,
+                productId: null,
+                categoryId: data.categoryId || null,
             };
 
             if (mode === "create") {
@@ -177,12 +184,12 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
     return (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <Card>
-                <CardHeader >
+                <CardHeader>
                     <CardTitle>{mode === "create" ? "Add Review" : "Edit Review"}</CardTitle>
-                    <span className="text-muted-foreground text-xs">Can&apos;t select both service and product</span>
+                    <span className="text-muted-foreground text-xs">Can&apos;t select both service and category</span>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2">
+                    <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-4">
                             {/* Service Select */}
                             <FieldGroup>
@@ -244,32 +251,38 @@ export function ReviewForm({ review, mode, onSuccess }: ReviewFormProps) {
                                 </FieldGroup>
                             )}
                         </div>
-                        <div>
 
-                            {/* Product Select - mutually exclusive with Service */}
-                            {productOptions.length > 0 && (
-                                <FieldGroup>
-                                    <FieldLabel>Product (Optional)</FieldLabel>
+                        <div>
+                            {/* Category Select - mutually exclusive with Service */}
+                            <FieldGroup>
+                                <FieldLabel>Category</FieldLabel>
+                                {categoryFetchError ? (
+                                    <p className="text-sm text-destructive">Failed to load categories. Please refresh.</p>
+                                ) : (
                                     <Select
-                                        value={form.watch("productId")}
-                                        onValueChange={(value) => form.setValue("productId", value)}
-                                        disabled={isSubmitting}
+                                        value={form.watch("categoryId")}
+                                        onValueChange={(value) => form.setValue("categoryId", value)}
+                                        disabled={isSubmitting || loadingCategories}
                                     >
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Select a product" />
+                                            <SelectValue placeholder={loadingCategories ? "Loading..." : "Select a category"} />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {productOptions.map((option) => (
+                                            {categoryOptions.map((option) => (
                                                 <SelectItem key={option.value} value={option.value}>
                                                     {option.label}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                </FieldGroup>
-                            )}
+                                )}
+                                {form.formState.errors.categoryId && (
+                                    <FieldError>{form.formState.errors.categoryId.message}</FieldError>
+                                )}
+                            </FieldGroup>
                         </div>
                     </div>
+
                     <FormFields
                         name="rating"
                         control={form.control}

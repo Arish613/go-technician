@@ -45,12 +45,19 @@ interface Product {
   category: { name: string };
 }
 
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  reviews: Review[];
+}
+
 export default function GetAllReviews() {
   const [services, setServices] = useState<Service[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [serviceError, setServiceError] = useState<string | null>(null);
-  const [productError, setProductError] = useState<string | null>(null);
+  const [categoryError, setCategoryError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -60,11 +67,11 @@ export default function GetAllReviews() {
   async function fetchReviews() {
     setLoading(true);
     setServiceError(null);
-    setProductError(null);
+    setCategoryError(null);
 
-    const [serviceResult, productResult] = await Promise.allSettled([
+    const [serviceResult, categoryResult] = await Promise.allSettled([
       fetch("/api/service/review"),
-      fetch("/api/product/review"),
+      fetch("/api/category/review"),
     ]);
 
     if (serviceResult.status === "fulfilled" && serviceResult.value.ok) {
@@ -78,15 +85,16 @@ export default function GetAllReviews() {
       setServiceError(msg);
     }
 
-    if (productResult.status === "fulfilled" && productResult.value.ok) {
-      const data = await productResult.value.json();
-      setProducts(data);
+
+    if (categoryResult.status === "fulfilled" && categoryResult.value.ok) {
+      const data = await categoryResult.value.json();
+      setCategories(data);
     } else {
       const msg =
-        productResult.status === "rejected"
-          ? productResult.reason?.message ?? "Failed to fetch product reviews"
-          : "Failed to fetch product reviews";
-      setProductError(msg);
+        categoryResult.status === "rejected"
+          ? categoryResult.reason?.message ?? "Failed to fetch category reviews"
+          : "Failed to fetch category reviews";
+      setCategoryError(msg);
     }
 
     setLoading(false);
@@ -123,7 +131,7 @@ export default function GetAllReviews() {
     );
   }
 
-  const renderReviewCard = (review: Review) => (
+  const     renderReviewCard = (review: Review) => (
     <Card key={review.id} className="border-l-4 border-l-primary">
       <CardContent className="pt-6">
         <div className="flex items-start justify-between gap-4">
@@ -205,8 +213,8 @@ export default function GetAllReviews() {
           <TabsTrigger value="services">
             Services ({services.reduce((acc, s) => acc + s.reviews.length + s.subServices.reduce((a, ss) => a + ss.reviews.length, 0), 0)})
           </TabsTrigger>
-          <TabsTrigger value="products">
-            Products ({products.reduce((acc, p) => acc + p.reviews.length, 0)})
+          <TabsTrigger value="categories">
+            Categories ({categories.reduce((acc, c) => acc + c.reviews.length, 0)})
           </TabsTrigger>
         </TabsList>
 
@@ -266,35 +274,35 @@ export default function GetAllReviews() {
           )}
         </TabsContent>
 
-        <TabsContent value="products">
-          {productError ? (
+        <TabsContent value="categories">
+          {categoryError ? (
             <Card>
               <CardContent className="py-12 text-center">
-                <p className="text-destructive">{productError}</p>
+                <p className="text-destructive">{categoryError}</p>
               </CardContent>
             </Card>
-          ) : products.length === 0 ? (
+          ) : categories.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground">No product reviews found.</p>
+                <p className="text-muted-foreground">No category reviews found.</p>
               </CardContent>
             </Card>
           ) : (
             <Accordion type="multiple" className="space-y-4">
-              {products.map((product) => (
-                <AccordionItem key={product.id} value={product.id} className="border rounded-lg px-4">
-                  <AccordionTrigger>
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      {product.name}
+              {categories.map((category) => (
+                <AccordionItem key={category.id} value={category.id} className="border rounded-lg px-4">
+                  <AccordionTrigger className="hover:no-underline">
+                    <div className="flex items-center gap-3">
+                      <span className="font-semibold">{category.name}</span>
                       <span className="text-sm font-normal text-muted-foreground">
-                        ({product.category?.name}) - {product.reviews.length} review{product.reviews.length !== 1 ? "s" : ""}
+                        ({category.reviews.length} review{category.reviews.length !== 1 ? "s" : ""})
                       </span>
-                    </CardTitle>
+                    </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    {product.reviews.length > 0 ? (
-                      <div className="space-y-4">
-                        {product.reviews.map(renderReviewCard)}
+                    {category.reviews.length > 0 ? (
+                      <div className="space-y-4 pt-2">
+                        {category.reviews.map(renderReviewCard)}
                       </div>
                     ) : (
                       <p className="text-sm text-muted-foreground">No reviews yet</p>

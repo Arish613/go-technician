@@ -1,7 +1,6 @@
 "use client";
 
 import { ReviewForm } from "@/components/review/Form";
-import { notFound } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +13,7 @@ interface Review {
     imageUrl?: string | null;
     serviceId: string;
     subServiceId: string | null;
-    productId: string | null;
+    categoryId: string | null;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -35,10 +34,6 @@ export default function UpdateReviewPage({
                 const response = await fetch(`/api/service/review/${id}`);
                 if (!response.ok) throw new Error("Failed to fetch review");
                 const data = await response.json();
-
-                if (!data) {
-                    notFound();
-                }
 
                 setReview(data);
             } catch (err) {
@@ -86,8 +81,8 @@ export default function UpdateReviewPage({
                     rating: String(review.rating),
                     imageUrl: review.imageUrl === null ? undefined : review.imageUrl,
                     subServiceId: review.subServiceId,
-                    productId: review.productId,
-                    categoryId: null,
+                    productId: null,
+                    categoryId: review.categoryId,
                 }}
             />
         </div>
