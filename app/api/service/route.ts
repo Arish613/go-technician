@@ -3,12 +3,14 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import type { SubServiceInput } from "@/types/service";
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const location = searchParams.get("location");
     const isPublished = searchParams.get("isPublished");
+    const cityId = searchParams.get("cityId");
 
     const services = await prisma.services.findMany({
       where: {
@@ -20,6 +22,16 @@ export async function GET(request: NextRequest) {
         subServices: {
           where: { isActive: true },
           orderBy: { isPopular: "desc" },
+          include: {
+            pricings: {
+              ...(cityId && {
+                where: { cityId },
+              }),
+              include: {
+                city: true,
+              },
+            },
+          },
         },
       },
       orderBy: { createdAt: "desc" },
@@ -50,11 +62,27 @@ export async function POST(request: NextRequest) {
         whyChooseUs: whyChooseUs ?? [],
         benefits: benefits ?? [],
         faqs: faqs ? { create: faqs } : undefined,
-        subServices: subServices ? { create: subServices } : undefined,
+        subServices: subServices
+          ? {
+              create: subServices.map((sub: SubServiceInput) => {
+                const { pricings, ...subData } = sub;
+                return {
+                  ...subData,
+                  pricings: pricings?.length
+                    ? { create: pricings }
+                    : undefined,
+                };
+              }),
+            }
+          : undefined,
       },
       include: {
         faqs: true,
-        subServices: true,
+        subServices: {
+          include: {
+            pricings: true,
+          },
+        },
       },
     });
     revalidatePath("/service", "page");

@@ -6,6 +6,7 @@ model City {
     localities  Locality[]
     products    Product[]
     services    Services[]
+    subServicePricings SubServicePricing[]
     createdAt   DateTime   @default(now())
     updatedAt   DateTime   @updatedAt
 }

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
+import type { SubServiceInput } from "@/types/service";
 
 export async function PUT(
   request: Request,
@@ -34,13 +35,25 @@ export async function PUT(
         subServices: subServices
           ? {
               deleteMany: {},
-              create: subServices,
+              create: (subServices as SubServiceInput[]).map((sub) => {
+                const { pricings, ...subData } = sub;
+                return {
+                  ...subData,
+                  pricings: pricings?.length
+                    ? { create: pricings }
+                    : undefined,
+                };
+              }),
             }
           : undefined,
       },
       include: {
         faqs: true,
-        subServices: true,
+        subServices: {
+          include: {
+            pricings: true,
+          },
+        },
       },
     });
 

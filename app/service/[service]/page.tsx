@@ -1,6 +1,7 @@
 import { getServiceBySlug } from "@/lib/action/service";
 import { getLocationPageBySlug } from "@/lib/action/locationPage";
 import { getLocationPagesByServiceSlug } from "@/lib/action/locationPage";
+import { getCityBySlug } from "@/lib/action/city";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -56,10 +57,11 @@ export default async function ServicePage({ params }: ServicePageProps) {
       const locationPage = locationResult.data;
 
       // Fetch the parent service data using the serviceSlug
-      const [serviceResult, reviews, relatedLocationsResult] = await Promise.all([
+      const [serviceResult, reviews, relatedLocationsResult, cityResult] = await Promise.all([
         getServiceBySlug(locationPage.serviceSlug),
         getReviewsByServiceSlug(locationPage.serviceSlug),
         getLocationPagesByServiceSlug(locationPage.serviceSlug, locationPage.location),
+        getCityBySlug(locationPage.location),
       ]);
 
       if (!serviceResult.success || !serviceResult.data) {
@@ -67,6 +69,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
       }
 
       const service = serviceResult.data;
+      const cityId = cityResult.data?.id ?? undefined;
 
       return (
         <LocationPageContent
@@ -74,6 +77,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
           service={service}
           reviews={reviews}
           relatedLocations={relatedLocationsResult.success ? relatedLocationsResult.data : []}
+          cityId={cityId}
         />
       );
     }
