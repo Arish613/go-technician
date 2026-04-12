@@ -6,6 +6,8 @@ export type Review = {
   reviewer: string;
   serviceId: string | null;
   subServiceId: string | null;
+  productId: string | null;
+  categoryId: string | null;
   createdAt: Date;
   updatedAt: Date;
 };

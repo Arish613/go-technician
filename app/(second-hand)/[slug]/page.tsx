@@ -2,17 +2,12 @@ import { getCategoryBySlug } from "@/lib/action/product";
 import { notFound } from "next/navigation";
 import { SecondHandClient } from "@/components/second-hand/SecondHandClient";
 import { StickyCart } from "@/components/cart/StickyCart";
-import { Prisma } from "@prisma/client";
 
 interface SecondHandPageProps {
   params: {
     slug: string;
   };
 }
-
-type ProductWithRelations = Prisma.ProductGetPayload<{
-  include: { city: true; locality: true };
-}>;
 
 export default async function SecondHandCategoryPage({
   params,
@@ -27,7 +22,7 @@ export default async function SecondHandCategoryPage({
   }
 
   const category = result.data;
-  const products = (category.products ?? []) as ProductWithRelations[];
+  const products = category.products ?? [];
 
   return (
     <>
