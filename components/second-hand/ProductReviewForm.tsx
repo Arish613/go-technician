@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { createReview } from "@/lib/action/review";
+import { createProductReview } from "@/lib/action/review";
 import { Star } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -14,19 +14,25 @@ import { useRouter } from "next/navigation";
 
 const reviewSchema = z.object({
   rating: z.number().min(1, "Please select a rating").max(5),
-  comment: z.string().min(10, "Review must be at least 10 characters").max(1000, "Review must not exceed 1000 characters"),
-  reviewer: z.string().min(2, "Name must be at least 2 characters").max(50, "Name must not exceed 50 characters"),
-  imageUrl: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
+  comment: z
+    .string()
+    .min(10, "Review must be at least 10 characters")
+    .max(1000, "Review must not exceed 1000 characters"),
+  reviewer: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must not exceed 50 characters"),
 });
 
 type ReviewFormData = z.infer<typeof reviewSchema>;
 
-interface ReviewFormProps {
-  serviceId: string;
+interface ProductReviewFormProps {
+  productId: string | null;
+  categoryId: string | null;
   onSuccess?: () => void;
 }
 
-export function ReviewForm({ serviceId, onSuccess }: ReviewFormProps) {
+export function ProductReviewForm({ productId, categoryId, onSuccess }: ProductReviewFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hoverRating, setHoverRating] = useState(0);
   const router = useRouter();
@@ -37,7 +43,6 @@ export function ReviewForm({ serviceId, onSuccess }: ReviewFormProps) {
       rating: 0,
       comment: "",
       reviewer: "",
-      imageUrl: "",
     },
   });
 
@@ -46,13 +51,11 @@ export function ReviewForm({ serviceId, onSuccess }: ReviewFormProps) {
   const onSubmit = async (data: ReviewFormData) => {
     setIsSubmitting(true);
     try {
-      await createReview({
+      await createProductReview({
         ...data,
         rating: data.rating.toString(),
-        serviceId,
-        subServiceId: null,
-        productId: null,
-        categoryId: null,
+        productId,
+        categoryId,
       });
 
       form.reset();
@@ -60,6 +63,7 @@ export function ReviewForm({ serviceId, onSuccess }: ReviewFormProps) {
       onSuccess?.();
     } catch (error) {
       console.error("Error submitting review:", error);
+      alert("Failed to submit review. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -83,10 +87,11 @@ export function ReviewForm({ serviceId, onSuccess }: ReviewFormProps) {
               className="p-1 transition-transform hover:scale-110 focus:outline-none"
             >
               <Star
-                className={`w-8 h-8 transition-colors ${star <= (hoverRating || selectedRating)
-                  ? "fill-yellow-400 text-yellow-400"
-                  : "fill-slate-200 text-slate-200"
-                  }`}
+                className={`w-8 h-8 transition-colors ${
+                  star <= (hoverRating || selectedRating)
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "fill-slate-200 text-slate-200"
+                }`}
               />
             </button>
           ))}
@@ -114,7 +119,7 @@ export function ReviewForm({ serviceId, onSuccess }: ReviewFormProps) {
         </Label>
         <Textarea
           id="comment"
-          placeholder="Share your experience with this service..."
+          placeholder="Share your experience with this product..."
           className="min-h-30 resize-none"
           {...form.register("comment")}
         />
@@ -141,11 +146,10 @@ export function ReviewForm({ serviceId, onSuccess }: ReviewFormProps) {
         )}
       </div>
 
-
       {/* Submit Button */}
       <Button
         type="submit"
-        className="w-full bg-blue-600 hover:bg-blue-700"
+        className="w-full bg-primary hover:bg-primary/90"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Submitting..." : "Submit Review"}

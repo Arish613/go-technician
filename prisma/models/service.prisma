@@ -23,7 +23,7 @@ model Services {
 }
 
 model SubService {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  id              String              @id @default(auto()) @map("_id") @db.ObjectId
   name            String
   description     String
   price           Int
@@ -36,13 +36,28 @@ model SubService {
   isPopular       Boolean  @default(false)
   isActive        Boolean  @default(true)
   order           Int?
-  serviceId       String   @db.ObjectId
-  service         Services @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  serviceId       String              @db.ObjectId
+  service         Services            @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
   reviews         Review[]
+  pricings        SubServicePricing[]
 
   @@index([serviceId])
+}
+
+model SubServicePricing {
+  id              String     @id @default(auto()) @map("_id") @db.ObjectId
+  subServiceId    String     @db.ObjectId
+  subService      SubService @relation(fields: [subServiceId], references: [id], onDelete: Cascade)
+  cityId          String     @db.ObjectId
+  city            City       @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  price           Int
+  discountedPrice Int?
+
+  @@unique([subServiceId, cityId])
+  @@index([subServiceId])
+  @@index([cityId])
 }
 
 model LocationPage {
@@ -70,19 +85,3 @@ model LocationPageFaq {
   updatedAt      DateTime     @updatedAt
 }
 
-
-model Review {
-  id           String      @id @default(auto()) @map("_id") @db.ObjectId
-  rating       String
-  comment      String
-  imageUrl     String?
-  reviewer     String
-  serviceId    String?     @db.ObjectId
-  service      Services?   @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  subServiceId String?     @db.ObjectId
-  subService   SubService? @relation(fields: [subServiceId], references: [id], onDelete: Cascade)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-
-  @@index([serviceId])
-}

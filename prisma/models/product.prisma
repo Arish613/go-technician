@@ -10,6 +10,7 @@ model Category{
     whyChooseUs WhyChooseUsItem[]
     faqs        Faq[]
     products Product[]
+    reviews  Review[]
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
@@ -32,6 +33,7 @@ model Product{
     brand String?
     label String? // e.g. "Best Seller", "New Arrival"
     order Int @default(0)
+    reviews Review[]
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }

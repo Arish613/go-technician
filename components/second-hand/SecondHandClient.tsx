@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Prisma } from "@prisma/client";
 import { FilterSidebar, SortOption } from "@/components/second-hand/FilterSidebar";
 import { ProductCard } from "@/components/second-hand/ProductCard";
+import { ProductReviews } from "@/components/second-hand/ProductReviews";
 import { ShieldCheck, Clock, BadgeCheck, RefreshCw, Phone, Wrench, Sparkles, Award, MapPin, Truck } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -17,9 +18,20 @@ import Link from "next/link";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { ServiceContent } from "../service/Content";
 
+type ProductReview = {
+  id: string;
+  rating: string;
+  comment: string;
+  reviewer: string;
+  imageUrl: string | null;
+  createdAt: Date;
+};
+
 type ProductWithRelations = Prisma.ProductGetPayload<{
   include: { city: true; locality: true };
-}>;
+}> & {
+  reviews?: ProductReview[];
+};
 
 interface SecondHandClientProps {
   category: {
@@ -40,6 +52,14 @@ interface SecondHandClientProps {
       id: string;
       question: string;
       answer: string;
+    }>;
+    reviews?: Array<{
+      id: string;
+      rating: string;
+      comment: string;
+      reviewer: string;
+      imageUrl: string | null;
+      createdAt: Date;
     }>;
     createdAt: Date;
     updatedAt: Date;
@@ -91,8 +111,27 @@ const WHY_US_ITEMS = [
 ];
 
 export function SecondHandClient({ category, initialProducts }: SecondHandClientProps) {
-  const [filteredProducts, setFilteredProducts] = useState<ProductWithRelations[]>(initialProducts);
+  // Inject category slug into each product so ProductCard can build review URLs
+  const productsWithCategory = useMemo(
+    () => initialProducts.map((p) => ({ ...p, category: { slug: category.slug } })),
+    [initialProducts, category.slug]
+  );
+
+  const [filteredIds, setFilteredIds] = useState<Set<string>>(
+    () => new Set(initialProducts.map((p) => p.id))
+  );
   const [sort, setSort] = useState<SortOption>("popularity");
+
+  // When FilterSidebar changes, capture the IDs of filtered products.
+  // Must be stable (useCallback) so FilterSidebar's useEffect doesn't loop.
+  const handleFilterChange = useCallback((filtered: ProductWithRelations[]) => {
+    setFilteredIds(new Set(filtered.map((p) => p.id)));
+  }, []);
+
+  const filteredProducts = useMemo(
+    () => productsWithCategory.filter((p) => filteredIds.has(p.id)),
+    [productsWithCategory, filteredIds]
+  );
 
   const sortedProducts = useMemo(() => {
     const copy = [...filteredProducts];
@@ -129,7 +168,7 @@ export function SecondHandClient({ category, initialProducts }: SecondHandClient
             {/* Filter Sidebar */}
             <FilterSidebar
               products={initialProducts}
-              onFilterChange={setFilteredProducts}
+              onFilterChange={handleFilterChange}
               sort={sort}
               onSortChange={setSort}
             />
@@ -264,6 +303,44 @@ export function SecondHandClient({ category, initialProducts }: SecondHandClient
           <ServiceContent html={category.content} maxHeight={400} />
         </section>
       )}
+
+      {/* Customer Reviews Section */}
+      {(() => {
+        // Flatten product-level reviews across all products in the category
+        const productReviews = initialProducts.flatMap((p) =>
+          (p.reviews ?? []).map((r) => ({
+            ...r,
+            productId: p.id,
+            productName: p.name,
+          }))
+        );
+
+        // Category-level reviews (submitted directly against the category)
+        const categoryReviews = (category.reviews ?? []).map((r) => ({
+          ...r,
+          productId: null as string | null,
+          productName: category.name,
+        }));
+
+        const allReviews = [...productReviews, ...categoryReviews];
+
+        if (initialProducts.length === 0 && allReviews.length === 0) return null;
+
+        // Pick the most recent 6 for the carousel
+        const latestReviews = allReviews
+          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+          .slice(0, 6);
+
+        return (
+          <ProductReviews
+            reviews={latestReviews}
+            productId={null}
+            categoryId={category.id}
+            productName={category.name}
+            categorySlug={category.slug}
+          />
+        );
+      })()}
 
       {/* FAQs Section */}
       {category.faqs && category.faqs.length > 0 && (

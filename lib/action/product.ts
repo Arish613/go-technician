@@ -10,9 +10,34 @@ export async function getCategoryBySlug(slug: string) {
       include: {
         products: {
           orderBy: { order: "asc" },
-          include: { city: true, locality: true },
+          include: {
+            city: true,
+            locality: true,
+            reviews: {
+              orderBy: { createdAt: "desc" },
+              select: {
+                id: true,
+                rating: true,
+                comment: true,
+                reviewer: true,
+                imageUrl: true,
+                createdAt: true,
+              },
+            },
+          },
         },
         faqs: true,
+        reviews: {
+          orderBy: { createdAt: "desc" },
+          select: {
+            id: true,
+            rating: true,
+            comment: true,
+            reviewer: true,
+            imageUrl: true,
+            createdAt: true,
+          },
+        },
       },
     });
 
@@ -24,5 +49,66 @@ export async function getCategoryBySlug(slug: string) {
   } catch (error) {
     console.error("Error fetching category by slug:", error);
     return { success: false, error: "Failed to fetch category" };
+  }
+}
+
+// GET: single product by id, with category info
+export async function getProductById(id: string) {
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id },
+      include: {
+        category: { select: { id: true, name: true, slug: true } },
+        city: true,
+        locality: true,
+      },
+    });
+
+    if (!product) {
+      return { success: false, error: "Product not found" };
+    }
+
+    return { success: true, data: product };
+  } catch (error) {
+    console.error("Error fetching product by id:", error);
+    return { success: false, error: "Failed to fetch product" };
+  }
+}
+
+// GET: all categories for dropdown
+export async function getCategories() {
+  try {
+    const categories = await prisma.category.findMany({
+      orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+      },
+    });
+
+    return { success: true, data: categories };
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return { success: false, error: "Failed to fetch categories" };
+  }
+}
+
+// GET: all products for dropdown
+export async function getProducts() {
+  try {
+    const products = await prisma.product.findMany({
+      orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        category: { select: { name: true } },
+      },
+    });
+
+    return { success: true, data: products };
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return { success: false, error: "Failed to fetch products" };
   }
 }
