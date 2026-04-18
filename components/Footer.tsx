@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { Instagram, Facebook, Linkedin } from "lucide-react";
 import Image from "next/image";
-import { getAllLocationPages } from "@/lib/action/locationPage";
-
 const navigationLinks = [
   { name: "Home", href: "/" },
   { name: "About Us", href: "/about" },

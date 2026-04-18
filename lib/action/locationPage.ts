@@ -19,6 +19,7 @@ export async function getLocationPageBySlug(slug: string) {
         isPublished: true,
         createdAt: true,
         updatedAt: true,
+        locality: true,
         faqs: {
           select: {
             id: true,
@@ -67,8 +68,12 @@ export async function getAllLocationPages(publishedOnly?: boolean) {
   try {
     const locationPages = await prisma.locationPage.findMany({
       where: publishedOnly ? { isPublished: true } : undefined,
-      include: {
-        faqs: true,
+      select: {
+        slug: true,
+        title: true,
+        location: true,
+        createdAt: true,
+        updatedAt: true,
       },
       orderBy: { createdAt: "desc" },
     });
@@ -94,7 +99,10 @@ export async function getLocationPagesByLocation(location: string) {
   }
 }
 
-export async function getLocationPagesByServiceSlug(serviceSlug: string, excludeLocation?: string) {
+export async function getLocationPagesByServiceSlug(
+  serviceSlug: string,
+  excludeLocation?: string,
+) {
   try {
     const locationPages = await prisma.locationPage.findMany({
       where: {
@@ -134,7 +142,7 @@ export async function deleteLocationPage(id: string) {
 
 export async function togglePublishLocationPage(
   id: string,
-  isPublished: boolean
+  isPublished: boolean,
 ) {
   try {
     const page = await prisma.locationPage.update({
