@@ -5,7 +5,7 @@ import { Prisma } from "@prisma/client";
 import { FilterSidebar, SortOption } from "@/components/second-hand/FilterSidebar";
 import { ProductCard } from "@/components/second-hand/ProductCard";
 import { ProductReviews } from "@/components/second-hand/ProductReviews";
-import { ShieldCheck, Clock, BadgeCheck, RefreshCw, Phone, Wrench, Sparkles, Award, MapPin, Truck } from "lucide-react";
+import { ShieldCheck, Clock, BadgeCheck, RefreshCw, Phone, Wrench, Sparkles, Award, MapPin, Truck, Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Accordion,
@@ -157,6 +157,22 @@ export function SecondHandClient({ category, initialProducts }: SecondHandClient
   }, [filteredProducts, sort]);
 
   const availableCount = filteredProducts.filter((p) => p.isAvailable).length;
+
+  const totalProductReviewCount = initialProducts.reduce(
+    (acc, p) => acc + (p.reviews ?? []).length,
+    0
+  );
+  const totalCategoryReviewCount = (category.reviews ?? []).length;
+  const totalReviewCount = totalProductReviewCount + totalCategoryReviewCount;
+  const avgRating =
+    totalReviewCount > 0
+      ? (initialProducts.reduce((acc, p) => {
+          const productSum = (p.reviews ?? []).reduce((rAcc, r) => rAcc + Number(r.rating), 0);
+          return acc + productSum;
+        }, 0) +
+          (category.reviews ?? []).reduce((rAcc, r) => rAcc + Number(r.rating), 0)) /
+        totalReviewCount
+      : null;
   return (
     <div className="min-h-screen">
 
@@ -181,9 +197,19 @@ export function SecondHandClient({ category, initialProducts }: SecondHandClient
                   <h1 className="text-3xl md:text-4xl font-bold mb-2">
                     Second Hand {category.name.replace(/^Buy\s+Second Hand\s+/i, "")}
                   </h1>
-                  <p className="text-sm text-muted-foreground">
-                    Found {availableCount} verified unit{availableCount !== 1 ? "s" : ""}
-                  </p>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <span>
+                      Found {availableCount} verified unit{availableCount !== 1 ? "s" : ""}
+                    </span>
+                    {totalReviewCount > 0 && (
+                      <div className="flex items-center gap-1">
+                        <Star className="h-3.5 w-3.5 fill-yellow-500 text-yellow-500" />
+                        <span>
+                          {avgRating?.toFixed(1)} ({totalReviewCount} {totalReviewCount === 1 ? "review" : "reviews"})
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </section>
               {/* Sort Bar (desktop) */}
