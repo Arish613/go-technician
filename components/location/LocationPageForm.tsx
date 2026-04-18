@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, useFieldArray, FormProvider } from "react-hook-form";
+import { useForm, useFieldArray, FormProvider, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
@@ -12,21 +12,41 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import {
+  Field,
+  FieldLabel,
+  FieldDescription,
+  FieldContent,
+  FieldError,
+} from "@/components/ui/field";
 
 interface ServiceOption {
   label: string;
   value: string;
 }
 
+interface LocalityOption {
+  label: string;
+  value: string; // locality slug
+}
+
 interface CityOption {
   label: string;
-  value: string;
-  localities?: { label: string; value: string }[];
+  value: string; // city slug
+  localities: LocalityOption[];
 }
 
 const locationPageSchema = z.object({
   serviceSlug: z.string().min(1, "Service slug is required"),
-  location: z.string().min(1, "Location is required"),
+  location: z.string().min(1, "City is required"), // city slug
+  locality: z.string().optional(), // locality slug (optional)
   title: z.string().min(1, "Title is required"),
   metaTitle: z.string().optional(),
   description: z.string().min(1, "Description is required"),
@@ -48,7 +68,8 @@ interface LocationPageFormProps {
     id: string;
     slug: string;
     serviceSlug: string;
-    location: string;
+    location: string; // city slug
+    locality?: string | null; // locality slug (optional)
     title: string;
     metaTitle: string | null;
     description: string;
@@ -66,13 +87,15 @@ export function LocationPageForm({ mode, locationPage }: LocationPageFormProps) 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serviceOptions, setServiceOptions] = useState<ServiceOption[]>([]);
   const [cityOptions, setCityOptions] = useState<CityOption[]>([]);
-  const [isLoadingServices, setIsLoadingServices] = useState(true);
+  const [localityOptions, setLocalityOptions] = useState<LocalityOption[]>([]);
+  const [isLoadingData, setIsLoadingData] = useState(true);
 
   const form = useForm<LocationPageFormData>({
     resolver: zodResolver(locationPageSchema),
     defaultValues: {
       serviceSlug: locationPage?.serviceSlug || "",
-      location: locationPage?.location || "",
+      location: locationPage?.location || "", // city slug
+      locality: locationPage?.locality || "_none_", // locality slug
       title: locationPage?.title || "",
       metaTitle: locationPage?.metaTitle || "",
       description: locationPage?.description || "",
@@ -98,10 +121,10 @@ export function LocationPageForm({ mode, locationPage }: LocationPageFormProps) 
           fetch("/api/service"),
           fetch("/api/cities"),
         ]);
-        
+
         const servicesResult = await servicesRes.json();
         const citiesResult = await citiesRes.json();
-        
+
         if (servicesRes.ok && servicesResult.data) {
           setServiceOptions(
             servicesResult.data.map((s: { name: string; slug: string }) => ({
@@ -110,50 +133,97 @@ export function LocationPageForm({ mode, locationPage }: LocationPageFormProps) 
             }))
           );
         }
-        
+
         if (citiesRes.ok && citiesResult.data) {
-          setCityOptions(
-            citiesResult.data.map((c: { name: string; slug: string }) => ({
+          const mapped: CityOption[] = citiesResult.data.map(
+            (c: {
+              name: string;
+              slug: string;
+              localities: { name: string; slug: string }[];
+            }) => ({
               label: c.name,
               value: c.slug,
-            }))
+              localities: (c.localities || []).map((l) => ({
+                label: l.name,
+                value: l.slug,
+              })),
+            })
           );
+          setCityOptions(mapped);
+
+          // In update mode, populate locality dropdown based on stored location
+          if (mode === "update" && locationPage?.location) {
+            const matchedCity = mapped.find((c) => c.value === locationPage.location);
+            if (matchedCity) {
+              setLocalityOptions(matchedCity.localities);
+            }
+          }
         }
       } catch (err) {
         console.error("Failed to load data:", err);
       } finally {
-        setIsLoadingServices(false);
+        setIsLoadingData(false);
       }
     }
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleCityChange = (citySlug: string) => {
+    const city = cityOptions.find((c) => c.value === citySlug);
+    const localities = city?.localities || [];
+    setLocalityOptions(localities);
+    form.setValue("location", citySlug);
+    form.setValue("locality", "_none_"); // reset locality when city changes
+    form.trigger("location");
+  };
+
+  const handleLocalityChange = (value: string) => {
+    const localitySlug = value === "_none_" ? null : value;
+    form.setValue("locality", localitySlug);
+  };
 
   const generateSlug = () => {
     const serviceSlug = form.getValues("serviceSlug");
     const location = form.getValues("location");
-    if (serviceSlug && location) {
-      return `${serviceSlug}-in-${location}`;
-    }
-    return "";
+    const locality = form.getValues("locality");
+
+    if (!serviceSlug || !location) return "";
+
+    // Use locality slug if present, else city slug
+    const urlSlug = (locality && locality !== "_none_") ? locality : location;
+    return `${serviceSlug}-in-${urlSlug}`;
   };
 
   const generateTitle = () => {
     const serviceSlug = form.getValues("serviceSlug");
     const location = form.getValues("location");
-    if (serviceSlug && location) {
-      const serviceName =
-        serviceOptions.find((o) => o.value === serviceSlug)?.label ||
-        serviceSlug
-          .split("-")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ");
-      const locationName = location
+    const locality = form.getValues("locality");
+
+    if (!serviceSlug || !location) return "";
+
+    const serviceName =
+      serviceOptions.find((o) => o.value === serviceSlug)?.label ||
+      serviceSlug
         .split("-")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
         .join(" ");
-      return `${serviceName} in ${locationName}`;
+
+    const city = cityOptions.find((c) => c.value === location);
+    const cityName = city?.label || location;
+
+    if (locality && locality !== "_none_") {
+      const localityObj = city?.localities.find((l) => l.value === locality);
+      const localityName =
+        localityObj?.label ||
+        locality
+          .split("-")
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(" ");
+      return `${serviceName} in ${localityName}, ${cityName}`;
     }
-    return "";
+
+    return `${serviceName} in ${cityName}`;
   };
 
   const onSubmit = async (data: LocationPageFormData) => {
@@ -165,39 +235,28 @@ export function LocationPageForm({ mode, locationPage }: LocationPageFormProps) 
         slug,
       };
 
-      if (mode === "create") {
-        const response = await fetch("/api/location-page", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
+      const url =
+        mode === "create"
+          ? "/api/location-page"
+          : `/api/location-page/${locationPage!.id}`;
+      const method = mode === "create" ? "POST" : "PUT";
 
-        const result = await response.json();
+      const response = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-        if (response.ok) {
-          router.push("/admin/location-pages");
-          router.refresh();
-        } else {
-          alert(result.error || "Failed to create location page");
-        }
+      const result = await response.json();
+
+      if (response.ok) {
+        router.push("/admin/location-pages");
+        router.refresh();
       } else {
-        const response = await fetch(
-          `/api/location-page/${locationPage!.id}`,
-          {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          }
+        alert(
+          result.error ||
+          `Failed to ${mode === "create" ? "create" : "update"} location page`
         );
-
-        const result = await response.json();
-
-        if (response.ok) {
-          router.push("/admin/location-pages");
-          router.refresh();
-        } else {
-          alert(result.error || "Failed to update location page");
-        }
       }
     } catch (error) {
       console.error("Form submission error:", error);
@@ -206,6 +265,18 @@ export function LocationPageForm({ mode, locationPage }: LocationPageFormProps) 
       setIsSubmitting(false);
     }
   };
+
+  const watchedLocation = form.watch("location");
+  const watchedLocality = form.watch("locality");
+
+  const selectedCity = cityOptions.find((c) => c.value === watchedLocation);
+  const selectedLocality = selectedCity?.localities.find(
+    (l) => l.value === watchedLocality
+  );
+
+  const locationLabel = selectedLocality
+    ? `${selectedLocality.label}, ${selectedCity?.label}`
+    : selectedCity?.label || "";
 
   return (
     <FormProvider {...form}>
@@ -222,26 +293,113 @@ export function LocationPageForm({ mode, locationPage }: LocationPageFormProps) 
               label="Service"
               type="select"
               options={serviceOptions}
-              placeholder={isLoadingServices ? "Loading services..." : "Select a service"}
+              placeholder={
+                isLoadingData ? "Loading services..." : "Select a service"
+              }
               description="The parent service this location page belongs to"
-              disabled={isSubmitting || isLoadingServices || mode === "update"}
+              disabled={isSubmitting || isLoadingData || mode === "update"}
             />
 
-            <FormFields
+            {/* City Dropdown */}
+            <Controller
               name="location"
               control={form.control}
-              label="City"
-              type="select"
-              options={cityOptions}
-              placeholder={isLoadingServices ? "Loading..." : "Select city"}
-              disabled={isSubmitting || mode === "update"}
+              render={({ fieldState }) => (
+                <Field data-invalid={!!fieldState.error}>
+                  <FieldLabel>City</FieldLabel>
+                  <FieldContent>
+                    <Select
+                      value={watchedLocation || ""}
+                      onValueChange={handleCityChange}
+                      disabled={isSubmitting || isLoadingData || mode === "update"}
+                    >
+                      <SelectTrigger>
+                        <SelectValue>
+                          {selectedCity?.label ||
+                            (isLoadingData ? "Loading cities..." : "Select a city")}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {cityOptions.map((city) => (
+                          <SelectItem key={city.value} value={city.value}>
+                            {city.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FieldError
+                      errors={fieldState.error ? [fieldState.error] : []}
+                    />
+                  </FieldContent>
+                </Field>
+              )}
             />
 
-            <div className="p-3 bg-muted rounded-md text-sm">
-              <span className="font-medium">Generated slug: </span>
-              <code className="text-primary">
-                {generateSlug() || "Fill service slug & location"}
-              </code>
+            {/* Locality Dropdown — shown only when city has localities */}
+            {watchedLocation && localityOptions.length > 0 && (
+              <Controller
+                name="locality"
+                control={form.control}
+                render={({ fieldState }) => (
+                  <Field data-invalid={!!fieldState.error}>
+                    <FieldLabel>Locality (Optional)</FieldLabel>
+                    <FieldContent>
+                      <Select
+                        value={watchedLocality || "_none_"}
+                        onValueChange={handleLocalityChange}
+                        disabled={isSubmitting || mode === "update"}
+                      >
+                        <SelectTrigger>
+                          <SelectValue>
+                            {selectedLocality?.label || "Select a locality (optional)"}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="_none_">
+                            None (City-level page)
+                          </SelectItem>
+                          {localityOptions.map((loc) => (
+                            <SelectItem key={loc.value} value={loc.value}>
+                              {loc.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FieldDescription>
+                        Leave blank to create a city-level page
+                      </FieldDescription>
+                      <FieldError
+                        errors={fieldState.error ? [fieldState.error] : []}
+                      />
+                    </FieldContent>
+                  </Field>
+                )}
+              />
+            )}
+
+            {watchedLocation &&
+              localityOptions.length === 0 &&
+              !isLoadingData && (
+                <p className="text-xs text-muted-foreground">
+                  No localities found for this city. A city-level page will be
+                  created.
+                </p>
+              )}
+
+            {/* Slug preview */}
+            <div className="p-3 bg-muted rounded-md text-sm space-y-1">
+              {locationLabel && (
+                <div>
+                  <span className="font-medium">Location: </span>
+                  <span className="text-primary">{locationLabel}</span>
+                </div>
+              )}
+              <div>
+                <span className="font-medium">Generated slug: </span>
+                <code className="text-primary">
+                  {generateSlug() || "Fill service & city above"}
+                </code>
+              </div>
             </div>
 
             <FormFields
@@ -257,9 +415,7 @@ export function LocationPageForm({ mode, locationPage }: LocationPageFormProps) 
               size="sm"
               onClick={() => {
                 const title = generateTitle();
-                if (title) {
-                  form.setValue("title", title);
-                }
+                if (title) form.setValue("title", title);
               }}
             >
               Auto-generate Title
@@ -342,10 +498,7 @@ export function LocationPageForm({ mode, locationPage }: LocationPageFormProps) 
               </p>
             ) : (
               faqFields.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="space-y-4 p-4 border rounded-lg"
-                >
+                <div key={field.id} className="space-y-4 p-4 border rounded-lg">
                   <div className="flex justify-between items-center">
                     <h4 className="font-medium">FAQ #{index + 1}</h4>
                     <Button

@@ -31,6 +31,7 @@ export default async function UpdateLocationPage({
           slug: locationPage.slug,
           serviceSlug: locationPage.serviceSlug,
           location: locationPage.location,
+          locality: locationPage.locality,
           title: locationPage.title,
           metaTitle: locationPage.metaTitle,
           description: locationPage.description,
