@@ -514,9 +514,9 @@ export function CartDialog({ open, onOpenChange }: CartDialogProps) {
             Total: ₹{getTotalPrice()}
           </div>)}
 
-          <div className="flex gap-2 w-full md:w-auto justify-end">
+          <div className={`${step !== 4 && "flex"}  md:flex gap-2 w-full md:w-auto justify-end`}>
             {step > 1 && step < 5 && (
-              <Button variant="outline" onClick={handleBack}>
+              <Button variant="outline" onClick={handleBack} className={`${step == 4 && "max-sm:mr-5"}`}>
                 Back
               </Button>
             )}

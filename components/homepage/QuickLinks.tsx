@@ -9,7 +9,6 @@ function normalizeLocation(loc: string) {
 
 export async function QuickLinks() {
   const locationPagesRes = await getAllLocationPages(true);
-  console.log("Fetched location pages for quick links:", locationPagesRes);
   const locationPages = locationPagesRes.success && locationPagesRes.data ? locationPagesRes.data : [];
 
   const quickLinksByLocation: Record<string, { title: string; slug: string }[]> = {};
