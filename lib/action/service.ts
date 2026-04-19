@@ -184,7 +184,7 @@ export async function getSubServicesByType(serviceId: string, type?: string) {
   }
 }
 
-export async function getServiceAndSubService(userInput: string) {
+export async function searchServices(userInput: string) {
   try {
     if (!userInput || userInput.trim() === "") {
       return [];
@@ -200,42 +200,82 @@ export async function getServiceAndSubService(userInput: string) {
         },
       ];
     }
-    const services = await prisma.services.findMany({
-      where: {
-        isPublished: true,
-        OR: [
-          { name: { contains: userInput, mode: "insensitive" } },
-          { slug: { contains: userInput, mode: "insensitive" } },
-        ],
-      },
-    });
 
-    const subServices = await prisma.subService.findMany({
-      where: {
-        isActive: true,
-        OR: [{ name: { contains: userInput, mode: "insensitive" } }],
-      },
-      select: {
-        name: true,
-        service: {
-          select: {
-            slug: true,
+    // Fetch all relevant data in parallel
+    const [services, subServices, categories] = await Promise.all([
+      prisma.services.findMany({
+        where: {
+          isPublished: true,
+          OR: [
+            { name: { contains: userInput, mode: "insensitive" } },
+            { slug: { contains: userInput, mode: "insensitive" } },
+          ],
+        },
+      }),
+      prisma.subService.findMany({
+        where: {
+          isActive: true,
+          OR: [{ name: { contains: userInput, mode: "insensitive" } }],
+        },
+        select: {
+          name: true,
+          service: {
+            select: { slug: true },
           },
         },
-      },
-    });
+      }),
+      prisma.category.findMany({
+        where: {
+          isVisible: true,
+          OR: [
+            { name: { contains: userInput, mode: "insensitive" } },
+            { slug: { contains: userInput, mode: "insensitive" } },
+          ],
+        },
+        select: {
+          name: true,
+          slug: true,
+          products: {
+            select: { name: true },
+          },
+        },
+      }),
+    ]);
 
+    // Map results
+    const serviceResults = services.map((service) => ({
+      type: "service",
+      name: service.name,
+      slug: service.slug,
+    }));
+
+    const subServiceResults = subServices.map((subService) => ({
+      type: "subService",
+      name: subService.name,
+      slug: subService.service.slug,
+    }));
+
+    const categoryResults = categories.map((category) => ({
+      type: "category",
+      name: category.name,
+      slug: category.slug,
+    }));
+
+    // Only show products as "product", not categories
+    const productResults = categories.flatMap((category) =>
+      (category.products || []).map((product) => ({
+        type: "product",
+        name: product.name,
+        slug: category.slug, // clicking product goes to category page
+      })),
+    );
+
+    // Combine all results
     const results = [
-      ...services.map((service) => ({
-        type: "service",
-        name: service.name,
-        slug: service.slug,
-      })),
-      ...subServices.map((subService) => ({
-        type: "subService",
-        name: subService.name,
-        slug: subService.service.slug,
-      })),
+      ...serviceResults,
+      ...subServiceResults,
+      ...productResults,
+      ...categoryResults,
     ];
 
     return results;

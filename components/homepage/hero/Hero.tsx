@@ -8,7 +8,7 @@ import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getServiceAndSubService } from "@/lib/action/service";
+import { searchServices } from "@/lib/action/service";
 
 const desktopBanners = [
     // { src: "/banners/desktop/banner1.png", alt: "Say Goodbye to Repair Expenses with Extended Warranty" },
@@ -37,7 +37,7 @@ export function Hero() {
         const fetchResults = async () => {
             if (query.trim().length > 1) {
                 setIsLoading(true);
-                const data = await getServiceAndSubService(query.trim());
+                const data = await searchServices(query.trim());
                 setResults(data);
                 setShowDropdown(true);
                 setIsLoading(false);
@@ -61,9 +61,13 @@ export function Hero() {
         }
     };
 
-    // On click, navigate to the service/subservice page
-    const handleSelect = (slug: string) => {
-        router.push(`/service/${slug}`);
+    // On click, navigate to the page
+    const handleSelect = (slug: string, type: string) => {
+        if (type === "product" || type === "category") {
+            router.push(`/${slug}`);
+        } else {
+            router.push(`/service/${slug}`);
+        }
         setShowDropdown(false);
         setQuery("");
     };
@@ -150,7 +154,7 @@ export function Hero() {
                                     <li
                                         key={idx}
                                         className="px-4 py-3 cursor-pointer hover:bg-blue-50 transition-colors border-b border-slate-100 last:border-b-0 flex items-center justify-between"
-                                        onClick={() => handleSelect(item.slug)}
+                                        onClick={() => handleSelect(item.slug, item.type)}
                                     >
                                         <span className="text-slate-700 font-medium">{item.name}</span>
                                         <span className="text-xs text-slate-400 bg-slate-100 px-2 py-1 rounded capitalize">
