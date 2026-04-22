@@ -55,9 +55,11 @@ interface Category {
 export default function GetAllReviews() {
   const [services, setServices] = useState<Service[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [serviceError, setServiceError] = useState<string | null>(null);
   const [categoryError, setCategoryError] = useState<string | null>(null);
+  const [productError, setProductError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -69,9 +71,10 @@ export default function GetAllReviews() {
     setServiceError(null);
     setCategoryError(null);
 
-    const [serviceResult, categoryResult] = await Promise.allSettled([
+    const [serviceResult, categoryResult, productResult] = await Promise.allSettled([
       fetch("/api/service/review"),
       fetch("/api/category/review"),
+      fetch("/api/product/review"),
     ]);
 
     if (serviceResult.status === "fulfilled" && serviceResult.value.ok) {
@@ -95,6 +98,16 @@ export default function GetAllReviews() {
           ? categoryResult.reason?.message ?? "Failed to fetch category reviews"
           : "Failed to fetch category reviews";
       setCategoryError(msg);
+    }
+
+    if (productResult.status === "fulfilled" && productResult.value.ok) {
+      const data = await productResult.value.json();
+      setProducts(data);
+    } else {
+      const msg = productResult.status === "rejected"
+        ? productResult.reason?.message ?? "Failed to fetch product reviews"
+        : "Failed to fetch product reviews";
+      setProductError(msg);
     }
 
     setLoading(false);
@@ -131,7 +144,7 @@ export default function GetAllReviews() {
     );
   }
 
-  const     renderReviewCard = (review: Review) => (
+  const renderReviewCard = (review: Review) => (
     <Card key={review.id} className="border-l-4 border-l-primary">
       <CardContent className="pt-6">
         <div className="flex items-start justify-between gap-4">
@@ -215,6 +228,9 @@ export default function GetAllReviews() {
           </TabsTrigger>
           <TabsTrigger value="categories">
             Categories ({categories.reduce((acc, c) => acc + c.reviews.length, 0)})
+          </TabsTrigger>
+          <TabsTrigger value="products">
+            Products ({products.reduce((acc, p) => acc + p.reviews.length, 0)})
           </TabsTrigger>
         </TabsList>
 
@@ -303,6 +319,46 @@ export default function GetAllReviews() {
                     {category.reviews.length > 0 ? (
                       <div className="space-y-4 pt-2">
                         {category.reviews.map(renderReviewCard)}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No reviews yet</p>
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          )}
+        </TabsContent>
+
+        <TabsContent value="products">
+          {productError ? (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <p className="text-destructive">{productError}</p>
+              </CardContent>
+            </Card>
+          ) : products.length === 0 ? (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <p className="text-muted-foreground">No product reviews found.</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <Accordion type="multiple" className="space-y-4">
+              {products.map((product) => (
+                <AccordionItem key={product.id} value={product.id} className="border rounded-lg px-4">
+                  <AccordionTrigger className="hover:no-underline">
+                    <div className="flex items-center gap-3">
+                      <span className="font-semibold">{product.name}</span>
+                      <span className="text-sm font-normal text-muted-foreground">
+                        ({product.reviews.length} review{product.reviews.length !== 1 ? "s" : ""})
+                      </span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    {product.reviews.length > 0 ? (
+                      <div className="space-y-4 pt-2">
+                        {product.reviews.map(renderReviewCard)}
                       </div>
                     ) : (
                       <p className="text-sm text-muted-foreground">No reviews yet</p>

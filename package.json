@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "user:register": "tsx scripts/register.ts",
+    "localities:add": "tsx scripts/add-localities.ts",
+    "location-pages-localities:add": "tsx scripts/location-pages-for-localities.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {

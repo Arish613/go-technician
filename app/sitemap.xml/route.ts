@@ -1,6 +1,6 @@
 import { getBlogs } from "@/lib/action/blog";
 import { getServices } from "@/lib/action/service";
-import { getAllLocationPages } from "@/lib/action/locationPage";
+import { getCityLevelLocationPages } from "@/lib/action/locationPage";
 import { NextResponse } from "next/server";
 import type { BlogListItem } from "@/types/blog";
 import type { ServiceType } from "@/types/service";
@@ -45,7 +45,7 @@ export async function GET() {
       : [];
 
   // Fetch all published location page slugs
-  const locationPagesRes = await getAllLocationPages(true);
+  const locationPagesRes = await getCityLevelLocationPages();
   const locationPageUrls =
     locationPagesRes.success && locationPagesRes.data
       ? locationPagesRes.data.map(

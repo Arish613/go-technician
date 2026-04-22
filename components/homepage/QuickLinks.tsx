@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAllLocationPages } from "@/lib/action/locationPage";
+import { getCityLevelLocationPages } from "@/lib/action/locationPage";
 
 const LOCATION_ORDER = ["Mumbai", "Navi Mumbai", "Thane"];
 
@@ -8,7 +8,7 @@ function normalizeLocation(loc: string) {
 }
 
 export async function QuickLinks() {
-  const locationPagesRes = await getAllLocationPages(true);
+  const locationPagesRes = await getCityLevelLocationPages();
   const locationPages = locationPagesRes.success && locationPagesRes.data ? locationPagesRes.data : [];
 
   const quickLinksByLocation: Record<string, { title: string; slug: string }[]> = {};

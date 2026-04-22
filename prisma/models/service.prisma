@@ -65,6 +65,7 @@ model LocationPage {
   slug        String            @unique // e.g. "ac-repair-service-in-mumbai"
   serviceSlug String // e.g. "ac-repair-service" — links to the parent service by slug
   location    String // e.g. "mumbai", "thane", "navi-mumbai"
+  locality    String? // e.g. "andheri", "bandra" (optional, can be null for city-level pages)
   title       String // e.g. "AC Repair Service in Mumbai"
   metaTitle   String?
   description String

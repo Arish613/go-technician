@@ -19,6 +19,7 @@ export async function getLocationPageBySlug(slug: string) {
         isPublished: true,
         createdAt: true,
         updatedAt: true,
+        locality: true,
         faqs: {
           select: {
             id: true,
@@ -63,19 +64,30 @@ export async function getLocationPageById(id: string) {
   }
 }
 
-export async function getAllLocationPages(publishedOnly?: boolean) {
+export async function getCityLevelLocationPages() {
   try {
-    const locationPages = await prisma.locationPage.findMany({
-      where: publishedOnly ? { isPublished: true } : undefined,
-      include: {
-        faqs: true,
+    const pages = await prisma.locationPage.findMany({
+      where: {
+        isPublished: true,
+        OR: [
+          { locality: { isSet: false } }, // field doesn't exist in document
+          { locality: null }, // field exists but is null
+        ],
+      },
+      select: {
+        slug: true,
+        title: true,
+        location: true,
+        locality: true,
+        isPublished: true,
+        createdAt: true,
+        updatedAt: true,
       },
       orderBy: { createdAt: "desc" },
     });
-
-    return { success: true, data: locationPages };
+    return { success: true, data: pages };
   } catch (error) {
-    console.error("Error fetching location pages:", error);
+    console.error("Error:", (error as Error).message);
     return { success: false, error: "Failed to fetch location pages" };
   }
 }
@@ -94,7 +106,10 @@ export async function getLocationPagesByLocation(location: string) {
   }
 }
 
-export async function getLocationPagesByServiceSlug(serviceSlug: string, excludeLocation?: string) {
+export async function getLocationPagesByServiceSlug(
+  serviceSlug: string,
+  excludeLocation?: string,
+) {
   try {
     const locationPages = await prisma.locationPage.findMany({
       where: {
@@ -134,7 +149,7 @@ export async function deleteLocationPage(id: string) {
 
 export async function togglePublishLocationPage(
   id: string,
-  isPublished: boolean
+  isPublished: boolean,
 ) {
   try {
     const page = await prisma.locationPage.update({
