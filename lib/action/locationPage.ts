@@ -64,23 +64,30 @@ export async function getLocationPageById(id: string) {
   }
 }
 
-export async function getAllLocationPages(publishedOnly?: boolean) {
+export async function getCityLevelLocationPages() {
   try {
-    const locationPages = await prisma.locationPage.findMany({
-      where: publishedOnly ? { isPublished: true } : undefined,
+    const pages = await prisma.locationPage.findMany({
+      where: {
+        isPublished: true,
+        OR: [
+          { locality: { isSet: false } }, // field doesn't exist in document
+          { locality: null }, // field exists but is null
+        ],
+      },
       select: {
         slug: true,
         title: true,
         location: true,
+        locality: true,
+        isPublished: true,
         createdAt: true,
         updatedAt: true,
       },
       orderBy: { createdAt: "desc" },
     });
-
-    return { success: true, data: locationPages };
+    return { success: true, data: pages };
   } catch (error) {
-    console.error("Error fetching location pages:", error);
+    console.error("Error:", (error as Error).message);
     return { success: false, error: "Failed to fetch location pages" };
   }
 }
