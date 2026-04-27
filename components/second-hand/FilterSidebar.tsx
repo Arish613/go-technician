@@ -93,24 +93,26 @@ function FilterContent({
 }: FilterContentProps) {
   return (
     <div className="space-y-6">
-      <div className="space-y-3">
-        <div className="flex items-center gap-2 text-primary font-medium">
-          <Tag className="h-4 w-4" />
-          <span className="text-sm uppercase tracking-wider font-bold">Brand</span>
+      {brands.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-primary font-medium">
+            <Tag className="h-4 w-4" />
+            <span className="text-sm uppercase tracking-wider font-bold">Brand</span>
+          </div>
+          <div className="space-y-2 px-1">
+            {brands.map((brand) => (
+              <label key={brand} className="flex items-center gap-3 text-sm text-muted-foreground cursor-pointer hover:text-primary transition-colors">
+                <Checkbox
+                  checked={filters.brands.includes(brand)}
+                  onCheckedChange={() => onToggleBrand(brand)}
+                  className="border-primary data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                />
+                {brand}
+              </label>
+            ))}
+          </div>
         </div>
-        <div className="space-y-2 px-1">
-          {brands.map((brand) => (
-            <label key={brand} className="flex items-center gap-3 text-sm text-muted-foreground cursor-pointer hover:text-primary transition-colors">
-              <Checkbox
-                checked={filters.brands.includes(brand)}
-                onCheckedChange={() => onToggleBrand(brand)}
-                className="border-primary data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-              />
-              {brand}
-            </label>
-          ))}
-        </div>
-      </div>
+      )}
 
       <div className="space-y-3">
         <div className="flex items-center gap-2 text-muted-foreground font-medium">
