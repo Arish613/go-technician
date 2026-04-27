@@ -120,7 +120,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
               <Badge variant="destructive" className="text-[10px]">Sold Out</Badge>
             ) : alreadyInCart ? (
               <Button variant="destructive" size="sm" onClick={handleRemoveFromCart} className="h-8">
-                <Trash className="h-3 w-3 mr-1" /> 
+                <Trash className="h-3 w-3 mr-1" />
               </Button>
             ) : (
               <Button size="sm" onClick={handleAddToCart} className="h-8 bg-primary hover:bg-primary/90">
@@ -156,7 +156,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
 
       </div>
       <div className="p-5 flex flex-col flex-1">
-        
+
         <h3 className="font-bold mb-2 leading-tight line-clamp-2">
           {product.name}
         </h3>
@@ -174,10 +174,10 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         </div>
 
         {/* Rating */}
-        <div className="flex items-center gap-1 mb-3">
-          <Star className="h-3.5 w-3.5 fill-yellow-500 text-yellow-500" />
-          {avgRating !== null ? (
-            categorySlug ? (
+        {avgRating !== null && (
+          <div className="flex items-center gap-1 mb-3">
+            <Star className="h-3.5 w-3.5 fill-yellow-500 text-yellow-500" />
+            {categorySlug ? (
               <Link
                 href={`/${categorySlug}/${product.id}/reviews`}
                 className="text-xs text-muted-foreground hover:underline"
@@ -188,20 +188,10 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
               <span className="text-xs text-muted-foreground">
                 {avgRating.toFixed(1)} ({reviewCount} {reviewCount === 1 ? "review" : "reviews"})
               </span>
-            )
-          ) : (
-            categorySlug ? (
-              <Link
-                href={`/${categorySlug}/${product.id}/reviews`}
-                className="text-xs text-muted-foreground hover:underline"
-              >
-                No reviews yet
-              </Link>
-            ) : (
-              <span className="text-xs text-muted-foreground">No reviews yet</span>
-            )
-          )}
-        </div>
+            )}
+          </div>
+        )}
+
 
         <div className="mt-auto">
           <div className="flex items-baseline gap-2 mb-4">
