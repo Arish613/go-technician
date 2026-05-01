@@ -123,6 +123,11 @@ function SortableRow({ product, onDelete }: SortableRowProps) {
                     {product.brand && (
                         <p className="text-sm text-muted-foreground">{product.brand}</p>
                     )}
+                    {product.category?.slug === "buy-second-hand-air-conditioner" && product.starRating && (
+                        <p className="text-sm text-blue-600 font-medium">
+                            {product.starRating} Star AC
+                        </p>
+                    )}
                 </div>
             </TableCell>
             <TableCell>

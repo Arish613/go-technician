@@ -18,6 +18,7 @@ type Product = Prisma.ProductGetPayload<{
 }> & {
   reviews?: ProductReview[];
   category?: { slug: string };
+  starRating?: number | null;
 };
 
 interface ProductCardProps {
@@ -83,6 +84,16 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           <span className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">
             {product.brand} {capacity && `• ${capacity}`}
           </span>
+          {categorySlug === "buy-second-hand-air-conditioner" && product.starRating && (
+            <div className="flex items-center gap-0.5 mb-1">
+              {Array.from({ length: product.starRating }).map((_, i) => (
+                <Star key={i} className="h-3 w-3 fill-blue-500 text-blue-500" />
+              ))}
+              <span className="text-[10px] text-blue-600 font-medium ml-0.5">
+                {product.starRating} Star AC
+              </span>
+            </div>
+          )}
           <h3 className="text-sm font-semibold leading-tight mb-2 line-clamp-1">
             {product.name}
           </h3>
@@ -160,17 +171,22 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         <h3 className="font-bold mb-2 leading-tight line-clamp-2">
           {product.name}
         </h3>
-        <div className="flex justify-between items-start">
-          {product.brand && (
-            <Badge className="text-[10px] mb-2 bg-accent text-black">
-              {product.brand} {capacity && `• ${capacity}`}
-            </Badge>
+        <div className="flex justify-between items-start my-1">
+          {categorySlug === "buy-second-hand-air-conditioner" && product.starRating && (
+            <div className="flex items-center gap-0.5 mb-2">
+              {Array.from({ length: product.starRating }).map((_, i) => (
+                <Star key={i} className="h-3 w-3 fill-blue-500 text-blue-500" />
+              ))}
+              <span className="text-[10px] text-blue-600 font-medium ml-0.5">
+                {product.starRating} Star AC
+              </span>
+            </div>
           )}
-          {product.specifications && (
+          {/* {product.specifications && (
             <p className="text-xs text-muted-foreground line-clamp-2 mb-4">
               {product.specifications}
             </p>
-          )}
+          )} */}
         </div>
 
         {/* Rating */}

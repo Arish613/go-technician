@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { ProductForm } from "@/components/second-hand/ProductForm";
 
 export default function AddProduct() {
-  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
+  const [categories, setCategories] = useState<{ id: string; name: string; slug: string }[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
