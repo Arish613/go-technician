@@ -49,6 +49,8 @@ export interface Product {
   brand?: string;
   label?: string;
   starRating?: number;
+  description?: string;
+  whatsIncluded?: string[];
   order?: number;
   createdAt: string;
   updatedAt: string;
