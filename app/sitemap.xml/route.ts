@@ -1,6 +1,7 @@
 import { getBlogs } from "@/lib/action/blog";
 import { getServices } from "@/lib/action/service";
 import { getCityLevelLocationPages } from "@/lib/action/locationPage";
+import { getSecondHandCategories } from "@/lib/action/product";
 import { NextResponse } from "next/server";
 import type { BlogListItem } from "@/types/blog";
 import type { ServiceType } from "@/types/service";
@@ -60,6 +61,22 @@ export async function GET() {
         )
       : [];
 
+  // Fetch all visible second-hand category slugs
+  const secondHandRes = await getSecondHandCategories();
+  const secondHandUrls =
+    secondHandRes.success && secondHandRes.data
+      ? secondHandRes.data.map(
+          (c) =>
+            `<url><loc>${BASE_URL}/${c.slug}</loc><lastmod>${
+              c.updatedAt
+                ? new Date(c.updatedAt).toISOString().split("T")[0]
+                : c.createdAt
+                  ? new Date(c.createdAt).toISOString().split("T")[0]
+                  : ""
+            }</lastmod></url>`,
+        )
+      : [];
+
   // Static routes
   const staticLastMod = "2026-02-07";
   const staticUrls = [
@@ -84,6 +101,7 @@ export async function GET() {
     `${blogUrls.join("\n")}` +
     `${serviceUrls.join("\n")}` +
     `${locationPageUrls.join("\n")}` +
+    `${secondHandUrls.join("\n")}` +
     `\n</urlset>`;
 
   return new NextResponse(body, {

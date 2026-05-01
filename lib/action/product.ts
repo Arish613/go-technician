@@ -94,6 +94,26 @@ export async function getCategories() {
   }
 }
 
+// GET: all visible second-hand categories for sitemap
+export async function getSecondHandCategories() {
+  try {
+    const categories = await prisma.category.findMany({
+      where: { isVisible: true },
+      select: {
+        slug: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return { success: true, data: categories };
+  } catch (error) {
+    console.error("Error fetching second-hand categories:", error);
+    return { success: false, error: "Failed to fetch categories" };
+  }
+}
+
 // GET: all products for dropdown
 export async function getProducts() {
   try {
