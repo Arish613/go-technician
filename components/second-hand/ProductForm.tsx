@@ -11,6 +11,9 @@ import ImageUpload from "@/components/ImageUpload";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import FormFields from "@/components/FormFields";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Plus, X } from "lucide-react";
 import type { City, Locality } from "@/types/location";
 
 const productSchema = z.object({
@@ -27,6 +30,8 @@ const productSchema = z.object({
   brand: z.string().optional(),
   label: z.string().optional(),
   starRating: z.string().optional(),
+  description: z.string().optional(),
+  whatsIncluded: z.array(z.string()).optional(),
 });
 
 type ProductFormData = z.infer<typeof productSchema> & { id?: string };
@@ -43,6 +48,7 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
   const [cities, setCities] = useState<City[]>([]);
   const [localities, setLocalities] = useState<Locality[]>([]);
   const [selectedCityId, setSelectedCityId] = useState<string>(product?.cityId || "");
+  const [newIncludedItem, setNewIncludedItem] = useState("");
 
   useEffect(() => {
     async function fetchData() {
@@ -89,9 +95,10 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
       brand: product?.brand || "",
       label: product?.label || "",
       starRating: product?.starRating || undefined,
+      description: product?.description || "",
+      whatsIncluded: product?.whatsIncluded || [],
     },
   });
-
   const selectedCategoryId = form.watch("categoryId");
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId);
   const isACCategory = selectedCategory?.slug === "buy-second-hand-air-conditioner";
@@ -106,6 +113,23 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
     });
     return () => subscription.unsubscribe();
   }, [form]);
+
+  const addIncludedItem = () => {
+    const item = newIncludedItem.trim();
+    if (item) {
+      const current = form.getValues("whatsIncluded") || [];
+      form.setValue("whatsIncluded", [...current, item]);
+      setNewIncludedItem("");
+    }
+  };
+
+  const removeIncludedItem = (index: number) => {
+    const current = form.getValues("whatsIncluded") || [];
+    form.setValue(
+      "whatsIncluded",
+      current.filter((_, i) => i !== index)
+    );
+  };
 
   const onSubmit = async (data: ProductFormData) => {
     setIsSubmitting(true);
@@ -155,6 +179,15 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
               disabled={isSubmitting}
             />
             <FormFields
+              name="description"
+              control={form.control}
+              label="Description"
+              placeholder="Provide a detailed description of the product"
+              disabled={isSubmitting}
+              type="textarea"
+            />
+
+            <FormFields
               name="categoryId"
               control={form.control}
               label="Category*"
@@ -180,22 +213,24 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
               placeholder="e.g., 1.5 Ton, 5 Star, Inverter"
               disabled={isSubmitting}
             />
-            <FormFields
-              name="price"
-              control={form.control}
-              label="Price*"
-              type="number"
-              placeholder="e.g., 15000"
-              disabled={isSubmitting}
-            />
-            <FormFields
-              name="discountPrice"
-              control={form.control}
-              label="Discount Price"
-              type="number"
-              placeholder="e.g., 12000"
-              disabled={isSubmitting}
-            />
+            <div className="flex gap-5">
+              <FormFields
+                name="price"
+                control={form.control}
+                label="Price*"
+                type="number"
+                placeholder="e.g., 15000"
+                disabled={isSubmitting}
+              />
+              <FormFields
+                name="discountPrice"
+                control={form.control}
+                label="Discount Price"
+                type="number"
+                placeholder="e.g., 12000"
+                disabled={isSubmitting}
+              />
+            </div>
             <ImageUpload
               name="image"
               control={form.control}
@@ -203,61 +238,109 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
               disabled={isSubmitting}
               defaultValue="/service.png"
             />
-            <FormFields
-              name="cityId"
-              control={form.control}
-              label="City"
-              type="select"
-              options={cities.filter((c) => c.isActive).map((city) => ({
-                value: city.id,
-                label: city.name,
-              }))}
-              placeholder="Select city"
-              disabled={isSubmitting}
-            />
-            <FormFields
-              name="localityId"
-              control={form.control}
-              label="Locality"
-              type="select"
-              options={filteredLocalities.filter((l) => l.isActive).map((loc) => ({
-                value: loc.id,
-                label: loc.name,
-              }))}
-              placeholder="Select locality"
-              disabled={isSubmitting || !selectedCityId}
-            />
-            <FormFields
-              name="brand"
-              control={form.control}
-              label="Brand"
-              placeholder="e.g., LG"
-              disabled={isSubmitting}
-            />
-            <FormFields
-              name="label"
-              control={form.control}
-              label="Label"
-              placeholder="e.g., Best Seller"
-              disabled={isSubmitting}
-            />
-            {isACCategory && (
+            <div className="flex gap-5">
               <FormFields
-                name="starRating"
+                name="cityId"
                 control={form.control}
-                label="Star Rating"
+                label="City"
                 type="select"
-                options={[
-                  { value: "1", label: "1 Star" },
-                  { value: "2", label: "2 Star" },
-                  { value: "3", label: "3 Star" },
-                  { value: "4", label: "4 Star" },
-                  { value: "5", label: "5 Star" },
-                ]}
-                placeholder="Select AC star rating"
+                options={cities.filter((c) => c.isActive).map((city) => ({
+                  value: city.id,
+                  label: city.name,
+                }))}
+                placeholder="Select city"
                 disabled={isSubmitting}
               />
-            )}
+              <FormFields
+                name="localityId"
+                control={form.control}
+                label="Locality"
+                type="select"
+                options={filteredLocalities.filter((l) => l.isActive).map((loc) => ({
+                  value: loc.id,
+                  label: loc.name,
+                }))}
+                placeholder="Select locality"
+                disabled={isSubmitting || !selectedCityId}
+              />
+              {isACCategory && (
+                <FormFields
+                  name="starRating"
+                  control={form.control}
+                  label="Star Rating"
+                  type="select"
+                  options={[
+                    { value: "1", label: "1 Star" },
+                    { value: "2", label: "2 Star" },
+                    { value: "3", label: "3 Star" },
+                    { value: "4", label: "4 Star" },
+                    { value: "5", label: "5 Star" },
+                  ]}
+                  placeholder="Select AC star rating"
+                  disabled={isSubmitting}
+                />
+              )}
+            </div>
+            {/* What's Included */}
+            <div className="space-y-2">
+              <Label>What&apos;s Included</Label>
+              <div className="flex gap-2">
+                <Input
+                  value={newIncludedItem}
+                  onChange={(e) => setNewIncludedItem(e.target.value)}
+                  placeholder="e.g., Power Cable, Remote, Warranty Card"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addIncludedItem();
+                    }
+                  }}
+                  disabled={isSubmitting}
+                />
+                <Button
+                  type="button"
+                  onClick={addIncludedItem}
+                  variant="outline"
+                  size="sm"
+                  disabled={isSubmitting}
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {(form.watch("whatsIncluded") || []).map((item, index) => (
+                  <Badge key={index} variant="secondary">
+                    {item}
+                    <button
+                      type="button"
+                      onClick={() => removeIncludedItem(index)}
+                      className="ml-2 hover:text-destructive"
+                      disabled={isSubmitting}
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-5">
+              <FormFields
+                name="brand"
+                control={form.control}
+                label="Brand"
+                placeholder="e.g., LG"
+                disabled={isSubmitting}
+              />
+              <FormFields
+                name="label"
+                control={form.control}
+                label="Label"
+                placeholder="e.g., Best Seller"
+                disabled={isSubmitting}
+              />
+            </div>
+
             <div className="flex items-center space-x-2">
               <Switch
                 id="isAvailable"

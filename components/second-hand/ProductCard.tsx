@@ -7,6 +7,7 @@ import { useCart, productToCartItem } from "@/context/CartContext";
 import Image from "next/image";
 import Link from "next/link";
 import { Check, ShoppingCart, Star, Trash } from "lucide-react";
+import { ProductDialog } from "./ProductDialog";
 
 type ProductReview = {
   id: string;
@@ -19,6 +20,8 @@ type Product = Prisma.ProductGetPayload<{
   reviews?: ProductReview[];
   category?: { slug: string };
   starRating?: number | null;
+  description?: string | null;
+  whatsIncluded?: string[];
 };
 
 interface ProductCardProps {
@@ -76,8 +79,12 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
               <span className="text-xs text-muted-foreground">No image</span>
             </div>
           )}
-          <div className="absolute top-2 left-2 bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
-            Certified
+          {product.condition && (<div className="absolute top-2 left-2 bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+            {product.condition}
+          </div>)}
+
+          <div className="absolute top-2 right-2">
+            <ProductDialog product={product} />
           </div>
         </div>
         <div className="p-3 flex flex-col flex-grow subservice">
@@ -98,23 +105,24 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
             {product.name}
           </h3>
           <div className="flex items-center gap-1 mb-3">
-            <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
-            {avgRating !== null ? (
-              categorySlug ? (
-                <Link
-                  href={`/${categorySlug}/${product.id}/reviews`}
-                  className="text-xs text-muted-foreground hover:underline"
-                >
-                  {avgRating.toFixed(1)} ({reviewCount})
-                </Link>
-              ) : (
-                <span className="text-xs text-muted-foreground">
-                  {avgRating.toFixed(1)} ({reviewCount})
-                </span>
-              )
-            ) : (
-              <span className="text-xs text-muted-foreground">No reviews</span>
+            {avgRating !== null && (
+              <>
+                <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
+                {categorySlug ? (
+                  <Link
+                    href={`/${categorySlug}/${product.id}/reviews`}
+                    className="text-xs text-muted-foreground hover:underline"
+                  >
+                    {avgRating.toFixed(1)} ({reviewCount})
+                  </Link>
+                ) : (
+                  <span className="text-xs text-muted-foreground">
+                    {avgRating.toFixed(1)} ({reviewCount})
+                  </span>
+                )}
+              </>
             )}
+
           </div>
           <div className="mt-auto flex items-center justify-between">
             <div className="flex items-baseline gap-1">
@@ -167,10 +175,12 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
 
       </div>
       <div className="p-5 flex flex-col flex-1">
-
-        <h3 className="font-bold mb-2 leading-tight line-clamp-2">
-          {product.name}
-        </h3>
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <h3 className="font-bold leading-tight line-clamp-2 flex-1">
+            {product.name}
+          </h3>
+          <ProductDialog product={product} />
+        </div>
         <div className="flex justify-between items-start my-1">
           {categorySlug === "buy-second-hand-air-conditioner" && product.starRating && (
             <div className="flex items-center gap-0.5 mb-2">
