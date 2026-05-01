@@ -10,7 +10,7 @@ export default function UpdateProduct() {
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
 
     const [product, setProduct] = useState<Product | null>(null);
-    const [categories, setCategories] = useState<Pick<Category, "id" | "name">[]>([]);
+    const [categories, setCategories] = useState<Pick<Category, "id" | "name" | "slug">[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -22,7 +22,7 @@ export default function UpdateProduct() {
             const prodData = await prodRes.json();
             const catData = await catRes.json();
             setProduct(prodData.data || null);
-            setCategories((catData.data || []).map((c: Category) => ({ id: c.id, name: c.name })));
+            setCategories((catData.data || []).map((c: Category) => ({ id: c.id, name: c.name, slug: c.slug })));
             setLoading(false);
         }
         fetchData();
@@ -36,9 +36,14 @@ export default function UpdateProduct() {
     );
     if (!product) return <div>Product not found</div>;
 
+    const formProduct = {
+        ...product,
+        starRating: product.starRating ? String(product.starRating) : undefined,
+    };
+
     return (
         <div className="max-w-xl mx-auto py-8">
-            <ProductForm mode="update" product={product} categories={categories} />
+            <ProductForm mode="update" product={formProduct} categories={categories} />
         </div>
     );
 }

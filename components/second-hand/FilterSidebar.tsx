@@ -38,13 +38,14 @@ function extractCapacity(name: string | null): string | null {
   return null;
 }
 
-function extractUnitType(specifications: string | null): string | null {
-  if (!specifications) return null;
-  const upper = specifications.toLowerCase();
-  if (upper.includes("window")) return "Window";
-  if (upper.includes("split")) return "Split";
-  if (upper.includes("inverter")) return "Inverter";
-  return null;
+function extractUnitType(name: string | null): string[] {
+  if (!name) return [];
+  const lower = name.toLowerCase();
+  const types: string[] = [];
+  if (lower.includes("window")) types.push("Window");
+  if (lower.includes("split")) types.push("Split");
+  if (lower.includes("inverter")) types.push("Inverter");
+  return types;
 }
 
 function extractBrands(products: Product[]): string[] {
@@ -93,22 +94,45 @@ function FilterContent({
 }: FilterContentProps) {
   return (
     <div className="space-y-6">
-      {brands.length > 0 && (
+      {unitTypeOptions.length > 0 && (
         <div className="space-y-3">
-          <div className="flex items-center gap-2 text-primary font-medium">
-            <Tag className="h-4 w-4" />
-            <span className="text-sm uppercase tracking-wider font-bold">Brand</span>
+          <div className="flex items-center gap-2 text-muted-foreground font-medium">
+            <LayoutGrid className="h-4 w-4" />
+            <span className="text-sm uppercase tracking-wider font-bold">Unit Type</span>
           </div>
-          <div className="space-y-2 px-1">
-            {brands.map((brand) => (
-              <label key={brand} className="flex items-center gap-3 text-sm text-muted-foreground cursor-pointer hover:text-primary transition-colors">
-                <Checkbox
-                  checked={filters.brands.includes(brand)}
-                  onCheckedChange={() => onToggleBrand(brand)}
-                  className="border-primary data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                />
-                {brand}
+          <RadioGroup
+            value={filters.unitType || ""}
+            onValueChange={onUnitTypeChange}
+            className="space-y-2 px-1"
+          >
+            {unitTypeOptions.map((type) => (
+              <label key={type} className="flex items-center gap-3 text-sm text-muted-foreground cursor-pointer">
+                <RadioGroupItem value={type} className="border-primary text-primary" />
+                {type}
               </label>
+            ))}
+          </RadioGroup>
+        </div>
+      )}
+
+      {capacityOptions.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-muted-foreground font-medium">
+            <Snowflake className="h-4 w-4" />
+            <span className="text-sm uppercase tracking-wider font-bold">Capacity</span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 px-1">
+            {capacityOptions.map((capacity) => (
+              <button
+                key={capacity}
+                onClick={() => onCapacitySelect(capacity)}
+                className={`px-2 py-1.5 text-xs border rounded-lg transition-colors ${filters.capacity === capacity
+                  ? "bg-primary/10 border-primary text-primary font-medium"
+                  : "border-border hover:bg-muted"
+                  }`}
+              >
+                {capacity}
+              </button>
             ))}
           </div>
         </div>
@@ -134,47 +158,24 @@ function FilterContent({
         </div>
       </div>
 
-      {capacityOptions.length > 0 && (
+      {brands.length > 0 && (
         <div className="space-y-3">
-          <div className="flex items-center gap-2 text-muted-foreground font-medium">
-            <Snowflake className="h-4 w-4" />
-            <span className="text-sm uppercase tracking-wider font-bold">Capacity</span>
+          <div className="flex items-center gap-2 text-primary font-medium">
+            <Tag className="h-4 w-4" />
+            <span className="text-sm uppercase tracking-wider font-bold">Brand</span>
           </div>
-          <div className="grid grid-cols-2 gap-2 px-1">
-            {capacityOptions.map((capacity) => (
-              <button
-                key={capacity}
-                onClick={() => onCapacitySelect(capacity)}
-                className={`px-2 py-1.5 text-xs border rounded-lg transition-colors ${filters.capacity === capacity
-                  ? "bg-primary/10 border-primary text-primary font-medium"
-                  : "border-border hover:bg-muted"
-                  }`}
-              >
-                {capacity}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {unitTypeOptions.length > 0 && (
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 text-muted-foreground font-medium">
-            <LayoutGrid className="h-4 w-4" />
-            <span className="text-sm uppercase tracking-wider font-bold">Unit Type</span>
-          </div>
-          <RadioGroup
-            value={filters.unitType || ""}
-            onValueChange={onUnitTypeChange}
-            className="space-y-2 px-1"
-          >
-            {unitTypeOptions.map((type) => (
-              <label key={type} className="flex items-center gap-3 text-sm text-muted-foreground cursor-pointer">
-                <RadioGroupItem value={type} className="border-primary text-primary" />
-                {type}
+          <div className="space-y-2 px-1">
+            {brands.map((brand) => (
+              <label key={brand} className="flex items-center gap-3 text-sm text-muted-foreground cursor-pointer hover:text-primary transition-colors">
+                <Checkbox
+                  checked={filters.brands.includes(brand)}
+                  onCheckedChange={() => onToggleBrand(brand)}
+                  className="border-primary data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                />
+                {brand}
               </label>
             ))}
-          </RadioGroup>
+          </div>
         </div>
       )}
 
@@ -195,9 +196,9 @@ export function FilterSidebar({ products, onFilterChange, onSortChange, sort }: 
   const capacityOptions = [...new Set(
     products.map((p) => extractCapacity(p.name)).filter((c): c is string => c !== null)
   )].sort();
-  const unitTypeOptions = [...new Set(
-    products.map((p) => extractUnitType(p.specifications)).filter((t): t is string => t !== null)
-  )].sort();
+  const unitTypeOptions = [
+    ...new Set(products.flatMap((p) => extractUnitType(p.name)).filter(Boolean))
+  ].sort();
 
   const [filters, setFilters] = useState<FilterState>({
     brands: [],
@@ -226,7 +227,9 @@ export function FilterSidebar({ products, onFilterChange, onSortChange, sort }: 
     }
 
     if (filters.unitType) {
-      filtered = filtered.filter((p) => extractUnitType(p.specifications) === filters.unitType);
+      filtered = filtered.filter((p) =>
+        extractUnitType(p.name).includes(filters.unitType!)
+      );
     }
 
     onFilterChange(filtered);

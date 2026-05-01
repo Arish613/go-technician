@@ -15,7 +15,6 @@ export interface Faq {
   updatedAt?: string;
 }
 
-
 export interface Category {
   id: string;
   name: string;
@@ -49,6 +48,7 @@ export interface Product {
   locality?: Locality;
   brand?: string;
   label?: string;
+  starRating?: number;
   order?: number;
   createdAt: string;
   updatedAt: string;

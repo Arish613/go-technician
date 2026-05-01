@@ -32,6 +32,7 @@ model Product{
     locality Locality? @relation(fields: [localityId], references: [id])
     brand String?
     label String? // e.g. "Best Seller", "New Arrival"
+    starRating Int? // e.g. 2, 3, 4, 5 (AC energy efficiency rating)
     order Int @default(0)
     reviews Review[]
     createdAt DateTime @default(now())

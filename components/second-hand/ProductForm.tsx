@@ -26,6 +26,7 @@ const productSchema = z.object({
   localityId: z.string().optional(),
   brand: z.string().optional(),
   label: z.string().optional(),
+  starRating: z.string().optional(),
 });
 
 type ProductFormData = z.infer<typeof productSchema> & { id?: string };
@@ -33,7 +34,7 @@ type ProductFormData = z.infer<typeof productSchema> & { id?: string };
 interface ProductFormProps {
   product?: Partial<ProductFormData>;
   mode: "create" | "update";
-  categories: { id: string; name: string }[];
+  categories: { id: string; name: string; slug: string }[];
 }
 
 export function ProductForm({ product, mode, categories }: ProductFormProps) {
@@ -87,8 +88,13 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
       localityId: product?.localityId || "",
       brand: product?.brand || "",
       label: product?.label || "",
+      starRating: product?.starRating || undefined,
     },
   });
+
+  const selectedCategoryId = form.watch("categoryId");
+  const selectedCategory = categories.find((c) => c.id === selectedCategoryId);
+  const isACCategory = selectedCategory?.slug === "buy-second-hand-air-conditioner";
 
   // Watch for cityId changes and update selectedCityId and localityId accordingly
   useEffect(() => {
@@ -104,6 +110,10 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
   const onSubmit = async (data: ProductFormData) => {
     setIsSubmitting(true);
     try {
+      const payload = {
+        ...data,
+        starRating: data.starRating ? Number(data.starRating) : undefined,
+      };
       const url =
         mode === "create"
           ? "/api/second-hand/product"
@@ -112,7 +122,7 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
       const response = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
       const result = await response.json();
       if (response.ok) {
@@ -231,6 +241,23 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
               placeholder="e.g., Best Seller"
               disabled={isSubmitting}
             />
+            {isACCategory && (
+              <FormFields
+                name="starRating"
+                control={form.control}
+                label="Star Rating"
+                type="select"
+                options={[
+                  { value: "1", label: "1 Star" },
+                  { value: "2", label: "2 Star" },
+                  { value: "3", label: "3 Star" },
+                  { value: "4", label: "4 Star" },
+                  { value: "5", label: "5 Star" },
+                ]}
+                placeholder="Select AC star rating"
+                disabled={isSubmitting}
+              />
+            )}
             <div className="flex items-center space-x-2">
               <Switch
                 id="isAvailable"
