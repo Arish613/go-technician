@@ -32,6 +32,8 @@ export async function POST(request: NextRequest) {
   }
   try {
     const data = await request.json();
+    if (data.cityId === "") data.cityId = null;
+    if (data.localityId === "") data.localityId = null;
     const product = await prisma.product.create({
       data,
       include: { category: true },
