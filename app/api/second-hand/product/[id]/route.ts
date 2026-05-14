@@ -40,6 +40,8 @@ export async function PUT(
   }
   try {
     const data = await request.json();
+    if (data.cityId === "") data.cityId = null;
+    if (data.localityId === "") data.localityId = null;
     const product = await prisma.product.update({
       where: { id },
       data,
