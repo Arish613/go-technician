@@ -6,8 +6,21 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { SlidersHorizontal, X, Tag, Banknote, Snowflake, LayoutGrid } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  SlidersHorizontal,
+  X,
+  Tag,
+  Banknote,
+  Snowflake,
+  LayoutGrid,
+  Star,
+} from "lucide-react";
 import { Prisma } from "@prisma/client";
 
 type Product = Prisma.ProductGetPayload<{
@@ -29,6 +42,7 @@ interface FilterState {
   maxPrice: number;
   capacity: string | null;
   unitType: string | null;
+  starRating: number | null;
 }
 
 function extractCapacity(name: string | null): string | null {
@@ -57,7 +71,9 @@ function extractBrands(products: Product[]): string[] {
 
 function extractPriceRange(products: Product[]): [number, number] {
   if (products.length === 0) return [0, 50000];
-  const prices = products.map((p) => (p.discountPrice && p.discountPrice < p.price ? p.discountPrice : p.price));
+  const prices = products.map((p) =>
+    p.discountPrice && p.discountPrice < p.price ? p.discountPrice : p.price,
+  );
   return [Math.min(...prices), Math.max(...prices)];
 }
 
@@ -69,10 +85,12 @@ interface FilterContentProps {
   brands: string[];
   capacityOptions: string[];
   unitTypeOptions: string[];
+  starRatingOptions: number[];
   onToggleBrand: (brand: string) => void;
   onPriceChange: (values: number[]) => void;
   onCapacitySelect: (capacity: string) => void;
   onUnitTypeChange: (type: string) => void;
+  onStarRatingSelect: (rating: number) => void;
   onClearFilters: () => void;
   activeFilterCount: number;
 }
@@ -85,10 +103,12 @@ function FilterContent({
   brands,
   capacityOptions,
   unitTypeOptions,
+  starRatingOptions,
   onToggleBrand,
   onPriceChange,
   onCapacitySelect,
   onUnitTypeChange,
+  onStarRatingSelect,
   onClearFilters,
   activeFilterCount,
 }: FilterContentProps) {
@@ -98,7 +118,9 @@ function FilterContent({
         <div className="space-y-3">
           <div className="flex items-center gap-2 text-muted-foreground font-medium">
             <LayoutGrid className="h-4 w-4" />
-            <span className="text-sm uppercase tracking-wider font-bold">Unit Type</span>
+            <span className="text-sm uppercase tracking-wider font-bold">
+              Unit Type
+            </span>
           </div>
           <RadioGroup
             value={filters.unitType || ""}
@@ -106,8 +128,14 @@ function FilterContent({
             className="space-y-2 px-1"
           >
             {unitTypeOptions.map((type) => (
-              <label key={type} className="flex items-center gap-3 text-sm text-muted-foreground cursor-pointer">
-                <RadioGroupItem value={type} className="border-primary text-primary" />
+              <label
+                key={type}
+                className="flex items-center gap-3 text-sm text-muted-foreground cursor-pointer"
+              >
+                <RadioGroupItem
+                  value={type}
+                  className="border-primary text-primary"
+                />
                 {type}
               </label>
             ))}
@@ -119,19 +147,50 @@ function FilterContent({
         <div className="space-y-3">
           <div className="flex items-center gap-2 text-muted-foreground font-medium">
             <Snowflake className="h-4 w-4" />
-            <span className="text-sm uppercase tracking-wider font-bold">Capacity</span>
+            <span className="text-sm uppercase tracking-wider font-bold">
+              Capacity
+            </span>
           </div>
           <div className="grid grid-cols-2 gap-2 px-1">
             {capacityOptions.map((capacity) => (
               <button
                 key={capacity}
                 onClick={() => onCapacitySelect(capacity)}
-                className={`px-2 py-1.5 text-xs border rounded-lg transition-colors ${filters.capacity === capacity
-                  ? "bg-primary/10 border-primary text-primary font-medium"
-                  : "border-border hover:bg-muted"
-                  }`}
+                className={`px-2 py-1.5 text-xs border rounded-lg transition-colors ${
+                  filters.capacity === capacity
+                    ? "bg-primary/10 border-primary text-primary font-medium"
+                    : "border-border hover:bg-muted"
+                }`}
               >
                 {capacity}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {starRatingOptions.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-muted-foreground font-medium">
+            <Star className="h-4 w-4" />
+            <span className="text-sm uppercase tracking-wider font-bold">
+              Star Rating
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 px-1">
+            {starRatingOptions.map((rating) => (
+              <button
+                key={rating}
+                onClick={() => onStarRatingSelect(rating)}
+                className={`px-2 py-1.5 text-xs border rounded-lg transition-colors ${
+                  filters.starRating === rating
+                    ? "bg-primary/10 border-primary text-primary font-medium"
+                    : "border-border hover:bg-muted"
+                }`}
+              >
+                {Array.from({ length: rating }).map((_, i) => (
+                  <Star key={i} className="h-3 w-3 inline-block" />
+                ))}
               </button>
             ))}
           </div>
@@ -141,7 +200,9 @@ function FilterContent({
       <div className="space-y-3">
         <div className="flex items-center gap-2 text-muted-foreground font-medium">
           <Banknote className="h-4 w-4" />
-          <span className="text-sm uppercase tracking-wider font-bold">Price Range</span>
+          <span className="text-sm uppercase tracking-wider font-bold">
+            Price Range
+          </span>
         </div>
         <div className="px-1">
           <Slider
@@ -162,11 +223,16 @@ function FilterContent({
         <div className="space-y-3">
           <div className="flex items-center gap-2 text-primary font-medium">
             <Tag className="h-4 w-4" />
-            <span className="text-sm uppercase tracking-wider font-bold">Brand</span>
+            <span className="text-sm uppercase tracking-wider font-bold">
+              Brand
+            </span>
           </div>
           <div className="space-y-2 px-1">
             {brands.map((brand) => (
-              <label key={brand} className="flex items-center gap-3 text-sm text-muted-foreground cursor-pointer hover:text-primary transition-colors">
+              <label
+                key={brand}
+                className="flex items-center gap-3 text-sm text-muted-foreground cursor-pointer hover:text-primary transition-colors"
+              >
                 <Checkbox
                   checked={filters.brands.includes(brand)}
                   onCheckedChange={() => onToggleBrand(brand)}
@@ -180,7 +246,11 @@ function FilterContent({
       )}
 
       {activeFilterCount > 0 && (
-        <Button onClick={onClearFilters} variant="outline" className="w-full mt-4">
+        <Button
+          onClick={onClearFilters}
+          variant="outline"
+          className="w-full mt-4"
+        >
           Clear All Filters
         </Button>
       )}
@@ -188,17 +258,35 @@ function FilterContent({
   );
 }
 
-export function FilterSidebar({ products, onFilterChange, onSortChange, sort }: FilterSidebarProps) {
+export function FilterSidebar({
+  products,
+  onFilterChange,
+  onSortChange,
+  sort,
+}: FilterSidebarProps) {
   const brands = extractBrands(products);
   const [minPrice, maxPrice] = extractPriceRange(products);
 
   // Derive which capacity/unit-type values actually exist in the data
-  const capacityOptions = [...new Set(
-    products.map((p) => extractCapacity(p.name)).filter((c): c is string => c !== null)
-  )].sort();
-  const unitTypeOptions = [
-    ...new Set(products.flatMap((p) => extractUnitType(p.name)).filter(Boolean))
+  const capacityOptions = [
+    ...new Set(
+      products
+        .map((p) => extractCapacity(p.name))
+        .filter((c): c is string => c !== null),
+    ),
   ].sort();
+  const unitTypeOptions = [
+    ...new Set(
+      products.flatMap((p) => extractUnitType(p.name)).filter(Boolean),
+    ),
+  ].sort();
+  const starRatingOptions = [
+    ...new Set(
+      products
+        .map((p) => p.starRating)
+        .filter((s): s is number => s !== null),
+    ),
+  ].sort((a, b) => a - b);
 
   const [filters, setFilters] = useState<FilterState>({
     brands: [],
@@ -206,29 +294,46 @@ export function FilterSidebar({ products, onFilterChange, onSortChange, sort }: 
     maxPrice,
     capacity: null,
     unitType: null,
+    starRating: null,
   });
-  const [priceRange, setPriceRange] = useState<[number, number]>([minPrice, maxPrice]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    minPrice,
+    maxPrice,
+  ]);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const applyFilters = useCallback(() => {
     let filtered = [...products];
 
     if (filters.brands.length > 0) {
-      filtered = filtered.filter((p) => p.brand && filters.brands.includes(p.brand));
+      filtered = filtered.filter(
+        (p) => p.brand && filters.brands.includes(p.brand),
+      );
     }
 
     filtered = filtered.filter((p) => {
-      const price = p.discountPrice && p.discountPrice < p.price ? p.discountPrice : p.price;
+      const price =
+        p.discountPrice && p.discountPrice < p.price
+          ? p.discountPrice
+          : p.price;
       return price >= filters.minPrice && price <= filters.maxPrice;
     });
 
     if (filters.capacity) {
-      filtered = filtered.filter((p) => extractCapacity(p.name) === filters.capacity);
+      filtered = filtered.filter(
+        (p) => extractCapacity(p.name) === filters.capacity,
+      );
     }
 
     if (filters.unitType) {
       filtered = filtered.filter((p) =>
-        extractUnitType(p.name).includes(filters.unitType!)
+        extractUnitType(p.name).includes(filters.unitType!),
+      );
+    }
+
+    if (filters.starRating) {
+      filtered = filtered.filter(
+        (p) => p.starRating === filters.starRating,
       );
     }
 
@@ -242,13 +347,19 @@ export function FilterSidebar({ products, onFilterChange, onSortChange, sort }: 
   const toggleBrand = (brand: string) => {
     setFilters((prev) => ({
       ...prev,
-      brands: prev.brands.includes(brand) ? prev.brands.filter((b) => b !== brand) : [...prev.brands, brand],
+      brands: prev.brands.includes(brand)
+        ? prev.brands.filter((b) => b !== brand)
+        : [...prev.brands, brand],
     }));
   };
 
   const handlePriceChange = (values: number[]) => {
     setPriceRange([values[0], values[1]]);
-    setFilters((prev) => ({ ...prev, minPrice: values[0], maxPrice: values[1] }));
+    setFilters((prev) => ({
+      ...prev,
+      minPrice: values[0],
+      maxPrice: values[1],
+    }));
   };
 
   const handleCapacitySelect = (capacity: string) => {
@@ -265,13 +376,31 @@ export function FilterSidebar({ products, onFilterChange, onSortChange, sort }: 
     }));
   };
 
+  const handleStarRatingSelect = (rating: number) => {
+    setFilters((prev) => ({
+      ...prev,
+      starRating: prev.starRating === rating ? null : rating,
+    }));
+  };
+
   // Fix: reset minPrice/maxPrice in filters state too so price filter is actually cleared
   const clearFilters = () => {
-    setFilters({ brands: [], minPrice, maxPrice, capacity: null, unitType: null });
+    setFilters({
+      brands: [],
+      minPrice,
+      maxPrice,
+      capacity: null,
+      unitType: null,
+      starRating: null,
+    });
     setPriceRange([minPrice, maxPrice]);
   };
 
-  const activeFilterCount = filters.brands.length + (filters.capacity ? 1 : 0) + (filters.unitType ? 1 : 0);
+  const activeFilterCount =
+    filters.brands.length +
+    (filters.capacity ? 1 : 0) +
+    (filters.unitType ? 1 : 0) +
+    (filters.starRating ? 1 : 0);
 
   const sharedContentProps = {
     filters,
@@ -281,10 +410,12 @@ export function FilterSidebar({ products, onFilterChange, onSortChange, sort }: 
     brands,
     capacityOptions,
     unitTypeOptions,
+    starRatingOptions,
     onToggleBrand: toggleBrand,
     onPriceChange: handlePriceChange,
     onCapacitySelect: handleCapacitySelect,
     onUnitTypeChange: handleUnitTypeChange,
+    onStarRatingSelect: handleStarRatingSelect,
     onClearFilters: clearFilters,
     activeFilterCount,
   };
@@ -305,17 +436,27 @@ export function FilterSidebar({ products, onFilterChange, onSortChange, sort }: 
         <div className="flex items-center gap-2 overflow-x-auto">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline" size="sm" className="flex items-center gap-1 whitespace-nowrap">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1 whitespace-nowrap"
+              >
                 <SlidersHorizontal className="h-4 w-4" />
                 Filter
                 {activeFilterCount > 0 && (
-                  <Badge variant="default" className="ml-1 h-5 w-5 p-0 justify-center items-center text-[10px]">
+                  <Badge
+                    variant="default"
+                    className="ml-1 h-5 w-5 p-0 justify-center items-center text-[10px]"
+                  >
                     {activeFilterCount}
                   </Badge>
                 )}
               </Button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="rounded-t-2xl max-h-[80vh] overflow-y-auto p-5">
+            <SheetContent
+              side="bottom"
+              className="rounded-t-2xl max-h-[80vh] overflow-y-auto p-5"
+            >
               <SheetTitle>Filters</SheetTitle>
               <FilterContent {...sharedContentProps} />
             </SheetContent>
@@ -323,15 +464,47 @@ export function FilterSidebar({ products, onFilterChange, onSortChange, sort }: 
 
           {/* Active filter pills */}
           {filters.capacity && (
-            <Badge variant="secondary" className="flex items-center gap-1 whitespace-nowrap">
+            <Badge
+              variant="secondary"
+              className="flex items-center gap-1 whitespace-nowrap"
+            >
               {filters.capacity}
-              <X className="h-3 w-3 cursor-pointer" onClick={() => setFilters((prev) => ({ ...prev, capacity: null }))} />
+              <X
+                className="h-3 w-3 cursor-pointer"
+                onClick={() =>
+                  setFilters((prev) => ({ ...prev, capacity: null }))
+                }
+              />
             </Badge>
           )}
           {filters.unitType && (
-            <Badge variant="secondary" className="flex items-center gap-1 whitespace-nowrap">
+            <Badge
+              variant="secondary"
+              className="flex items-center gap-1 whitespace-nowrap"
+            >
               {filters.unitType}
-              <X className="h-3 w-3 cursor-pointer" onClick={() => setFilters((prev) => ({ ...prev, unitType: null }))} />
+              <X
+                className="h-3 w-3 cursor-pointer"
+                onClick={() =>
+                  setFilters((prev) => ({ ...prev, unitType: null }))
+                }
+              />
+            </Badge>
+          )}
+          {filters.starRating && (
+            <Badge
+              variant="secondary"
+              className="flex items-center gap-1 whitespace-nowrap"
+            >
+              {Array.from({ length: filters.starRating }).map((_, i) => (
+                <Star key={i} className="h-3 w-3 inline-block" />
+              ))}
+              <X
+                className="h-3 w-3 cursor-pointer"
+                onClick={() =>
+                  setFilters((prev) => ({ ...prev, starRating: null }))
+                }
+              />
             </Badge>
           )}
         </div>
