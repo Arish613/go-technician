@@ -18,7 +18,7 @@ import { Star } from "lucide-react";
 import { Benefit } from "@/components/service/subservice/Benefit";
 import { RecentBlogs } from "@/components/blog/RecentBlogs";
 import type { ServiceWithRelations } from "@/types/service";
-import type { Review, LocationPage, LocationPageFaq } from "@prisma/client";
+import type { Review, LocationPage, LocationPageFaq, Blog } from "@prisma/client";
 
 type LocationPageWithFaqs = LocationPage & {
   faqs: LocationPageFaq[];
@@ -36,6 +36,7 @@ interface LocationPageContentProps {
   reviews: Review[] | null;
   relatedLocations?: RelatedLocation[];
   cityId?: string;
+  recentBlogs?: Blog[];
 }
 
 function formatLocationName(location: string): string {
@@ -51,6 +52,7 @@ export function LocationPageContent({
   reviews,
   relatedLocations = [],
   cityId,
+  recentBlogs,
 }: LocationPageContentProps) {
   const hasTypes = service.type.length > 0;
 
@@ -90,10 +92,7 @@ export function LocationPageContent({
               )}
             </div>
             {service.benefits && service.benefits.length > 0 && (
-              <Benefit
-                benefits={service.benefits}
-                serviceName={service.name}
-              />
+              <Benefit benefits={service.benefits} serviceName={service.name} />
             )}
           </div>
         </section>
@@ -119,9 +118,7 @@ export function LocationPageContent({
                   className="flex items-center gap-2 group"
                 >
                   <Star className="w-5 h-5 text-blue-600 fill-blue-600" />
-                  <span className="font-bold text-base">
-                    {averageRating}/5
-                  </span>
+                  <span className="font-bold text-base">{averageRating}/5</span>
                   <span className="text-xs text-muted-foreground group-hover:text-blue-600 transition-colors">
                     ({reviews?.length || 0} Review
                     {reviews?.length !== 1 ? "s" : ""})
@@ -251,7 +248,7 @@ export function LocationPageContent({
       <section>{showAMCTable && <AMCComparisonTable />}</section>
 
       <section className="md:mx-20 px-4">
-        <RecentBlogs />
+        <RecentBlogs blogs={recentBlogs} />
       </section>
 
       {/* CTA Section */}
@@ -277,16 +274,24 @@ export function LocationPageContent({
         <section className="py-12 md:py-16 bg-muted/30">
           <div className="container mx-auto px-4">
             <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">
-              Other Localities We Serve in {locationName}
+              Other Localities We Serve
             </h2>
             <p className="text-center text-muted-foreground mb-8">
-              We also provide {service.name.toLowerCase()} services in these areas
+              We also provide {service.name.toLowerCase()} services in these
+              areas
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               {relatedLocations.map((loc) => (
                 <Link key={loc.slug} href={`/service/${loc.slug}`}>
-                  <Button variant="outline" className="hover:bg-primary hover:text-primary-foreground transition-colors">
-                    {loc.title.replace(service.name, "").replace("in ", "").replace("In ", "").trim() || formatLocationName(loc.location)}
+                  <Button
+                    variant="outline"
+                    className="hover:bg-primary hover:text-primary-foreground transition-colors"
+                  >
+                    {loc.title
+                      .replace(service.name, "")
+                      .replace("in ", "")
+                      .replace("In ", "")
+                      .trim() || formatLocationName(loc.location)}
                   </Button>
                 </Link>
               ))}

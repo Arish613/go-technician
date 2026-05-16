@@ -3,9 +3,16 @@ import { BlogCard } from "@/components/blog/Card";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
+import type { Blog } from "@prisma/client";
 
-export async function RecentBlogs() {
-    const result = await getRecentBlogs(3);
+interface RecentBlogsProps {
+  blogs?: Blog[];
+}
+
+export async function RecentBlogs({ blogs }: RecentBlogsProps) {
+    const result = blogs
+      ? { success: true, data: blogs }
+      : await getRecentBlogs(3);
 
     if (!result.success || !result.data || result.data.length === 0) {
         return null;

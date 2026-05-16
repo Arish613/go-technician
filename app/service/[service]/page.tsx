@@ -24,7 +24,9 @@ import { AMCComparisonTable } from "@/components/service/AMCTable";
 import { Star } from "lucide-react";
 import { Benefit } from "@/components/service/subservice/Benefit";
 import { RecentBlogs } from "@/components/blog/RecentBlogs";
+import { getRecentBlogs } from "@/lib/action/blog";
 import { LocationPageContent } from "@/components/location/LocationPageContent";
+import { unstable_cache } from "next/cache";
 
 interface ServicePageProps {
   params: {
@@ -45,6 +47,12 @@ function extractServiceSlugFromLocation(slug: string): string | null {
   return null;
 }
 
+export const getCachedServiceBySlug = unstable_cache(
+  async (slug: string) => getServiceBySlug(slug),
+  ["service-by-slug"],
+  { revalidate: 60, tags: ["service"] },
+);
+
 export default async function ServicePage({ params }: ServicePageProps) {
   const resolvedParams = await params;
   const slug = resolvedParams.service;
@@ -57,12 +65,17 @@ export default async function ServicePage({ params }: ServicePageProps) {
       const locationPage = locationResult.data;
 
       // Fetch the parent service data using the serviceSlug
-      const [serviceResult, reviews, relatedLocationsResult, cityResult] = await Promise.all([
-        getServiceBySlug(locationPage.serviceSlug),
-        getReviewsByServiceSlug(locationPage.serviceSlug),
-        getLocationPagesByServiceSlug(locationPage.serviceSlug, locationPage.location),
-        getCityBySlug(locationPage.location),
-      ]);
+      const [serviceResult, reviews, relatedLocationsResult, cityResult, recentBlogsResult] =
+        await Promise.all([
+          getCachedServiceBySlug(locationPage.serviceSlug),
+          getReviewsByServiceSlug(locationPage.serviceSlug),
+          getLocationPagesByServiceSlug(
+            locationPage.serviceSlug,
+            locationPage.location,
+          ),
+          getCityBySlug(locationPage.location),
+          getRecentBlogs(3),
+        ]);
 
       if (!serviceResult.success || !serviceResult.data) {
         notFound();
@@ -76,8 +89,13 @@ export default async function ServicePage({ params }: ServicePageProps) {
           locationPage={locationPage}
           service={service}
           reviews={reviews}
-          relatedLocations={relatedLocationsResult.success ? relatedLocationsResult.data : []}
+          relatedLocations={
+            relatedLocationsResult.success ? relatedLocationsResult.data : []
+          }
           cityId={cityId}
+          recentBlogs={
+            recentBlogsResult.success ? recentBlogsResult.data : undefined
+          }
         />
       );
     }
@@ -87,23 +105,27 @@ export default async function ServicePage({ params }: ServicePageProps) {
   }
 
   // Regular service page logic
-  const resultPromise = getServiceBySlug(slug);
-  const reviewsPromise = getReviewsByServiceSlug(slug);
 
-  const result = await resultPromise;
-
+  const [result, reviews, relatedLocationsResult, recentBlogsResult] =
+    await Promise.all([
+      getCachedServiceBySlug(slug),
+      getReviewsByServiceSlug(slug),
+      getLocationPagesByServiceSlug(slug),
+      getRecentBlogs(3),
+    ]);
   if (!result.success || !result.data) {
     notFound();
   }
 
   const service = result.data;
   const hasTypes = service.type.length > 0;
-
-  const reviews = await reviewsPromise;
-
-  const averageRating = reviews && reviews.length > 0
-    ? (reviews.reduce((acc, review) => acc + Number(review.rating), 0) / reviews.length).toFixed(2)
-    : "0.00";
+  const averageRating =
+    reviews && reviews.length > 0
+      ? (
+          reviews.reduce((acc, review) => acc + Number(review.rating), 0) /
+          reviews.length
+        ).toFixed(2)
+      : "0.00";
 
   const showAMCTable = slug.toLowerCase().includes("ac-repair");
 
@@ -134,7 +156,10 @@ export default async function ServicePage({ params }: ServicePageProps) {
           </div>
         </section>
         {/* Sub Services Section - Reduced top padding */}
-        <section id="services" className="py-6 md:py-10 col-span-2 lg:col-span-1">
+        <section
+          id="services"
+          className="py-6 md:py-10 col-span-2 lg:col-span-1"
+        >
           <div className=" md:mx-20 px-4">
             <div className="space-y-3 mb-6">
               {/* <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
@@ -156,40 +181,18 @@ export default async function ServicePage({ params }: ServicePageProps) {
               </p>
 
               <div className="flex flex-wrap items-center gap-4 pt-0">
-                <Link href={`/service/${slug}/reviews`} className="flex items-center gap-2 group">
+                <Link
+                  href={`/service/${slug}/reviews`}
+                  className="flex items-center gap-2 group"
+                >
                   <Star className="w-5 h-5 text-blue-600 fill-blue-600" />
                   <span className="font-bold text-base">{averageRating}/5</span>
                   <span className="text-xs text-muted-foreground group-hover:text-blue-600 transition-colors">
-                    ({reviews?.length || 0} Review{reviews?.length !== 1 ? 's' : ''})
+                    ({reviews?.length || 0} Review
+                    {reviews?.length !== 1 ? "s" : ""})
                   </span>
                 </Link>
-
-                {/* <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <span className="font-semibold">30812</span>
-                  <span className="text-xs text-muted-foreground">Successful Bookings</span>
-                </div> */}
               </div>
-
-              {/* <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 md:p-4 mt-4">
-                <div className="flex items-start gap-3">
-                  <div className="bg-orange-100 p-2 rounded-full shrink-0">
-                    <svg className="w-5 h-5 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-sm md:text-base text-orange-900 mb-1">
-                      Best Price Guarantee
-                    </h3>
-                    <p className="text-xs md:text-sm text-orange-800">
-                      Expert technicians with transparent pricing and reliable service. No Hidden Charges.
-                    </p>
-                  </div>
-                </div>
-              </div> */}
             </div>
 
             {hasTypes ? (
@@ -218,7 +221,8 @@ export default async function ServicePage({ params }: ServicePageProps) {
                     .filter((sub) => sub.type === type)
                     .sort((a, b) => {
                       // If both have order, sort by order
-                      if (a.order != null && b.order != null) return a.order - b.order;
+                      if (a.order != null && b.order != null)
+                        return a.order - b.order;
                       // If only a has order, it comes first
                       if (a.order != null) return -1;
                       // If only b has order, it comes first
@@ -261,10 +265,14 @@ export default async function ServicePage({ params }: ServicePageProps) {
       </div>
       {/* Why choose us */}
       {service.whyChooseUs && (
-        <WhyChooseUs service={{ name: service.name, whyChooseUs: service.whyChooseUs }} />
+        <WhyChooseUs
+          service={{ name: service.name, whyChooseUs: service.whyChooseUs }}
+        />
       )}
 
-      {reviews && reviews.length > 0 && <ServiceReviews reviews={reviews} serviceSlug={slug} />}
+      {reviews && reviews.length > 0 && (
+        <ServiceReviews reviews={reviews} serviceSlug={slug} />
+      )}
 
       {/* Service Content */}
       <section className="pb-10 pt-0 md:py-12 md:px-10 bg-muted/30">
@@ -302,12 +310,14 @@ export default async function ServicePage({ params }: ServicePageProps) {
         </section>
       )}
 
-      <section>
-        {showAMCTable && <AMCComparisonTable />}
-      </section>
+      <section>{showAMCTable && <AMCComparisonTable />}</section>
 
       <section className="md:mx-20 px-4">
-        <RecentBlogs />
+        <RecentBlogs
+          blogs={
+            recentBlogsResult.success ? recentBlogsResult.data : undefined
+          }
+        />
       </section>
       {/* CTA Section */}
       <section className="py-12 md:py-16 bg-primary text-primary-foreground">
@@ -326,10 +336,40 @@ export default async function ServicePage({ params }: ServicePageProps) {
           </Link>
         </div>
       </section>
+
+      {relatedLocationsResult.success &&
+        relatedLocationsResult.data.length > 0 && (
+          <section className="py-12 md:py-16 bg-muted/30">
+            <div className="container mx-auto px-4">
+              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">
+                Other Localities We Serve
+              </h2>
+              <p className="text-center text-muted-foreground mb-8">
+                We also provide {service.name.toLowerCase()} services in these
+                areas
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                {relatedLocationsResult.data.map((loc) => (
+                  <Link key={loc.slug} href={`/service/${loc.slug}`}>
+                    <Button
+                      variant="outline"
+                      className="hover:bg-primary hover:text-primary-foreground transition-colors"
+                    >
+                      {loc.title
+                        .replace(service.name, "")
+                        .replace("in ", "")
+                        .replace("In ", "")
+                        .trim() || loc.location}
+                    </Button>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
     </div>
   );
 }
-
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: ServicePageProps) {
@@ -344,8 +384,7 @@ export async function generateMetadata({ params }: ServicePageProps) {
       const locationPage = locationResult.data;
       return {
         title:
-          locationPage.metaTitle ||
-          `${locationPage.title} | Go Technicians`,
+          locationPage.metaTitle || `${locationPage.title} | Go Technicians`,
         description: locationPage.description,
         openGraph: {
           title: locationPage.title,
@@ -359,7 +398,7 @@ export async function generateMetadata({ params }: ServicePageProps) {
   }
 
   // Regular service metadata
-  const result = await getServiceBySlug(slug);
+  const result = await getCachedServiceBySlug(slug);
 
   if (!result.success || !result.data) {
     return {
