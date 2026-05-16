@@ -32,6 +32,7 @@ const productSchema = z.object({
   starRating: z.string().optional(),
   description: z.string().optional(),
   whatsIncluded: z.array(z.string()).optional(),
+  additionalInfo: z.array(z.string()).optional(),
 });
 
 type ProductFormData = z.infer<typeof productSchema> & { id?: string };
@@ -47,8 +48,11 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cities, setCities] = useState<City[]>([]);
   const [localities, setLocalities] = useState<Locality[]>([]);
-  const [selectedCityId, setSelectedCityId] = useState<string>(product?.cityId || "");
-  const [newIncludedItem, setNewIncludedItem] = useState("");
+  const [selectedCityId, setSelectedCityId] = useState<string>(
+    product?.cityId || "",
+  );
+  const [newWhatsIncludedItem, setNewWhatsIncludedItem] = useState("");
+  const [newAdditionalInfoItem, setNewAdditionalInfoItem] = useState("");
 
   useEffect(() => {
     async function fetchData() {
@@ -97,11 +101,13 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
       starRating: product?.starRating || undefined,
       description: product?.description || "",
       whatsIncluded: product?.whatsIncluded || [],
+      additionalInfo: product?.additionalInfo || [],
     },
   });
   const selectedCategoryId = form.watch("categoryId");
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId);
-  const isACCategory = selectedCategory?.slug === "buy-second-hand-air-conditioner";
+  const isACCategory =
+    selectedCategory?.slug === "buy-second-hand-air-conditioner";
 
   // Watch for cityId changes and update selectedCityId and localityId accordingly
   useEffect(() => {
@@ -114,20 +120,37 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
     return () => subscription.unsubscribe();
   }, [form]);
 
-  const addIncludedItem = () => {
-    const item = newIncludedItem.trim();
+  const addWhatsIncludedItem = () => {
+    const item = newWhatsIncludedItem.trim();
     if (item) {
       const current = form.getValues("whatsIncluded") || [];
       form.setValue("whatsIncluded", [...current, item]);
-      setNewIncludedItem("");
+      setNewWhatsIncludedItem("");
     }
   };
 
-  const removeIncludedItem = (index: number) => {
+  const removeWhatsIncludedItem = (index: number) => {
     const current = form.getValues("whatsIncluded") || [];
     form.setValue(
       "whatsIncluded",
-      current.filter((_, i) => i !== index)
+      current.filter((_, i) => i !== index),
+    );
+  };
+
+  const addAdditionalInfoItem = () => {
+    const item = newAdditionalInfoItem.trim();
+    if (item) {
+      const current = form.getValues("additionalInfo") || [];
+      form.setValue("additionalInfo", [...current, item]);
+      setNewAdditionalInfoItem("");
+    }
+  };
+
+  const removeAdditionalInfoItem = (index: number) => {
+    const current = form.getValues("additionalInfo") || [];
+    form.setValue(
+      "additionalInfo",
+      current.filter((_, i) => i !== index),
     );
   };
 
@@ -244,10 +267,12 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
                 control={form.control}
                 label="City"
                 type="select"
-                options={cities.filter((c) => c.isActive).map((city) => ({
-                  value: city.id,
-                  label: city.name,
-                }))}
+                options={cities
+                  .filter((c) => c.isActive)
+                  .map((city) => ({
+                    value: city.id,
+                    label: city.name,
+                  }))}
                 placeholder="Select city"
                 disabled={isSubmitting}
               />
@@ -256,10 +281,12 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
                 control={form.control}
                 label="Locality"
                 type="select"
-                options={filteredLocalities.filter((l) => l.isActive).map((loc) => ({
-                  value: loc.id,
-                  label: loc.name,
-                }))}
+                options={filteredLocalities
+                  .filter((l) => l.isActive)
+                  .map((loc) => ({
+                    value: loc.id,
+                    label: loc.name,
+                  }))}
                 placeholder="Select locality"
                 disabled={isSubmitting || !selectedCityId}
               />
@@ -286,20 +313,20 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
               <Label>What&apos;s Included</Label>
               <div className="flex gap-2">
                 <Input
-                  value={newIncludedItem}
-                  onChange={(e) => setNewIncludedItem(e.target.value)}
+                  value={newWhatsIncludedItem}
+                  onChange={(e) => setNewWhatsIncludedItem(e.target.value)}
                   placeholder="e.g., Power Cable, Remote, Warranty Card"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      addIncludedItem();
+                      addWhatsIncludedItem();
                     }
                   }}
                   disabled={isSubmitting}
                 />
                 <Button
                   type="button"
-                  onClick={addIncludedItem}
+                  onClick={addWhatsIncludedItem}
                   variant="outline"
                   size="sm"
                   disabled={isSubmitting}
@@ -313,7 +340,49 @@ export function ProductForm({ product, mode, categories }: ProductFormProps) {
                     {item}
                     <button
                       type="button"
-                      onClick={() => removeIncludedItem(index)}
+                      onClick={() => removeWhatsIncludedItem(index)}
+                      className="ml-2 hover:text-destructive"
+                      disabled={isSubmitting}
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            {/* Additional Info */}
+            <div className="space-y-2">
+              <Label>Additional Info</Label>
+              <div className="flex gap-2">
+                <Input
+                  value={newAdditionalInfoItem}
+                  onChange={(e) => setNewAdditionalInfoItem(e.target.value)}
+                  placeholder="e.g., 1 year warranty, 3 months old, tested by technician"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addAdditionalInfoItem();
+                    }
+                  }}
+                  disabled={isSubmitting}
+                />
+                <Button
+                  type="button"
+                  onClick={addAdditionalInfoItem}
+                  variant="outline"
+                  size="sm"
+                  disabled={isSubmitting}
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {(form.watch("additionalInfo") || []).map((item, index) => (
+                  <Badge key={index} variant="secondary">
+                    {item}
+                    <button
+                      type="button"
+                      onClick={() => removeAdditionalInfoItem(index)}
                       className="ml-2 hover:text-destructive"
                       disabled={isSubmitting}
                     >

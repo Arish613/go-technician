@@ -35,6 +35,7 @@ model Product{
     starRating Int? // e.g. 2, 3, 4, 5 (AC energy efficiency rating)
     description String?
     whatsIncluded String[] @default([])
+    additionalInfo String[] @default([])
     order Int @default(0) // for product placement in listings
     reviews Review[]
     createdAt DateTime @default(now())

@@ -51,6 +51,7 @@ export interface Product {
   starRating?: number;
   description?: string;
   whatsIncluded?: string[];
+  additionalInfo?: string[];
   order?: number;
   createdAt: string;
   updatedAt: string;
