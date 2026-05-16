@@ -71,7 +71,7 @@ async function addLocalities() {
 
     console.log("\n📋 Final locality names to add:");
     localityNames.forEach((name, i) => {
-      console.log(`   ${i + 1}. ${name}`);
+      console.log(`   ${i + 1}. ${name} (slug: ${slugify(rawNames[i])}-${city.slug})`);
     });
 
     const confirm = await question(
@@ -88,8 +88,9 @@ async function addLocalities() {
 
     console.log("\n🚀 Processing...\n");
 
-    for (const name of localityNames) {
-      const localitySlug = `${slugify(name)}-${city.slug}`;
+    for (let i = 0; i < localityNames.length; i++) {
+      const displayName = localityNames[i];
+      const localitySlug = `${slugify(rawNames[i])}-${city.slug}`;
 
       const existing = await prisma.locality.findUnique({
         where: { slug: localitySlug },
@@ -97,7 +98,7 @@ async function addLocalities() {
 
       if (existing) {
         console.log(
-          `   ⏭️  Skipped: ${name} (slug: ${localitySlug} already exists)`,
+          `   ⏭️  Skipped: ${displayName} (slug: ${localitySlug} already exists)`,
         );
         skippedCount++;
         continue;
@@ -106,16 +107,16 @@ async function addLocalities() {
       try {
         await prisma.locality.create({
           data: {
-            name,
+            name: displayName,
             slug: localitySlug,
             cityId: city.id,
             isActive: true,
           },
         });
-        console.log(`   ✅ Created: ${name} (slug: ${localitySlug})`);
+        console.log(`   ✅ Created: ${displayName} (slug: ${localitySlug})`);
         createdCount++;
       } catch (error) {
-        console.error(`   ❌ Error: ${name} -`, error);
+        console.error(`   ❌ Error: ${displayName} -`, error);
         errorCount++;
       }
     }
