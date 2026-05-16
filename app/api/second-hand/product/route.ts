@@ -56,7 +56,7 @@ export async function PATCH(request: NextRequest) {
   }
   try {
     const { orders } = await request.json();
-    
+
     if (!Array.isArray(orders)) {
       return NextResponse.json(
         { error: "Invalid request: orders must be an array" },
@@ -69,13 +69,13 @@ export async function PATCH(request: NextRequest) {
         prisma.product.update({
           where: { id: item.id },
           data: { order: item.order },
-        })
-      )
+        }),
+      ),
     );
 
     return NextResponse.json(
       { success: true, message: "Product order updated" },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Error in PATCH /api/second-hand/product:", error);
