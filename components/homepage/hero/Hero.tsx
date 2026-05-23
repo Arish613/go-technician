@@ -86,6 +86,7 @@ export function Hero() {
                                             src={banner.src}
                                             alt={banner.alt}
                                             fill
+                                            sizes="(max-width: 768px) 100vw, 1200px"
                                             priority={idx === 0}
                                         />
                                     </div>
@@ -105,6 +106,7 @@ export function Hero() {
                                             src={banner.src}
                                             alt={banner.alt}
                                             fill
+                                            sizes="100vw"
                                             priority={idx === 0}
                                         />
                                     </div>

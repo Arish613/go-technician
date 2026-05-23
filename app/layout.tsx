@@ -86,6 +86,13 @@ export default function RootLayout({
     <html lang="en" className={dmSans.variable}>
       <head>
         <link rel="icon" href="/favicon.png" sizes="any" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link
+          rel="preconnect"
+          href="https://www.google-analytics.com"
+          crossOrigin="anonymous"
+        />
+        <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=AW-17908761237"
           strategy="afterInteractive"
@@ -101,7 +108,9 @@ export default function RootLayout({
         <script
           id="schema-organization"
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(getOrganizationSchema()) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(getOrganizationSchema()),
+          }}
         />
       </head>
       <body
