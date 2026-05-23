@@ -77,7 +77,9 @@ export function JoinProNetwork() {
                             </div>
 
                             {/* Background Pattern for Right Side */}
-                            <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                            <div className="absolute inset-0 opacity-[0.05]"
+                                style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px), repeating-linear-gradient(90deg, transparent, transparent 2px, #000 2px, #000 4px)', backgroundSize: '40px 40px' }}>
+                            </div>
                         </div>
 
                     </div>

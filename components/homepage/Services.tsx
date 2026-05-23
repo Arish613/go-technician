@@ -101,7 +101,7 @@ export function Services() {
                       src={category.icon}
                       alt={category.name}
                       fill
-                      sizes="(max-width: 640px) 50vw, 33vw"
+                      sizes="96px"
                       className="object-contain"
                     />
                   </div>
@@ -119,7 +119,6 @@ export function Services() {
                 key={category.name}
                 href={category.link}
                 className="mx-auto"
-                prefetch={true}
               >
                 {cardContent}
               </Link>
@@ -157,7 +156,7 @@ export function Services() {
                         src={product.icon}
                         alt={product.name}
                         fill
-                        sizes="33vw"
+                        sizes="112px"
                         className="object-contain"
                       />
                     </div>
@@ -169,7 +168,7 @@ export function Services() {
               );
 
               return product.link ? (
-                <Link key={product.name} href={product.link} prefetch={true}>
+                <Link key={product.name} href={product.link}>
                   {cardContent}
                 </Link>
               ) : (
@@ -185,7 +184,6 @@ export function Services() {
             Want to explore more services?{" "}
             <Link
               href="/service"
-              prefetch={true}
               className="font-semibold text-blue-600 hover:text-blue-700 underline underline-offset-2"
             >
               View All Services
