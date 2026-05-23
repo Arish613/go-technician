@@ -52,7 +52,7 @@ async function migrateServicesToLocalityPages() {
           service.description ||
           `Professional ${service.name} services in ${locality.name}, ${city.name}. Book expert technicians for reliable service.`;
         const content = `
-          <h2>Welcome to Go Technicians - ${service.name} in ${locality.name}</h2>
+          <h2>Welcome to Gotechnicians - ${service.name} in ${locality.name}</h2>
           <p>We provide professional ${service.name.toLowerCase()} services in ${locality.name}, ${city.name} and surrounding areas. Our expert technicians are trained to deliver high-quality service at your doorstep.</p>
           <h3>Why Choose Us?</h3>
           <ul>

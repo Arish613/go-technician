@@ -7,9 +7,9 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-const faqs = [
+export const homepageFaqs = [
   {
-    question: "What services does Go Technicians offer?",
+    question: "What services does Gotechnicians offer?",
     answer:
       "We offer a wide range of home and office services including AC repair, laptop service, appliance repair, home cleaning, laundry, plumbing, electrical work, pest control, and more. All services are provided by verified and trained professionals.",
   },
@@ -75,7 +75,7 @@ export function FAQ() {
 
         <div className="mx-auto">
           <Accordion type="single" collapsible className="space-y-3">
-            {faqs.map((faq, idx) => (
+            {homepageFaqs.map((faq, idx) => (
               <AccordionItem key={idx} value={`item-${idx}`}>
                 <AccordionTrigger className="py-4 text-left text-base font-semibold text-slate-900 hover:no-underline">
                   {faq.question}

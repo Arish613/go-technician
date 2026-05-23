@@ -125,9 +125,9 @@ export async function sendEmailForComplaint(formData: ComplaintFormData) {
 </html>`;
 
     const sendSmtpEmail = new Brevo.SendSmtpEmail();
-    sendSmtpEmail.sender = { name: "Go Technicians", email: senderEmail };
+    sendSmtpEmail.sender = { name: "Gotechnicians", email: senderEmail };
     sendSmtpEmail.to = [{ email: receiverEmail }];
-    sendSmtpEmail.subject = "Go Technicians Support - Complaint";
+    sendSmtpEmail.subject = "Gotechnicians Support - Complaint";
     sendSmtpEmail.htmlContent = emailContent;
 
     await apiInstance.sendTransacEmail(sendSmtpEmail);
@@ -223,9 +223,9 @@ export async function sendContactFormEmail(formData: ContactFormData) {
 </html>`;
 
     const sendSmtpEmail = new Brevo.SendSmtpEmail();
-    sendSmtpEmail.sender = { name: "Go Technicians", email: senderEmail };
+    sendSmtpEmail.sender = { name: "Gotechnicians", email: senderEmail };
     sendSmtpEmail.to = [{ email: receiverEmail }];
-    sendSmtpEmail.subject = "Go Technicians - New Contact Request";
+    sendSmtpEmail.subject = "Gotechnicians - New Contact Request";
     sendSmtpEmail.htmlContent = emailContent;
 
     await apiInstance.sendTransacEmail(sendSmtpEmail);
@@ -392,7 +392,7 @@ export async function sendBookingEmail(formData: BookingFormData) {
                     <tr>
                         <td align="center" style="background-color: #f8fafc; padding: 20px; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
                             <p style="margin: 0; font-size: 12px; color: #666666;">
-                                This is an automated notification from Go Technicians booking system.
+                                This is an automated notification from Gotechnicians booking system.
                             </p>
                         </td>
                     </tr>
@@ -422,7 +422,7 @@ export async function sendBookingEmail(formData: BookingFormData) {
                             <h1 style="margin: 0; font-size: 24px; color: #ffffff; font-weight: bold;">
                                 ✅ Booking Confirmed!
                             </h1>
-                            <p style="margin: 10px 0 0 0; color: #ffffff; font-size: 14px;">Thank you for choosing Go Technicians</p>
+                            <p style="margin: 10px 0 0 0; color: #ffffff; font-size: 14px;">Thank you for choosing Gotechnicians</p>
                         </td>
                     </tr>
                     
@@ -509,7 +509,7 @@ export async function sendBookingEmail(formData: BookingFormData) {
                                 Need help? Contact us at <a href="mailto:${senderEmail}" style="color: #10b981; text-decoration: none;">${senderEmail}</a>
                             </p>
                             <p style="margin: 0; font-size: 12px; color: #666666;">
-                                © 2026 Go Technicians. All rights reserved.
+                                © 2026 Gotechnicians. All rights reserved.
                             </p>
                         </td>
                     </tr>
@@ -522,7 +522,7 @@ export async function sendBookingEmail(formData: BookingFormData) {
 
     // Send admin email
     const adminEmail = new Brevo.SendSmtpEmail();
-    adminEmail.sender = { name: "Go Technicians", email: senderEmail };
+    adminEmail.sender = { name: "Gotechnicians", email: senderEmail };
     adminEmail.to = [{ email: receiverEmail }];
     adminEmail.subject = `New Service Booking - ₹${formData.totalPrice} | ${formData.schedule.date}`;
     adminEmail.htmlContent = adminEmailContent;
@@ -533,12 +533,12 @@ export async function sendBookingEmail(formData: BookingFormData) {
     if (customerEmailAddress) {
       const customerConfirmationEmail = new Brevo.SendSmtpEmail();
       customerConfirmationEmail.sender = {
-        name: "Go Technicians",
+        name: "Gotechnicians",
         email: senderEmail,
       };
       customerConfirmationEmail.to = [{ email: customerEmailAddress }];
       customerConfirmationEmail.subject =
-        "Booking Confirmation - Go Technicians";
+        "Booking Confirmation - Gotechnicians";
       customerConfirmationEmail.htmlContent = customerEmailContent;
 
       await apiInstance.sendTransacEmail(customerConfirmationEmail);

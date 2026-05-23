@@ -27,6 +27,8 @@ import { RecentBlogs } from "@/components/blog/RecentBlogs";
 import { getRecentBlogs } from "@/lib/action/blog";
 import { LocationPageContent } from "@/components/location/LocationPageContent";
 import { unstable_cache } from "next/cache";
+import { getServiceSchema } from "@/lib/seo/service";
+import { getFAQSchema } from "@/lib/seo/faq";
 
 interface ServicePageProps {
   params: {
@@ -129,8 +131,35 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
   const showAMCTable = slug.toLowerCase().includes("ac-repair");
 
+  const serviceSchema = getServiceSchema({
+    name: service.name,
+    description: service.description,
+    slug: service.slug,
+    imageUrl: service.imageUrl,
+  });
+
+  const faqSchema =
+    service.faqs && service.faqs.length > 0
+      ? getFAQSchema(
+          service.faqs.map((f: { question: string; answer: string }) => ({
+            question: f.question,
+            answer: f.answer,
+          })),
+        )
+      : null;
+
   return (
     <div className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <StickyCart />
       <div className="lg:grid md:grid-cols-2">
         {/* Hero Section - Reduced height */}
@@ -384,7 +413,7 @@ export async function generateMetadata({ params }: ServicePageProps) {
       const locationPage = locationResult.data;
       return {
         title:
-          locationPage.metaTitle || `${locationPage.title} | Go Technicians`,
+          locationPage.metaTitle || `${locationPage.title} | Gotechnicians`,
         description: locationPage.description,
         openGraph: {
           title: locationPage.title,

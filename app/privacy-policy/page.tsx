@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Privacy Policy | Go Technicians",
-  description: "Read our Privacy Policy to understand how Go Technicians collects, uses, and protects your personal information.",
+  title: "Privacy Policy | Gotechnicians",
+  description: "Read our Privacy Policy to understand how Gotechnicians collects, uses, and protects your personal information.",
   alternates: {
     canonical: "https://www.gotechnicians.com/privacy-policy",
   },
@@ -174,7 +174,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section className="mt-12 rounded-2xl border border-blue-200 bg-linear-to-r from-blue-600/10 to-sky-500/10 p-6 text-sm text-slate-600">
-          By using Go Technicians, you acknowledge and agree to this Privacy Policy. For additional policies, please visit our Terms & Conditions page.
+          By using Gotechnicians, you acknowledge and agree to this Privacy Policy. For additional policies, please visit our Terms & Conditions page.
         </section>
       </div>
     </main>

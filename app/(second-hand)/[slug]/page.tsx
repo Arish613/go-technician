@@ -47,21 +47,21 @@ export async function generateMetadata({ params }: SecondHandPageProps) {
   return {
     title:
       category.metaTitle ||
-      `Buy Second Hand ${category.name} in Mumbai | Go Technicians`,
+      `Buy Second Hand ${category.name} in Mumbai | Gotechnicians`,
     description:
       category.metaDescription ||
       `Shop verified second-hand ${category.name} at the best prices. Quality checked, genuine products with easy returns.`,
     openGraph: {
       title:
         category.metaTitle ||
-        `Buy Second Hand ${category.name} in Mumbai | Go Technicians`,
+        `Buy Second Hand ${category.name} in Mumbai | Gotechnicians`,
       description:
         category.metaDescription ||
         `Shop verified second-hand ${category.name} at the best prices.`,
       images: category.image ? [category.image] : [],
     },
     alternates: {
-      canonical: `/second-hand/${category.slug}`,
+      canonical: `/${category.slug}`,
     },
   };
 }

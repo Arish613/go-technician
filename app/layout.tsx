@@ -7,6 +7,7 @@ import { StickyContactButtons } from "@/components/contact/ContactButtons";
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import { CartProvider } from "@/context/CartContext";
 import Script from "next/script";
+import { getOrganizationSchema } from "@/lib/seo/organization";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -23,8 +24,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.gotechnicians.com/"),
   title: {
-    default: "Go Technicians | Trusted Home & Office Services",
-    template: "%s | Go Technicians",
+    default: "Gotechnicians | Trusted Home & Office Services",
+    template: "%s | Gotechnicians",
   },
   alternates: {
     canonical: "./",
@@ -44,14 +45,14 @@ export const metadata: Metadata = {
     "Delhi",
     "Bangalore",
   ],
-  authors: [{ name: "Go Technicians" }],
-  creator: "Go Technicians",
+  authors: [{ name: "Gotechnicians" }],
+  creator: "Gotechnicians",
   openGraph: {
     type: "website",
     locale: "en_IN",
     url: "https://www.gotechnicians.com",
-    siteName: "Go Technicians",
-    title: "Go Technicians | Trusted Home & Office Services",
+    siteName: "Gotechnicians",
+    title: "Gotechnicians | Trusted Home & Office Services",
     description:
       "Book verified technicians for AC repair, laptop service, appliance repair, home cleaning, plumbing & more. Same-day service across 30+ cities.",
     images: [
@@ -59,13 +60,13 @@ export const metadata: Metadata = {
         url: "/logo.png",
         width: 1200,
         height: 630,
-        alt: "Go Technicians - Trusted Home Services",
+        alt: "Gotechnicians - Trusted Home Services",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Go Technicians | Trusted Home & Office Services",
+    title: "Gotechnicians | Trusted Home & Office Services",
     description:
       "Book verified technicians for AC repair, laptop service, appliance repair, home cleaning, plumbing & more.",
     images: ["/logo.png"],
@@ -97,6 +98,11 @@ export default function RootLayout({
             gtag('config', 'AW-17908761237');
           `}
         </Script>
+        <script
+          id="schema-organization"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(getOrganizationSchema()) }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}

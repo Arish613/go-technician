@@ -210,7 +210,7 @@ export function AboutUs() {
                 <div className="">
                   <Image
                     src="/about-us.png"
-                    alt="Go Technicians Team"
+                    alt="Gotechnicians Team"
                     width={900}
                     height={450}
                   // className="object-cover"

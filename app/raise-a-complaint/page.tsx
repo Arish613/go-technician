@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Raise a Complaint | Go Technicians",
+  title: "Raise a Complaint | Gotechnicians",
   description:
     "Have an issue with our service? Raise a complaint and our team will resolve it within 24-48 hours.",
   alternates: {
