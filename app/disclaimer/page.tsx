@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Disclaimer | Go Technicians",
-  description: "Read the disclaimer for Go Technicians regarding service information, liability, and website usage.",
+  title: "Disclaimer | Gotechnicians",
+  description: "Read the disclaimer for Gotechnicians regarding service information, liability, and website usage.",
   alternates: {
     canonical: "https://www.gotechnicians.com/disclaimer",
   },
@@ -16,11 +16,11 @@ export default function DisclaimerPage() {
     },
     {
       title: "Third‑Party Technicians",
-      body: "Go Technicians works with verified professionals but does not employ them directly in every city. Each technician is responsible for workmanship, safety, and adherence to local regulations. We act as a facilitator and are not liable for direct agreements made outside our platform.",
+      body: "Gotechnicians works with verified professionals but does not employ them directly in every city. Each technician is responsible for workmanship, safety, and adherence to local regulations. We act as a facilitator and are not liable for direct agreements made outside our platform.",
     },
     {
       title: "Liability Limitation",
-      body: "To the fullest extent permitted by law, Go Technicians is not responsible for any indirect, incidental, or consequential damages resulting from service delays, cancellations, or third-party conduct. Any claim is limited to the amount paid for the affected booking.",
+      body: "To the fullest extent permitted by law, Gotechnicians is not responsible for any indirect, incidental, or consequential damages resulting from service delays, cancellations, or third-party conduct. Any claim is limited to the amount paid for the affected booking.",
     },
     {
       title: "External Links & References",
@@ -68,7 +68,7 @@ export default function DisclaimerPage() {
         </section>
 
         <section className="mt-10 rounded-2xl bg-linear-to-r from-blue-600/15 via-sky-500/15 to-indigo-500/15 p-6 text-sm text-slate-700">
-          By continuing to browse or book through Go Technicians, you
+          By continuing to browse or book through Gotechnicians, you
           acknowledge that you have read and understood this Disclaimer, along
           with our Terms, Privacy Policy, and Refund Policy. For clarification,
           email compliance@go-technicians.com.

@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ContactForm } from "@/components/contact/ContactForm";
 
 export const metadata = {
-  title: "Contact Us | Go Technicians",
-  description: "Get in touch with Go Technicians for bookings, support, or partnership queries. We provide reliable home services across Mumbai, Thane, and Navi Mumbai.",
+  title: "Contact Us | Gotechnicians",
+  description: "Get in touch with Gotechnicians for bookings, support, or partnership queries. We provide reliable home services across Mumbai, Thane, and Navi Mumbai.",
   alternates: {
     canonical: "https://www.gotechnicians.com/contact",
   },

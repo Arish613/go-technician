@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Terms and Conditions | Go Technicians",
-  description: "Read the terms and conditions for using Go Technicians' services. Your trust and safety are our priority.",
+  title: "Terms and Conditions | Gotechnicians",
+  description: "Read the terms and conditions for using Gotechnicians' services. Your trust and safety are our priority.",
   alternates: {
     canonical: "https://www.gotechnicians.com/terms-and-conditions",
   },
@@ -15,7 +15,7 @@ export default function TermsAndConditionsPage() {
     {
       title: "Acceptance of Terms",
       content:
-        "By accessing or using Go Technicians’ website, mobile application, or services, you agree to be bound by these Terms and our Privacy Policy. If you disagree with any part, please discontinue use immediately.",
+        "By accessing or using Gotechnicians’ website, mobile application, or services, you agree to be bound by these Terms and our Privacy Policy. If you disagree with any part, please discontinue use immediately.",
     },
     {
       title: "Services & Eligibility",
@@ -45,7 +45,7 @@ export default function TermsAndConditionsPage() {
       points: [
         "Most services include a 30-day workmanship warranty unless otherwise communicated.",
         "Warranty is void if third-party tampering, misuse, or unpaid dues are detected.",
-        "Go Technicians is not liable for indirect, incidental, or consequential damages.",
+        "Gotechnicians is not liable for indirect, incidental, or consequential damages.",
         "Maximum liability is limited to the amount paid for the specific service.",
       ],
     },
@@ -61,7 +61,7 @@ export default function TermsAndConditionsPage() {
     {
       title: "Intellectual Property",
       content:
-        "All trademarks, content, logos, and media on the platform belong to Go Technicians. You may not copy, reproduce, distribute, or exploit any content without prior written consent.",
+        "All trademarks, content, logos, and media on the platform belong to Gotechnicians. You may not copy, reproduce, distribute, or exploit any content without prior written consent.",
     },
     {
       title: "Updates to Terms",
@@ -88,7 +88,7 @@ export default function TermsAndConditionsPage() {
             Service Terms & User Agreement
           </h1>
           <p className="text-base text-slate-600">
-            These Terms govern your access to Go Technicians’ products, website,
+            These Terms govern your access to Gotechnicians’ products, website,
             and services. Please read them carefully before booking or using our
             platform.
           </p>
@@ -121,7 +121,7 @@ export default function TermsAndConditionsPage() {
         </section>
 
         <section className="mt-12 rounded-2xl border border-blue-200 bg-linear-to-r from-blue-600/10 to-sky-500/10 p-6 text-sm text-slate-600">
-          By using Go Technicians, you acknowledge and agree to these Terms &
+          By using Gotechnicians, you acknowledge and agree to these Terms &
           Conditions. For additional policies, please visit our <Link href={"/privacy-policy"} className="hover:text-blue-500 hover:underline">Privacy Policy</Link> {" "}
           and {" "}<Link href={"/refund-policy"} className="hover:text-blue-500 hover:underline"> Refund Policy </Link> pages.
         </section>

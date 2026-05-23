@@ -2,7 +2,7 @@ import { getBlogs } from "@/lib/action/blog";
 import { BlogCard } from "@/components/blog/Card";
 
 export const metadata = {
-  title: "Blog | Go Technicians",
+  title: "Blog | Gotechnicians",
   description: "Read our latest articles, guides, and technical insights",
   alternates: {
     canonical: "/blog",

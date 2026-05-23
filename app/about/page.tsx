@@ -16,7 +16,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About Us | Go Technicians",
+  title: "About Us | Gotechnicians",
   description:
     "Gotechnicians is a Mumbai-based home service company providing reliable AC repair, appliance servicing, plumbing, and home cleaning services across Mumbai, Thane, and Navi Mumbai.",
   alternates: {
