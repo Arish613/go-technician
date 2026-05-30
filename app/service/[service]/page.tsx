@@ -29,6 +29,15 @@ import { LocationPageContent } from "@/components/location/LocationPageContent";
 import { unstable_cache } from "next/cache";
 import { getServiceSchema } from "@/lib/seo/service";
 import { getFAQSchema } from "@/lib/seo/faq";
+import { getBreadcrumbSchema } from "@/lib/seo/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 interface ServicePageProps {
   params: {
@@ -67,17 +76,22 @@ export default async function ServicePage({ params }: ServicePageProps) {
       const locationPage = locationResult.data;
 
       // Fetch the parent service data using the serviceSlug
-      const [serviceResult, reviews, relatedLocationsResult, cityResult, recentBlogsResult] =
-        await Promise.all([
-          getCachedServiceBySlug(locationPage.serviceSlug),
-          getReviewsByServiceSlug(locationPage.serviceSlug),
-          getLocationPagesByServiceSlug(
-            locationPage.serviceSlug,
-            locationPage.location,
-          ),
-          getCityBySlug(locationPage.location),
-          getRecentBlogs(3),
-        ]);
+      const [
+        serviceResult,
+        reviews,
+        relatedLocationsResult,
+        cityResult,
+        recentBlogsResult,
+      ] = await Promise.all([
+        getCachedServiceBySlug(locationPage.serviceSlug),
+        getReviewsByServiceSlug(locationPage.serviceSlug),
+        getLocationPagesByServiceSlug(
+          locationPage.serviceSlug,
+          locationPage.location,
+        ),
+        getCityBySlug(locationPage.location),
+        getRecentBlogs(3),
+      ]);
 
       if (!serviceResult.success || !serviceResult.data) {
         notFound();
@@ -86,19 +100,50 @@ export default async function ServicePage({ params }: ServicePageProps) {
       const service = serviceResult.data;
       const cityId = cityResult.data?.id ?? undefined;
 
+      const locationBreadcrumbSchema = getBreadcrumbSchema([
+        { name: "Home", url: "/" },
+        { name: "Services", url: "/service" },
+        { name: locationPage.title, url: `/service/${locationPage.slug}` },
+      ]);
+
       return (
-        <LocationPageContent
-          locationPage={locationPage}
-          service={service}
-          reviews={reviews}
-          relatedLocations={
-            relatedLocationsResult.success ? relatedLocationsResult.data : []
-          }
-          cityId={cityId}
-          recentBlogs={
-            recentBlogsResult.success ? recentBlogsResult.data : undefined
-          }
-        />
+        <>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(locationBreadcrumbSchema),
+            }}
+          />
+          <div className="md:mx-20 px-4 pt-4">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/service">Services</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{locationPage.title}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+          <LocationPageContent
+            locationPage={locationPage}
+            service={service}
+            reviews={reviews}
+            relatedLocations={
+              relatedLocationsResult.success ? relatedLocationsResult.data : []
+            }
+            cityId={cityId}
+            recentBlogs={
+              recentBlogsResult.success ? recentBlogsResult.data : undefined
+            }
+          />
+        </>
       );
     }
 
@@ -148,6 +193,12 @@ export default async function ServicePage({ params }: ServicePageProps) {
         )
       : null;
 
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Services", url: "/service" },
+    { name: service.name, url: `/service/${service.slug}` },
+  ]);
+
   return (
     <div className="min-h-screen">
       <script
@@ -160,7 +211,28 @@ export default async function ServicePage({ params }: ServicePageProps) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
         />
       )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <StickyCart />
+      <div className="md:mx-20 px-4 pt-4">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/service">Services</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{service.name}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
       <div className="lg:grid md:grid-cols-2">
         {/* Hero Section - Reduced height */}
         <section className="lg:sticky lg:top-10 lg:h-screen lg:mt-10">
@@ -343,9 +415,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
       <section className="md:mx-20 px-4">
         <RecentBlogs
-          blogs={
-            recentBlogsResult.success ? recentBlogsResult.data : undefined
-          }
+          blogs={recentBlogsResult.success ? recentBlogsResult.data : undefined}
         />
       </section>
       {/* CTA Section */}

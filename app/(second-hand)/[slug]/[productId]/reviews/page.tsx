@@ -8,6 +8,15 @@ import { ArrowLeft, MessageSquare } from "lucide-react";
 import { ReviewsList } from "@/components/review/ReviewsList";
 import { RatingSummary } from "@/components/review/RatingSummary";
 import { ProductReviewFormDialog } from "@/components/second-hand/ProductReviewFormDialog";
+import { getBreadcrumbSchema } from "@/lib/seo/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 interface ProductReviewsPageProps {
   params: Promise<{
@@ -89,8 +98,20 @@ export default async function ProductReviewsPage({
     createdAt: r.createdAt,
   }));
 
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Second Hand", url: "/" },
+    { name: product.category.name, url: `/${product.category.slug}` },
+    { name: product.name, url: `/${product.category.slug}/${productId}` },
+    { name: "Reviews", url: `/${product.category.slug}/${productId}/reviews` },
+  ]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       {/* Header */}
       <div className="bg-white border-b border-slate-200 sticky top-0 z-20">
         <div className="container mx-auto px-4 py-4">
@@ -112,6 +133,35 @@ export default async function ProductReviewsPage({
             />
           </div>
         </div>
+      </div>
+
+      {/* Breadcrumb */}
+      <div className="container mx-auto px-4 pt-4">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Second Hand</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href={`/${product.category.slug}`}>
+                {product.category.name}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{product.name}</BreadcrumbPage>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Reviews</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
 
       {/* Hero Section */}
