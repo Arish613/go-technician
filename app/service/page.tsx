@@ -3,6 +3,15 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { ServiceCard } from "@/components/service/ServiceCard";
+import { getBreadcrumbSchema } from "@/lib/seo/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 interface ServicesPageProps {
   searchParams: Promise<{
@@ -45,11 +54,33 @@ export default async function ServicesPage({
     new Set(services.map((s) => s.location).filter(Boolean))
   ) as string[];
 
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Services", url: "/service" },
+  ]);
+
   return (
     <div className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       {/* Hero Section */}
       <section className="relative bg-linear-to-b from-primary/10 to-background py-6 md:py-16">
         <div className="container mx-auto px-4">
+          <div className="md:mx-16 mb-3">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Services</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
           <div className="max-w-4xl mx-auto text-center space-y-3 md:space-y-6">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
               Professional Home Services
