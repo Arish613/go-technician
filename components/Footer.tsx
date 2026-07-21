@@ -120,13 +120,7 @@ export async function Footer() {
               Contact us
             </h3>
             <div className="space-y-3 text-sm text-slate-600">
-              <p>
-                <Link href={"/"}>
-                  4th Floor “C” Wing, Fakir Shah Apartment, Thane – 400612, Maharashtra, India
-                </Link>
-                {/* <br />
-                400076 */}
-              </p>
+              
               <p>
                 <a
                   href="mailto:gotechnicians.com@gmail.com"
